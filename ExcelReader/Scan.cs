@@ -39,5 +39,14 @@ namespace ExcelReader
         {
             return this.Find(x => x.ResName == Name).Value;
         }
+
+        //TODO get value from SQL function
+        private string getSQLValue(Field field) {
+            return "";
+        }
+
+        public string matching(DataColumn[] tableHead) { //TODO finish matching with report
+            return "";
+        }
     }
 }

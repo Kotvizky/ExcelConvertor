@@ -107,7 +107,7 @@ namespace ExcelReader
             }
         }
 
-        public void WriteResult(Scan scan) {
+        public void WriteResult(Scan scan) {  
             foreach (DataRow row in XlsTable.Rows) {
                 DataRow newRow = ResTable.NewRow();
                 scan.setValues(row);
@@ -125,8 +125,9 @@ namespace ExcelReader
             xlApp.Visible = true;
         }
 
-
-        public void createXls()
+        //TODO pain table head
+        //TODO align columns in the table
+        public void CreateXls()
 
         {
             Microsoft.Office.Interop.Excel.Application oXL;
@@ -147,6 +148,8 @@ namespace ExcelReader
             oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
             oRng.Font.Bold = true;
             oRng.Value2 = title;
+            oRng.Interior.Color = Excel.XlRgbColor.rgbLightGreen;
+            // oRng.Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red);
 
             string[,] data = new string[ResTable.Rows.Count, ResTable.Columns.Count];
 
@@ -160,6 +163,7 @@ namespace ExcelReader
 
             oRng = oSheet.get_Range(xlsAdress(1, 2), xlsAdress(data.GetLength(1), data.GetLength(0) + 1 ));
             oRng.Value2 = data;
+            oRng.EntireColumn.AutoFit();
 
             oXL.Visible = true;
 

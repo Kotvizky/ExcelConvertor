@@ -12,7 +12,7 @@ using System.IO;
 
 namespace ExcelReader
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
 
         private ExcelFile file;
@@ -20,7 +20,7 @@ namespace ExcelReader
         private string fileName;
 
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
             this.CenterToScreen();
@@ -59,9 +59,11 @@ namespace ExcelReader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_str". При необходимости она может быть перемещена или удалена.
+            //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_str". 
+            //При необходимости она может быть перемещена или удалена.
             this.i_tmpl_strTableAdapter.Fill(this.collectDataSet.i_tmpl_str);
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_head". При необходимости она может быть перемещена или удалена.
+            //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_head". 
+            //При необходимости она может быть перемещена или удалена.
             this.i_tmpl_headTableAdapter.Fill(this.collectDataSet.i_tmpl_head);
         }
 
@@ -98,14 +100,13 @@ namespace ExcelReader
             return dataGridView3.Columns[name + gridPrefix].Index; ; 
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e)
+        private void toolStripButton2_Click(object sender, EventArgs e) 
         {
             // Matching 
             scan.Clear();
 
             string msg = String.Empty;
             for (int i = 0; i < dataGridView3.Rows.Count-1; i++) {
-
                 scan.Add(new Field {
                     ResName = dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
                     XlsName = dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
@@ -113,12 +114,7 @@ namespace ExcelReader
                     Attr = (byte)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
                     IsActive = (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
                 });
-
-                //msg +=  String.Format("\n{0}\t{1}",
-                //    dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value,
-                //    dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value);
             }
-
             if (file.XlsTable != null) {
                 foreach (DataColumn column in file.XlsTable.Columns) {
                     foreach (Field field in scan) {
@@ -130,15 +126,12 @@ namespace ExcelReader
                     }
                 }
             }
-
             textBox1.Hide();
             file.InitResTable(scan);
             dataGridView4.DataSource = file.ResTable;
             dataGridView4.Show();
             file.WriteResult(scan);
-
-            MessageBox.Show("Готово!" + scan.AllFound().ToString() );
-
+            MessageBox.Show("Ready!\n" + scan.AllFound().ToString() );
         }
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -152,17 +145,13 @@ namespace ExcelReader
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            file.createXls();
+            file.CreateXls();
         }
 
         private void dataGridView3_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            //((DataGridView)sender).Rows[e.RowIndex].Cells[2].Value = "100";
-            //MessageBox.Show(dataGridView3.NewRowIndex.ToString() + e.RowIndex.ToString());
-
             if (e.RowIndex == dataGridView3.NewRowIndex)
             {
-                //if (newRowNeeded) {
                 if (e.RowIndex > 0) {
                     int npp = 0;
                     int tmpNpp = 0;
@@ -173,25 +162,16 @@ namespace ExcelReader
                         }
                     }
                     npp = ((npp/10) + 1) * 10;
-                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[2].Value = npp.ToString();
-                }
-                //}
-                //MessageBox.Show("Ok");
-                // user is in the new row, disable controls.
-            }
-        }
+                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("npp")].Value = npp.ToString();
 
-        public void Dialog_Click(object sender, EventArgs e)
-        {
-            //object[] sheets = new object[1];
-            //sheets[0] = "one+";
-            object[] sheets = new object[] { "one","two"};
-            DialogSheets form = new DialogSheets(sheets);
-            form.StartPosition = FormStartPosition.CenterParent;
-            form.ShowDialog();
-            string choosenSheet = form.sheet;
-            form.Dispose();
-            MessageBox.Show(choosenSheet);
+                    // set default value
+
+                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("isPrint")].Value = true;
+                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("attr")].Value = 0;
+                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("IsActive")].Value = true;
+
+                }
+            }
         }
 
         public string getXlsSheet(object[] sheetList)
