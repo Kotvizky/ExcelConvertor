@@ -37,12 +37,27 @@ namespace ExcelReader
 
         public string getValue(string Name)
         {
-            return this.Find(x => x.ResName == Name).Value;
+
+            string result = String.Empty;
+            Field field = this.Find(x => x.ResName == Name);
+            switch (field.Attr) {
+                case 0:
+                    result = field.Value;
+                    break;
+                case 1:
+                    result = getSQLValue(field);
+                    break;
+            }
+            return result;
         }
 
-        //TODO get value from SQL function
         private string getSQLValue(Field field) {
-            return "";
+            string preperedString = field.XlsName.Split(new Char[] { ' ', ')' })[0];
+            string[] parameters = preperedString.Split(new Char[] { ' ',',', '(' });
+            for (int i = 1; i < parameters.Length; i++) {
+                parameters[i] = this.Find(x => x.ResName == parameters[i]).Value;
+            }
+            return SQLFunction.ExecuteFunction(parameters);
         }
 
         public string matching(DataColumn[] tableHead) { //TODO finish matching with report

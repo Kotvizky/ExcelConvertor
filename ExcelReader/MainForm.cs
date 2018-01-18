@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
+
 using System.Data.OleDb;
 using System.IO;
 
@@ -23,15 +25,28 @@ namespace ExcelReader
         public MainForm()
         {
             InitializeComponent();
+            toolStripProgressBar1.ToolTipText = "111";
             this.CenterToScreen();
             //            fileName = "c:\\Users\\IKotvytskyi\\Documents\\test1.xlsx";
-            fileName = "c:\\Users\\IKotvytskyi\\Desktop\\4 Додаток 3_на 01.01.18_нерух.xlsb" ;
-            textBox1.Text = "Matching!";
+            // fileName = "c:\\Users\\IKotvytskyi\\Desktop\\4 Додаток 3_на 01.01.18_нерух.xlsb" ;
             file = new ExcelFile();
             file.onSheetChoise += this.getXlsSheet; // method for a excel sheet choice
             scan = new Scan();
         }
 
+        protected override bool ProcessCmdKey(ref Message message, Keys keys)
+        {
+            switch (keys)
+            {
+                case Keys.W | Keys.Alt:
+                    changeContainerWidth(splitContainer1);
+                    //Process action here.
+                    return false;
+            }
+
+            return false;
+        }
+        
         private void Open_Click(object sender, EventArgs e) 
         {
             //            string fileName  = "c:\\Users\\IKotvytskyi\\Documents\\test.xlsx";
@@ -81,17 +96,16 @@ namespace ExcelReader
             this.tableAdapterManager.UpdateAll(this.collectDataSet);
         }
 
-        private void splitter2_DoubleClick(object sender, EventArgs e)
-        {
-
+        private void changeContainerWidth(SplitContainer container) {
             const float width = 0.8F;
 
-            if (splitContainer1.SplitterDistance == (int)(splitContainer1.Width * width))
+            if (container.SplitterDistance == (int)(container.Width * width))
             {
-                splitContainer1.SplitterDistance = (int)(splitContainer1.Width * (1- width));
+                container.SplitterDistance = (int)(container.Width * (1 - width));
             }
-            else {
-                splitContainer1.SplitterDistance = (int)(splitContainer1.Width * width);
+            else
+            {
+                container.SplitterDistance = (int)(container.Width * width);
             }
         }
 
@@ -102,10 +116,16 @@ namespace ExcelReader
 
         private void toolStripButton2_Click(object sender, EventArgs e) 
         {
-            // Matching 
+
+            if (file.XlsTable == null) {
+                MessageBox.Show("Сперва загрузите теблицу!");
+                return;
+            }
             scan.Clear();
 
             string msg = String.Empty;
+            dataGridView3.Sort(dataGridView3.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
+
             for (int i = 0; i < dataGridView3.Rows.Count-1; i++) {
                 scan.Add(new Field {
                     ResName = dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
@@ -115,22 +135,11 @@ namespace ExcelReader
                     IsActive = (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
                 });
             }
-            if (file.XlsTable != null) {
-                foreach (DataColumn column in file.XlsTable.Columns) {
-                    foreach (Field field in scan) {
-                        if (field.Attr != 0) continue;
-                        if (field.XlsName == column.ColumnName) {
-                            field.IsExist = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            textBox1.Hide();
+
             file.InitResTable(scan);
             dataGridView4.DataSource = file.ResTable;
-            dataGridView4.Show();
             file.WriteResult(scan);
+            dataGridView4.Show();
             MessageBox.Show("Ready!\n" + scan.AllFound().ToString() );
         }
 
@@ -145,7 +154,13 @@ namespace ExcelReader
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            file.CreateXls();
+            if (file.ResTable != null)
+            {
+                file.ExportToXls();
+            } else
+            {
+                MessageBox.Show("Сопоставьте входной файл с шаблона сначала!");
+            }
         }
 
         private void dataGridView3_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -186,6 +201,49 @@ namespace ExcelReader
             form.Dispose();
             MessageBox.Show(choosenSheet);
             return choosenSheet;
+        }
+
+        private void dataGridView3_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show(anError.Exception.Message);
+            //MessageBox.Show("Error happened " + anError.Context.ToString());
+            //MessageBox.Show("Error happened " + anError.Context.ToString());
+
+            //if (anError.Context == DataGridViewDataErrorContexts.Commit)
+            //{
+            //    MessageBox.Show("Commit error");
+            //}
+            //if (anError.Context == DataGridViewDataErrorContexts.CurrentCellChange)
+            //{
+            //    MessageBox.Show("Cell change");
+            //}
+            //if (anError.Context == DataGridViewDataErrorContexts.Parsing)
+            //{
+            //    MessageBox.Show("parsing error");
+            //}
+            //if (anError.Context == DataGridViewDataErrorContexts.LeaveControl)
+            //{
+            //    MessageBox.Show("leave control error");
+            //}
+
+            //if ((anError.Exception) is ConstraintException)
+            //{
+            //    DataGridView view = (DataGridView)sender;
+            //    view.Rows[anError.RowIndex].ErrorText = "an error";
+            //    view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "an error";
+
+            //    // anError.ThrowException = false;
+            //}
+        }
+
+        private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("Panel");
         }
 
     }

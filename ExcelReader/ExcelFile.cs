@@ -107,7 +107,7 @@ namespace ExcelReader
             }
         }
 
-        public void WriteResult(Scan scan) {  
+        public void WriteResult(Scan scan) {  //TODO Add event for strip progress bar
             foreach (DataRow row in XlsTable.Rows) {
                 DataRow newRow = ResTable.NewRow();
                 scan.setValues(row);
@@ -119,15 +119,7 @@ namespace ExcelReader
             }
         }
 
-        public void Store(string fileName) {
-            Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(fileName);
-            xlApp.Visible = true;
-        }
-
-        //TODO pain table head
-        //TODO align columns in the table
-        public void CreateXls()
+        public void ExportToXls()
 
         {
             Microsoft.Office.Interop.Excel.Application oXL;
