@@ -110,9 +110,9 @@ namespace ExcelReader
         public void WriteResult(Scan scan) {  //TODO Add event for strip progress bar
             foreach (DataRow row in XlsTable.Rows) {
                 DataRow newRow = ResTable.NewRow();
-                scan.setValues(row);
+                scan.SetValues(row);
                 foreach (DataColumn column in ResTable.Columns) {
-                    newRow[column.ColumnName] = scan.getValue(column.ColumnName);
+                    newRow[column.ColumnName] = scan.GetValue(column.ColumnName);
                 }
                 ResTable.Rows.Add(newRow);
 

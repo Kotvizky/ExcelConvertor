@@ -43,7 +43,6 @@ namespace ExcelReader
                     //Process action here.
                     return false;
             }
-
             return false;
         }
         
@@ -135,9 +134,9 @@ namespace ExcelReader
                     IsActive = (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
                 });
             }
-
             file.InitResTable(scan);
             dataGridView4.DataSource = file.ResTable;
+            textBox1.Text = scan.Matching(file.XlsTable.Columns);
             file.WriteResult(scan);
             dataGridView4.Show();
             MessageBox.Show("Ready!\n" + scan.AllFound().ToString() );
@@ -246,5 +245,9 @@ namespace ExcelReader
             MessageBox.Show("Panel");
         }
 
+        private void splitContainer1_DoubleClick(object sender, EventArgs e)
+        {
+            changeContainerWidth(splitContainer1);
+        }
     }
 }

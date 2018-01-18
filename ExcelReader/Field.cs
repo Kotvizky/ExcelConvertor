@@ -8,6 +8,7 @@ namespace ExcelReader
 {
     class Field
     {
+        private const string noData = "Н/Д";
 
         // fields in database
         public string ResName { set; get; }
@@ -18,11 +19,23 @@ namespace ExcelReader
         public bool IsActive { set; get; }
         // <-- fields in database
 
-        public bool IsExist { set; get; }
-        public string Value { set; get; }
-
-
-
+        public bool Exist { set; get; }
+        private string value;
+        public string Value {
+            set {
+                this.value = value;
+            }
+            get {
+                if (this.Exist)
+                {
+                    return this.value;
+                }
+                else
+                {
+                    return noData;
+                }
+            }
+        }
     }
 
 
