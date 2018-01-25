@@ -17,8 +17,10 @@ namespace ExcelReader
     {
 
         public delegate string SheetChoice(object[] sheetList);
-
         public event SheetChoice onSheetChoise;
+
+        public delegate void ProgressBarStep();
+        public event ProgressBarStep onStep;
 
         public void ReadFile(string fileName) {
             FileName = fileName;
@@ -100,7 +102,7 @@ namespace ExcelReader
         }
 
         public void InitResTable(Scan scan) {
-            var resField = scan.FindAll(x => x.IsPrint == true);
+            var resField = scan.FindAll(x => x.IsPrint & x.IsActive);
             ResTable = new DataTable(); 
             foreach (Field field in resField) {
                 ResTable.Columns.Add(field.ResName, typeof(string));
@@ -115,12 +117,11 @@ namespace ExcelReader
                     newRow[column.ColumnName] = scan.GetValue(column.ColumnName);
                 }
                 ResTable.Rows.Add(newRow);
-
+                onStep?.Invoke();
             }
         }
 
         public void ExportToXls()
-
         {
             Microsoft.Office.Interop.Excel.Application oXL;
             Microsoft.Office.Interop.Excel._Workbook oWB;
@@ -158,8 +159,6 @@ namespace ExcelReader
             oRng.EntireColumn.AutoFit();
 
             oXL.Visible = true;
-
-
         }
 
         private string xlsAdress(int col, int row)

@@ -59,11 +59,18 @@ namespace ExcelReader
         private string GetSQLValue(Field field) {
 
             string[] parameters = XlsNameToArray(field.XlsName);
-
-            for (int i = 1; i < parameters.Length; i++) {
-                parameters[i] = this.Find(x => x.ResName == parameters[i]).Value;
+            string result = "";
+            try {
+                for (int i = 1; i < parameters.Length; i++)
+                {
+                    parameters[i] = this.Find(x => x.ResName == parameters[i]).Value;
+                }
+                result = SQLFunction.ExecuteFunction(parameters);
+            } catch
+            {
+                result = "NoData";
             }
-            return SQLFunction.ExecuteFunction(parameters);
+            return result;
         }
 
         public string Matching(DataColumnCollection tableHead) { //TODO finish matching with report
@@ -86,31 +93,19 @@ namespace ExcelReader
             foreach (Field field in this.FindAll(x => (x.Attr == 1) & x.IsActive))
             {
 
-                string[] parameters = XlsNameToArray(field.XlsName);
-
-                bool allFound = true;
-                string functionMessage = "";
-
-                for (int i = 1; i < parameters.Length; i++)
+                if (field.findParameters(this))
                 {
-                    string fieldName = parameters[i];
-                    if (this.Find(x => (x.ResName == fieldName) & x.Exist ) == null )
-                    {
-                        functionMessage += String.Format(",{0}", fieldName);
-                        allFound = true;
-                    }
+                    message += String.Format("\r\n(+):\t{0}", field.FunctionFields.Name);
                 }
-                if (allFound)
+                else
                 {
-                    message += String.Format("\r\n(+):\t{0}", parameters[0]);
-                } else
-                {
-                    message += String.Format("\r\n(-):\t{0},\t не найдены параметры ({1})", parameters[0], functionMessage.Remove(0,1));
+                    field.Exist = false;
+                    message += String.Format("\r\n(-):\t{0},\t не найдены параметры ({1})", 
+                        field.FunctionFields.Name,
+                        field.FunctionFields.MissingFields
+                        );
                 }
-
-
             }
-
             return message;
         }
     }

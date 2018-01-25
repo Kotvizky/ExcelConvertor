@@ -1868,7 +1868,7 @@ namespace ExcelReader.CollectDataSetTableAdapters {
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [CORP\IKotvytskyi].[i_tmpl_head] WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [i_tmpl_head] WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_idHead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idHead", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -1884,7 +1884,7 @@ namespace ExcelReader.CollectDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [CORP\IKotvytskyi].[i_tmpl_head] ([name], [comm], [author], [dateCreate], [operator], [dateModify]) VALUES (@name, @comm, @author, @dateCreate, @operator, @dateModify);
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [i_tmpl_head] ([name], [comm], [author], [dateCreate], [operator], [dateModify]) VALUES (@name, @comm, @author, @dateCreate, @operator, @dateModify);
 SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_head WHERE (idHead = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -1895,7 +1895,7 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [CORP\IKotvytskyi].[i_tmpl_head] SET [name] = @name, [comm] = @comm, [author] = @author, [dateCreate] = @dateCreate, [operator] = @operator, [dateModify] = @dateModify WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)));
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [i_tmpl_head] SET [name] = @name, [comm] = @comm, [author] = @author, [dateCreate] = @dateCreate, [operator] = @operator, [dateModify] = @dateModify WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)));
 SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_head WHERE (idHead = @idHead)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -1932,8 +1932,8 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM [CORP\\IK" +
-                "otvytskyi].i_tmpl_head";
+            this._commandCollection[0].CommandText = "SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_h" +
+                "ead";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -1988,244 +1988,6 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         public virtual int Update(global::System.Data.DataRow[] dataRows) {
             return this.Adapter.Update(dataRows);
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_idHead, string Original_name, string Original_comm, string Original_author, global::System.Nullable<global::System.DateTime> Original_dateCreate, string Original_operator, global::System.Nullable<global::System.DateTime> Original_dateModify) {
-            this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_idHead));
-            if ((Original_name == null)) {
-                throw new global::System.ArgumentNullException("Original_name");
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[1].Value = ((string)(Original_name));
-            }
-            if ((Original_comm == null)) {
-                this.Adapter.DeleteCommand.Parameters[2].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[2].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[3].Value = ((string)(Original_comm));
-            }
-            if ((Original_author == null)) {
-                this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[5].Value = ((string)(Original_author));
-            }
-            if ((Original_dateCreate.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[7].Value = ((System.DateTime)(Original_dateCreate.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[7].Value = global::System.DBNull.Value;
-            }
-            if ((Original_operator == null)) {
-                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[9].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[9].Value = ((string)(Original_operator));
-            }
-            if ((Original_dateModify.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[10].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[11].Value = ((System.DateTime)(Original_dateModify.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[10].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[11].Value = global::System.DBNull.Value;
-            }
-            global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
-            if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                this.Adapter.DeleteCommand.Connection.Open();
-            }
-            try {
-                int returnValue = this.Adapter.DeleteCommand.ExecuteNonQuery();
-                return returnValue;
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    this.Adapter.DeleteCommand.Connection.Close();
-                }
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(string name, string comm, string author, global::System.Nullable<global::System.DateTime> dateCreate, string _operator, global::System.Nullable<global::System.DateTime> dateModify) {
-            if ((name == null)) {
-                throw new global::System.ArgumentNullException("name");
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[0].Value = ((string)(name));
-            }
-            if ((comm == null)) {
-                this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(comm));
-            }
-            if ((author == null)) {
-                this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(author));
-            }
-            if ((dateCreate.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[3].Value = ((System.DateTime)(dateCreate.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            if ((_operator == null)) {
-                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((string)(_operator));
-            }
-            if ((dateModify.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[5].Value = ((System.DateTime)(dateModify.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
-            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                this.Adapter.InsertCommand.Connection.Open();
-            }
-            try {
-                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
-                return returnValue;
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    this.Adapter.InsertCommand.Connection.Close();
-                }
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string name, string comm, string author, global::System.Nullable<global::System.DateTime> dateCreate, string _operator, global::System.Nullable<global::System.DateTime> dateModify, int Original_idHead, string Original_name, string Original_comm, string Original_author, global::System.Nullable<global::System.DateTime> Original_dateCreate, string Original_operator, global::System.Nullable<global::System.DateTime> Original_dateModify, int idHead) {
-            if ((name == null)) {
-                throw new global::System.ArgumentNullException("name");
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[0].Value = ((string)(name));
-            }
-            if ((comm == null)) {
-                this.Adapter.UpdateCommand.Parameters[1].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(comm));
-            }
-            if ((author == null)) {
-                this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(author));
-            }
-            if ((dateCreate.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((System.DateTime)(dateCreate.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            if ((_operator == null)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((string)(_operator));
-            }
-            if ((dateModify.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((System.DateTime)(dateModify.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            this.Adapter.UpdateCommand.Parameters[6].Value = ((int)(Original_idHead));
-            if ((Original_name == null)) {
-                throw new global::System.ArgumentNullException("Original_name");
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_name));
-            }
-            if ((Original_comm == null)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_comm));
-            }
-            if ((Original_author == null)) {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(Original_author));
-            }
-            if ((Original_dateCreate.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((System.DateTime)(Original_dateCreate.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
-            }
-            if ((Original_operator == null)) {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((string)(Original_operator));
-            }
-            if ((Original_dateModify.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[17].Value = ((System.DateTime)(Original_dateModify.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[16].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[17].Value = global::System.DBNull.Value;
-            }
-            this.Adapter.UpdateCommand.Parameters[18].Value = ((int)(idHead));
-            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
-            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                this.Adapter.UpdateCommand.Connection.Open();
-            }
-            try {
-                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
-                return returnValue;
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    this.Adapter.UpdateCommand.Connection.Close();
-                }
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string name, string comm, string author, global::System.Nullable<global::System.DateTime> dateCreate, string _operator, global::System.Nullable<global::System.DateTime> dateModify, int Original_idHead, string Original_name, string Original_comm, string Original_author, global::System.Nullable<global::System.DateTime> Original_dateCreate, string Original_operator, global::System.Nullable<global::System.DateTime> Original_dateModify) {
-            return this.Update(name, comm, author, dateCreate, _operator, dateModify, Original_idHead, Original_name, Original_comm, Original_author, Original_dateCreate, Original_operator, Original_dateModify, Original_idHead);
         }
     }
     

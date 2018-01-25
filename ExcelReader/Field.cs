@@ -20,6 +20,19 @@ namespace ExcelReader
         // <-- fields in database
 
         public bool Exist { set; get; }
+
+        string SQLTable;
+        public FunctionFields TableFields { private set; get; }
+        public FunctionFields FunctionFields { private set; get; }
+        public FunctionFields OutFields { private set; get; }
+
+        public bool findParameters(List<Field> fields)
+        {
+            FunctionFields = new FunctionFields(fields,XlsName);
+            Exist = FunctionFields.Ready;
+            return Exist;
+        }
+
         private string value;
         public string Value {
             set {
@@ -40,3 +53,5 @@ namespace ExcelReader
 
 
 }
+
+

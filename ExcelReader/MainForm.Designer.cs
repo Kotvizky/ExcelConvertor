@@ -58,13 +58,13 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.bindingNavigatorSaveItems1 = new System.Windows.Forms.ToolStripButton();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.idHeadDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.commDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.authorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dateCreateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.operatorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dateModifyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idHeadDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.bindingNavigator2 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem1 = new System.Windows.Forms.ToolStripButton();
@@ -81,13 +81,23 @@
             this.bindingNavigatorSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.bindingNavigatorSaveItems2 = new System.Windows.Forms.ToolStripButton();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.idStrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idHeadDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.ButtonOpen = new System.Windows.Forms.ToolStripButton();
+            this.ButtonMatching = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
+            this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
+            this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
+            this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -95,16 +105,8 @@
             this.dateCreateDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.operatorDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dateModifyDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.ButtonOpen = new System.Windows.Forms.ToolStripButton();
-            this.ButtonMatching = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
-            this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
-            this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
-            this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.idHeadDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idStrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -175,7 +177,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(542, 257);
             this.dataGridView1.TabIndex = 3;
-            this.dataGridView1.ColumnHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseDoubleClick);
+            this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseDoubleClick);
             // 
             // tabControl1
             // 
@@ -441,25 +443,18 @@
             this.dataGridView2.AutoGenerateColumns = false;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.idHeadDataGridViewTextBoxColumn,
             this.nameDataGridViewTextBoxColumn,
             this.commDataGridViewTextBoxColumn,
             this.authorDataGridViewTextBoxColumn,
             this.dateCreateDataGridViewTextBoxColumn,
             this.operatorDataGridViewTextBoxColumn,
-            this.dateModifyDataGridViewTextBoxColumn});
+            this.dateModifyDataGridViewTextBoxColumn,
+            this.idHeadDataGridViewTextBoxColumn});
             this.dataGridView2.DataSource = this.itmplheadBindingSource;
             this.dataGridView2.Location = new System.Drawing.Point(0, 28);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.Size = new System.Drawing.Size(269, 209);
             this.dataGridView2.TabIndex = 1;
-            // 
-            // idHeadDataGridViewTextBoxColumn
-            // 
-            this.idHeadDataGridViewTextBoxColumn.DataPropertyName = "idHead";
-            this.idHeadDataGridViewTextBoxColumn.HeaderText = "idHead";
-            this.idHeadDataGridViewTextBoxColumn.Name = "idHeadDataGridViewTextBoxColumn";
-            this.idHeadDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -496,6 +491,13 @@
             this.dateModifyDataGridViewTextBoxColumn.DataPropertyName = "dateModify";
             this.dateModifyDataGridViewTextBoxColumn.HeaderText = "dateModify";
             this.dateModifyDataGridViewTextBoxColumn.Name = "dateModifyDataGridViewTextBoxColumn";
+            // 
+            // idHeadDataGridViewTextBoxColumn
+            // 
+            this.idHeadDataGridViewTextBoxColumn.DataPropertyName = "idHead";
+            this.idHeadDataGridViewTextBoxColumn.HeaderText = "idHead";
+            this.idHeadDataGridViewTextBoxColumn.Name = "idHeadDataGridViewTextBoxColumn";
+            this.idHeadDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // splitter3
             // 
@@ -646,8 +648,6 @@
             this.dataGridView3.AutoGenerateColumns = false;
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.idStrDataGrid3,
-            this.idHeadDataGrid3,
             this.nppDataGrid3,
             this.resNameDataGrid3,
             this.xlsNameDataGrid3,
@@ -659,100 +659,21 @@
             this.authorDataGrid3,
             this.dateCreateDataGrid3,
             this.operatorDataGrid3,
-            this.dateModifyDataGrid3});
+            this.dateModifyDataGrid3,
+            this.idHeadDataGrid3,
+            this.idStrDataGrid3});
             this.dataGridView3.DataSource = this.fKimpHeadimpStrBindingSource;
             this.dataGridView3.Location = new System.Drawing.Point(0, 28);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.Size = new System.Drawing.Size(269, 296);
             this.dataGridView3.TabIndex = 0;
+            this.dataGridView3.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellContentClick);
+            this.dataGridView3.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellMouseEnter);
+            this.dataGridView3.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellValidated);
+            this.dataGridView3.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView3_CellValidating);
             this.dataGridView3.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView3_DataError);
             this.dataGridView3.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView3_RowsAdded);
-            // 
-            // idStrDataGrid3
-            // 
-            this.idStrDataGrid3.DataPropertyName = "idStr";
-            this.idStrDataGrid3.HeaderText = "idStr";
-            this.idStrDataGrid3.Name = "idStrDataGrid3";
-            this.idStrDataGrid3.ReadOnly = true;
-            // 
-            // idHeadDataGrid3
-            // 
-            this.idHeadDataGrid3.DataPropertyName = "idHead";
-            this.idHeadDataGrid3.HeaderText = "idHead";
-            this.idHeadDataGrid3.Name = "idHeadDataGrid3";
-            this.idHeadDataGrid3.Visible = false;
-            // 
-            // nppDataGrid3
-            // 
-            this.nppDataGrid3.DataPropertyName = "npp";
-            this.nppDataGrid3.HeaderText = "npp";
-            this.nppDataGrid3.Name = "nppDataGrid3";
-            // 
-            // resNameDataGrid3
-            // 
-            this.resNameDataGrid3.DataPropertyName = "resName";
-            this.resNameDataGrid3.HeaderText = "resName";
-            this.resNameDataGrid3.Name = "resNameDataGrid3";
-            // 
-            // xlsNameDataGrid3
-            // 
-            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            this.xlsNameDataGrid3.HeaderText = "xlsName";
-            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
-            // 
-            // isPrintDataGrid3
-            // 
-            this.isPrintDataGrid3.DataPropertyName = "isPrint";
-            this.isPrintDataGrid3.HeaderText = "isPrint";
-            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
-            // 
-            // attrDataGrid3
-            // 
-            this.attrDataGrid3.DataPropertyName = "attr";
-            this.attrDataGrid3.HeaderText = "attr";
-            this.attrDataGrid3.Name = "attrDataGrid3";
-            // 
-            // strFormatData3
-            // 
-            this.strFormatData3.DataPropertyName = "strFormat";
-            this.strFormatData3.HeaderText = "strFormat";
-            this.strFormatData3.Name = "strFormatData3";
-            // 
-            // isActiveDataGrid3
-            // 
-            this.isActiveDataGrid3.DataPropertyName = "isActive";
-            this.isActiveDataGrid3.HeaderText = "isActive";
-            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
-            // 
-            // commDataGrid3
-            // 
-            this.commDataGrid3.DataPropertyName = "comm";
-            this.commDataGrid3.HeaderText = "comm";
-            this.commDataGrid3.Name = "commDataGrid3";
-            // 
-            // authorDataGrid3
-            // 
-            this.authorDataGrid3.DataPropertyName = "author";
-            this.authorDataGrid3.HeaderText = "author";
-            this.authorDataGrid3.Name = "authorDataGrid3";
-            // 
-            // dateCreateDataGrid3
-            // 
-            this.dateCreateDataGrid3.DataPropertyName = "dateCreate";
-            this.dateCreateDataGrid3.HeaderText = "dateCreate";
-            this.dateCreateDataGrid3.Name = "dateCreateDataGrid3";
-            // 
-            // operatorDataGrid3
-            // 
-            this.operatorDataGrid3.DataPropertyName = "operator";
-            this.operatorDataGrid3.HeaderText = "operator";
-            this.operatorDataGrid3.Name = "operatorDataGrid3";
-            // 
-            // dateModifyDataGrid3
-            // 
-            this.dateModifyDataGrid3.DataPropertyName = "dateModify";
-            this.dateModifyDataGrid3.HeaderText = "dateModify";
-            this.dateModifyDataGrid3.Name = "dateModifyDataGrid3";
+            this.dataGridView3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridView3_MouseClick);
             // 
             // toolStrip1
             // 
@@ -761,7 +682,8 @@
             this.ButtonOpen,
             this.ButtonMatching,
             this.toolStripButton1,
-            this.toolStripProgressBar1});
+            this.toolStripProgressBar1,
+            this.toolStripButton2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 605);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(847, 25);
@@ -805,6 +727,16 @@
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 22);
             // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(98, 22);
+            this.toolStripButton2.Text = "toolStripButton2";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
+            // 
             // i_tmpl_headTableAdapter
             // 
             this.i_tmpl_headTableAdapter.ClearBeforeFill = true;
@@ -829,6 +761,94 @@
             // 
             this.i_tmpl_headBindingSource.DataMember = "i_tmpl_head";
             this.i_tmpl_headBindingSource.DataSource = this.collectDataSet;
+            // 
+            // nppDataGrid3
+            // 
+            this.nppDataGrid3.DataPropertyName = "npp";
+            this.nppDataGrid3.HeaderText = "npp";
+            this.nppDataGrid3.Name = "nppDataGrid3";
+            // 
+            // resNameDataGrid3
+            // 
+            this.resNameDataGrid3.DataPropertyName = "resName";
+            this.resNameDataGrid3.HeaderText = "resName";
+            this.resNameDataGrid3.Name = "resNameDataGrid3";
+            // 
+            // xlsNameDataGrid3
+            // 
+            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
+            this.xlsNameDataGrid3.HeaderText = "xlsName";
+            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
+            // 
+            // isPrintDataGrid3
+            // 
+            this.isPrintDataGrid3.DataPropertyName = "isPrint";
+            this.isPrintDataGrid3.HeaderText = "isPrint";
+            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
+            // 
+            // attrDataGrid3
+            // 
+            this.attrDataGrid3.DataPropertyName = "attr";
+            this.attrDataGrid3.HeaderText = "attr";
+            this.attrDataGrid3.Name = "attrDataGrid3";
+            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // strFormatData3
+            // 
+            this.strFormatData3.DataPropertyName = "strFormat";
+            this.strFormatData3.HeaderText = "strFormat";
+            this.strFormatData3.Name = "strFormatData3";
+            // 
+            // isActiveDataGrid3
+            // 
+            this.isActiveDataGrid3.DataPropertyName = "isActive";
+            this.isActiveDataGrid3.HeaderText = "isActive";
+            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
+            // 
+            // commDataGrid3
+            // 
+            this.commDataGrid3.DataPropertyName = "comm";
+            this.commDataGrid3.HeaderText = "comm";
+            this.commDataGrid3.Name = "commDataGrid3";
+            // 
+            // authorDataGrid3
+            // 
+            this.authorDataGrid3.DataPropertyName = "author";
+            this.authorDataGrid3.HeaderText = "author";
+            this.authorDataGrid3.Name = "authorDataGrid3";
+            // 
+            // dateCreateDataGrid3
+            // 
+            this.dateCreateDataGrid3.DataPropertyName = "dateCreate";
+            this.dateCreateDataGrid3.HeaderText = "dateCreate";
+            this.dateCreateDataGrid3.Name = "dateCreateDataGrid3";
+            // 
+            // operatorDataGrid3
+            // 
+            this.operatorDataGrid3.DataPropertyName = "operator";
+            this.operatorDataGrid3.HeaderText = "operator";
+            this.operatorDataGrid3.Name = "operatorDataGrid3";
+            // 
+            // dateModifyDataGrid3
+            // 
+            this.dateModifyDataGrid3.DataPropertyName = "dateModify";
+            this.dateModifyDataGrid3.HeaderText = "dateModify";
+            this.dateModifyDataGrid3.Name = "dateModifyDataGrid3";
+            // 
+            // idHeadDataGrid3
+            // 
+            this.idHeadDataGrid3.DataPropertyName = "idHead";
+            this.idHeadDataGrid3.HeaderText = "idHead";
+            this.idHeadDataGrid3.Name = "idHeadDataGrid3";
+            this.idHeadDataGrid3.Visible = false;
+            // 
+            // idStrDataGrid3
+            // 
+            this.idStrDataGrid3.DataPropertyName = "idStr";
+            this.idStrDataGrid3.HeaderText = "idStr";
+            this.idStrDataGrid3.Name = "idStrDataGrid3";
+            this.idStrDataGrid3.ReadOnly = true;
             // 
             // MainForm
             // 
@@ -930,22 +950,26 @@
         private System.Windows.Forms.ToolStripButton ButtonOpen;
         private System.Windows.Forms.ToolStripButton ButtonMatching;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridView dataGridView4;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn commDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn authorDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dateCreateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn operatorDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dateModifyDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridView dataGridView4;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn idStrDataGrid3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGrid3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGridViewTextBoxColumn;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.DataGridViewTextBoxColumn nppDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn resNameDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn xlsNameDataGrid3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isPrintDataGrid3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn attrDataGrid3;
+        private System.Windows.Forms.DataGridViewComboBoxColumn attrDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn strFormatData3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isActiveDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn commDataGrid3;
@@ -953,10 +977,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dateCreateDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn operatorDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dateModifyDataGrid3;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGrid3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idStrDataGrid3;
     }
 }
 

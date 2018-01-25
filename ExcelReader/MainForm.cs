@@ -9,8 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
+using System.Net;
+using System.Net.Sockets;
+//System.Net
 using System.Data.OleDb;
 using System.IO;
+
 
 namespace ExcelReader
 {
@@ -21,16 +25,18 @@ namespace ExcelReader
         private Scan scan;
         private string fileName;
 
-
         public MainForm()
         {
             InitializeComponent();
+//            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.Text = GetLocalIPAddress();
             toolStripProgressBar1.ToolTipText = "111";
             this.CenterToScreen();
             //            fileName = "c:\\Users\\IKotvytskyi\\Documents\\test1.xlsx";
             // fileName = "c:\\Users\\IKotvytskyi\\Desktop\\4 Додаток 3_на 01.01.18_нерух.xlsb" ;
             file = new ExcelFile();
             file.onSheetChoise += this.getXlsSheet; // method for a excel sheet choice
+            file.onStep += this.stepProgressBar;
             scan = new Scan();
         }
 
@@ -61,7 +67,7 @@ namespace ExcelReader
                 // Assign the cursor in the Stream to the Form's Cursor property.  
 
                 fileName = openFileDialog1.FileName;
-                this.Text = "Convert: " + Path.GetFileName(fileName);
+                this.Text = String.Format("{0} -- Convert: {1}", GetLocalIPAddress(), Path.GetFileName(fileName));
                 file.ReadFile(fileName);
                 DataTable table = file.XlsTable;
                 int columns = table.Columns.Count;
@@ -137,14 +143,22 @@ namespace ExcelReader
             file.InitResTable(scan);
             dataGridView4.DataSource = file.ResTable;
             textBox1.Text = scan.Matching(file.XlsTable.Columns);
+            toolStripProgressBar1.Minimum = 1;
+            toolStripProgressBar1.Maximum = file.XlsTable.Rows.Count;
+            toolStripProgressBar1.Value = 1;
+            toolStripProgressBar1.Step = 1;
+            toolStripProgressBar1.Visible = true;
             file.WriteResult(scan);
+            toolStripProgressBar1.Visible = false;
+//            MessageBox.Show("Got data!");
             dataGridView4.Show();
-            MessageBox.Show("Ready!\n" + scan.AllFound().ToString() );
+//            MessageBox.Show("Ready!\n" + scan.AllFound().ToString() );
         }
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (((DataGridView)sender).Name == "dataGridView1") {
+            if ((((DataGridView)sender).Name == "dataGridView1")
+                & (e.Button == MouseButtons.Right)) {
                 string name = dataGridView1.Columns[e.ColumnIndex].Name;
                 Clipboard.SetText(name);
                 MessageBox.Show(String.Format("String \'{0}\' has been copied to clipboard",name));
@@ -170,7 +184,7 @@ namespace ExcelReader
                     int npp = 0;
                     int tmpNpp = 0;
                     for (int i = 1; i < e.RowIndex - 1; i++) {
-                        tmpNpp = Int32.Parse(dataGridView3.Rows[i].Cells[2].Value.ToString());
+                        tmpNpp = Int32.Parse(dataGridView3.Rows[i].Cells[getGridIndex("npp")].Value.ToString());
                         if (npp < tmpNpp) {
                             npp = tmpNpp;
                         }
@@ -205,34 +219,8 @@ namespace ExcelReader
         private void dataGridView3_DataError(object sender, DataGridViewDataErrorEventArgs anError)
         {
             MessageBox.Show(anError.Exception.Message);
-            //MessageBox.Show("Error happened " + anError.Context.ToString());
-            //MessageBox.Show("Error happened " + anError.Context.ToString());
-
-            //if (anError.Context == DataGridViewDataErrorContexts.Commit)
-            //{
-            //    MessageBox.Show("Commit error");
-            //}
-            //if (anError.Context == DataGridViewDataErrorContexts.CurrentCellChange)
-            //{
-            //    MessageBox.Show("Cell change");
-            //}
-            //if (anError.Context == DataGridViewDataErrorContexts.Parsing)
-            //{
-            //    MessageBox.Show("parsing error");
-            //}
-            //if (anError.Context == DataGridViewDataErrorContexts.LeaveControl)
-            //{
-            //    MessageBox.Show("leave control error");
-            //}
-
-            //if ((anError.Exception) is ConstraintException)
-            //{
-            //    DataGridView view = (DataGridView)sender;
-            //    view.Rows[anError.RowIndex].ErrorText = "an error";
-            //    view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "an error";
-
-            //    // anError.ThrowException = false;
-            //}
+            anError.ThrowException = false;
+            anError.Cancel = true;
         }
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
@@ -248,6 +236,98 @@ namespace ExcelReader
         private void splitContainer1_DoubleClick(object sender, EventArgs e)
         {
             changeContainerWidth(splitContainer1);
+        }
+
+        public void stepProgressBar(){
+            toolStripProgressBar1.PerformStep();
+        }
+
+        private void dataGridView3_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridView grid = dataGridView3;
+            if (Control.ModifierKeys == Keys.Control)
+            {
+                if ((grid.Rows[e.RowIndex].Cells[e.ColumnIndex] != null) 
+                    & (grid.Rows[e.RowIndex].Cells[e.ColumnIndex] != null) )
+                {
+                    string funcName = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    string res = SQLFunction.getDescription(funcName);
+                    Clipboard.SetText(String.Format("{0}\n{1}", funcName, res));
+                    this.fKimpHeadimpStrBindingSource.EndEdit();
+                    grid.EndEdit();
+
+
+                    MessageBox.Show("Данные скопированы в буфер");
+                }
+
+
+                //                MessageBox.Show("Mouse");
+            }
+        }
+
+        
+
+        private void dataGridView3_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            //MessageBox.Show(e.ToString());
+        }
+
+        private void dataGridView3_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            //MessageBox.Show(e.ToString());
+        }
+
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+
+        private void toolStripButton2_Click_1(object sender, EventArgs e)
+        {
+            String IP = GetLocalIPAddress();
+        }
+
+        private void dataGridView3_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void dataGridView3_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            //if (e.RowIndex > 0)
+            //{
+            //    //                if ((byte)dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value == 1)
+            //    int arrIndex = getGridIndex("attr");
+            //    int nameIndex = getGridIndex("xlsName");
+            //    if (dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value != null)
+            //    {
+            //        if ((dataGridView3.Rows[e.RowIndex].Cells[nameIndex].Value != null)
+            //             & (dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value != null))
+                          
+            //        { 
+            //            if (
+            //                ((byte)dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value == 1)
+            //                & (e.ColumnIndex == nameIndex)
+            //                )
+            //            {
+            //                String funcName = dataGridView3.Rows[e.RowIndex].Cells[nameIndex].Value.ToString();
+            //                string res = SQLFunction.getDescription(funcName);
+            //                toolTip1.Show(String.Format("{0}\n{1}", funcName, res), this, 
+            //                        Cursor.Position.X- this.DesktopLocation.X, Cursor.Position.Y- this.DesktopLocation.Y,5000);
+            //            }
+            //        }
+            //    }
+            //}
+
         }
     }
 }

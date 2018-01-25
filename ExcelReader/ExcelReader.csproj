@@ -69,6 +69,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CollectDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Common.cs" />
     <Compile Include="DialogSheets.cs">
       <SubType>Form</SubType>
     </Compile>
