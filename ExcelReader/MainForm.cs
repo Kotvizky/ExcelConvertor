@@ -329,5 +329,11 @@ namespace ExcelReader
             //}
 
         }
+
+        private void dataGridView1_DefaultValuesNeeded(object sender,
+            System.Windows.Forms.DataGridViewRowEventArgs e)
+        {
+            e.Row.Cells["attr"].Value = 0;
+        }
     }
 }
