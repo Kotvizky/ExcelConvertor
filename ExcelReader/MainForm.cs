@@ -56,7 +56,6 @@ namespace ExcelReader
         {
             //            string fileName  = "c:\\Users\\IKotvytskyi\\Documents\\test.xlsx";
 
-
             // Displays an OpenFileDialog so the user can select a Cursor.  
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "Excel Files|*.xlsx;*.xlsb;*.xlsx";
@@ -74,11 +73,12 @@ namespace ExcelReader
                 dataGridView1.DataSource = table;
                 MessageBox.Show("ok");
             }
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // TODO: данная строка кода позволяет загрузить данные в таблицу "collectDataSet.attrValue". При необходимости она может быть перемещена или удалена.
+            this.attrValueTableAdapter.Fill(this.collectDataSet.attrValue);
             //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_str". 
             //При необходимости она может быть перемещена или удалена.
             this.i_tmpl_strTableAdapter.Fill(this.collectDataSet.i_tmpl_str);
@@ -136,7 +136,7 @@ namespace ExcelReader
                     ResName = dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
                     XlsName = dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
                     IsPrint = (bool)dataGridView3.Rows[i].Cells[getGridIndex("isPrint")].Value,
-                    Attr = (byte)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
+                    Attr = (attrName)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
                     IsActive = (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
                 });
             }
@@ -251,16 +251,19 @@ namespace ExcelReader
                     & (grid.Rows[e.RowIndex].Cells[e.ColumnIndex] != null) )
                 {
                     string funcName = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                    string res = SQLFunction.getDescription(funcName);
-                    Clipboard.SetText(String.Format("{0}\n{1}", funcName, res));
+                    funcName = funcName.Split('(')[0];
+                    List<string[]> res = SQLFunction.getDescription(funcName);
+                    string message = "";
+                    for (int i = 0; i < res[0].Length; i++)
+                    {
+                        message += String.Format("\n{0}\t\t{1}",res[0][i], res[1][i]);
+                    }
+                    
+                    Clipboard.SetText(String.Format("{0}\n{1}", funcName, message));
                     this.fKimpHeadimpStrBindingSource.EndEdit();
                     grid.EndEdit();
-
-
                     MessageBox.Show("Данные скопированы в буфер");
                 }
-
-
                 //                MessageBox.Show("Mouse");
             }
         }

@@ -3285,24 +3285,24 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, strFormat, isActive,
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[attrValue] WHERE (([id] = @Original_id) AND ((@IsNull_name = 1" +
-                " AND [name] IS NULL) OR ([name] = @Original_name)))";
+            this._adapter.DeleteCommand.CommandText = "DELETE FROM [attrValue] WHERE (([id] = @Original_id) AND ((@IsNull_name = 1 AND [" +
+                "name] IS NULL) OR ([name] = @Original_name)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_id", global::System.Data.SqlDbType.TinyInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "id", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_name", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO [dbo].[attrValue] ([id], [name]) VALUES (@id, @name);\r\nSELECT id, nam" +
-                "e FROM attrValue WHERE (id = @id)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO [attrValue] ([id], [name]) VALUES (@id, @name);\r\nSELECT id, name FROM" +
+                " attrValue WHERE (id = @id)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@id", global::System.Data.SqlDbType.TinyInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[attrValue] SET [id] = @id, [name] = @name WHERE (([id] = @Original_" +
-                "id) AND ((@IsNull_name = 1 AND [name] IS NULL) OR ([name] = @Original_name)));\r\n" +
-                "SELECT id, name FROM attrValue WHERE (id = @id)";
+            this._adapter.UpdateCommand.CommandText = "UPDATE [attrValue] SET [id] = @id, [name] = @name WHERE (([id] = @Original_id) AN" +
+                "D ((@IsNull_name = 1 AND [name] IS NULL) OR ([name] = @Original_name)));\r\nSELECT" +
+                " id, name FROM attrValue WHERE (id = @id)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@id", global::System.Data.SqlDbType.TinyInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "id", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -3324,7 +3324,7 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, strFormat, isActive,
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT id, name FROM dbo.attrValue";
+            this._commandCollection[0].CommandText = "SELECT        id, name\r\nFROM            attrValue";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         

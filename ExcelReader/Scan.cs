@@ -40,10 +40,10 @@ namespace ExcelReader
             string result = String.Empty;
             Field field = this.Find(x => x.ResName == Name);
             switch (field.Attr) {
-                case 0:
+                case attrName.Field:
                     result = field.Value;
                     break;
-                case 1:
+                case attrName.Func:
                     result = GetSQLValue(field);
                     break;
             }
@@ -75,7 +75,7 @@ namespace ExcelReader
 
         public string Matching(DataColumnCollection tableHead) { //TODO finish matching with report
             string message = "Поля \r\n -----";
-            foreach (Field field in this.FindAll(x => (x.Attr == 0) & x.IsActive))
+            foreach (Field field in this.FindAll(x => (x.Attr == attrName.Field) & x.IsActive))
             {
                 if (tableHead.Contains(field.XlsName))
                 {
@@ -90,20 +90,15 @@ namespace ExcelReader
 
             message += "\r\n\r\nФункции \r\n -----";
 
-            foreach (Field field in this.FindAll(x => (x.Attr == 1) & x.IsActive))
+            foreach (Field field in this.FindAll(x => (x.Attr == attrName.Func) & x.IsActive))
             {
-
-                if (field.findParameters(this))
+                field.parseSQLParameter(this);
+                foreach(FunctionFields functionFields in field.Parameters)
                 {
-                    message += String.Format("\r\n(+):\t{0}", field.FunctionFields.Name);
-                }
-                else
-                {
-                    field.Exist = false;
-                    message += String.Format("\r\n(-):\t{0},\t не найдены параметры ({1})", 
-                        field.FunctionFields.Name,
-                        field.FunctionFields.MissingFields
-                        );
+                    message += String.Format("\r\n{0}  Ready - {1} < ====== \r\n",functionFields.Group,functionFields.Ready);
+                    for (int i = 0; i < functionFields.parameters.Length; i++)  {
+                        message += String.Format("\r\n{0}", functionFields.parameters[i].Print());
+                    }
                 }
             }
             return message;

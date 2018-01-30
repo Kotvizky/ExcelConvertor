@@ -93,12 +93,13 @@
             this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
             this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.attrValueDataTableBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
             this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -138,7 +139,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueDataTableBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer2
@@ -445,7 +446,7 @@
             this.dataGridView2.DataSource = this.itmplheadBindingSource;
             this.dataGridView2.Location = new System.Drawing.Point(0, 28);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(269, 209);
+            this.dataGridView2.Size = new System.Drawing.Size(276, 209);
             this.dataGridView2.TabIndex = 1;
             // 
             // splitter3
@@ -515,7 +516,7 @@
             this.bindingNavigatorDeleteItem1.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem1.Image")));
             this.bindingNavigatorDeleteItem1.Name = "bindingNavigatorDeleteItem1";
             this.bindingNavigatorDeleteItem1.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(23, 20);
+            this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorDeleteItem1.Text = "Удалить";
             // 
             // bindingNavigatorMoveFirstItem1
@@ -584,7 +585,7 @@
             this.bindingNavigatorSaveItems2.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorSaveItems2.Image")));
             this.bindingNavigatorSaveItems2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bindingNavigatorSaveItems2.Name = "bindingNavigatorSaveItems2";
-            this.bindingNavigatorSaveItems2.Size = new System.Drawing.Size(23, 20);
+            this.bindingNavigatorSaveItems2.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorSaveItems2.Text = "toolStripButton1";
             this.bindingNavigatorSaveItems2.ToolTipText = "Сохранить данные";
             this.bindingNavigatorSaveItems2.Click += new System.EventHandler(this.bindingNavigatorSaveItems2_Click);
@@ -614,7 +615,7 @@
             this.dataGridView3.DataSource = this.fKimpHeadimpStrBindingSource;
             this.dataGridView3.Location = new System.Drawing.Point(0, 28);
             this.dataGridView3.Name = "dataGridView3";
-            this.dataGridView3.Size = new System.Drawing.Size(269, 296);
+            this.dataGridView3.Size = new System.Drawing.Size(263, 296);
             this.dataGridView3.TabIndex = 0;
             this.dataGridView3.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellContentClick);
             this.dataGridView3.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellMouseEnter);
@@ -765,9 +766,14 @@
             this.i_tmpl_headBindingSource.DataMember = "i_tmpl_head";
             this.i_tmpl_headBindingSource.DataSource = this.collectDataSet;
             // 
-            // attrValueDataTableBindingSource
+            // attrValueBindingSource
             // 
-            this.attrValueDataTableBindingSource.DataSource = typeof(ExcelReader.CollectDataSet.attrValueDataTable);
+            this.attrValueBindingSource.DataMember = "attrValue";
+            this.attrValueBindingSource.DataSource = this.collectDataSet;
+            // 
+            // attrValueTableAdapter
+            // 
+            this.attrValueTableAdapter.ClearBeforeFill = true;
             // 
             // nppDataGrid3
             // 
@@ -796,8 +802,14 @@
             // attrDataGrid3
             // 
             this.attrDataGrid3.DataPropertyName = "attr";
-            this.strFormatData3.HeaderText = "attr";
-            this.strFormatData3.Name = "attrData3";
+            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
+            this.attrDataGrid3.DisplayMember = "name";
+            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.attrDataGrid3.HeaderText = "attr";
+            this.attrDataGrid3.Name = "attrDataGrid3";
+            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.attrDataGrid3.ValueMember = "id";
             // 
             // strFormatData3
             // 
@@ -901,7 +913,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueDataTableBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -971,12 +983,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.BindingSource attrValueDataTableBindingSource;
+        private System.Windows.Forms.BindingSource attrValueBindingSource;
+        private CollectDataSetTableAdapters.attrValueTableAdapter attrValueTableAdapter;
         private System.Windows.Forms.DataGridViewTextBoxColumn nppDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn resNameDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn xlsNameDataGrid3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isPrintDataGrid3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn attrDataGrid3;
+        private System.Windows.Forms.DataGridViewComboBoxColumn attrDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn strFormatData3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isActiveDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn commDataGrid3;

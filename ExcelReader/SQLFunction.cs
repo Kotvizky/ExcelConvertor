@@ -63,7 +63,7 @@ namespace ExcelReader
             //return "SQL" + String.Join("--", parameters);
         }
 
-        static public string getDescription(string parameter)
+        static public List<string[]> getDescription(string parameter)
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter();
             dataAdapter.SelectCommand = new SqlCommand("select * from [dbo].[impFunc] where fnName = @name", conn);
@@ -74,14 +74,16 @@ namespace ExcelReader
 
             DataTable table = new DataTable();
             dataAdapter.Fill(table);
-            string res = "Функция не найдена";
+            List<string[]> res = null;
+
             if (table.Rows.Count > 0)
+
             {
-                res = "";
-                for (int i = 0; i < table.Columns.Count; i++)
-                {
-                    res = res + String.Format("\n{1}\t\t{0}", table.Rows[0][i],table.Columns[i].ColumnName) ;
-                }
+                res = new List<string[]>();
+                res.Add(table.Columns.Cast<DataColumn>()
+                                                 .Select(x => x.ColumnName)
+                                                 .ToArray());
+                res.Add(table.Rows[0].ItemArray.Select(x => x.ToString()).ToArray());
             }
 
             return res;
