@@ -17,7 +17,12 @@ namespace ExcelReader
     {
 
         public delegate string SheetChoice(object[] sheetList);
+
         public event SheetChoice onSheetChoise;
+
+        public DataTable XlsTable { private set; get; }
+
+        public DataTable ResTable { set; get; }
 
         public delegate void ProgressBarStep();
         public event ProgressBarStep onStep;
@@ -26,10 +31,6 @@ namespace ExcelReader
             FileName = fileName;
             ReadExcelFile();
         }
-
-        public DataTable XlsTable { private set; get; }
-
-        public DataTable ResTable { set; get; }
 
         public string FileName {private set; get; }
 
@@ -67,13 +68,11 @@ namespace ExcelReader
         {
 
             string connectionString = GetConnectionString();
-
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             {
                 conn.Open();
                 OleDbCommand cmd = new OleDbCommand();
                 cmd.Connection = conn;
-
                 // Get all Sheets in Excel File
                 DataTable dtSheet = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
                 DataRow[] sheetRows = dtSheet.Select("TABLE_NAME like '%$'");
@@ -105,23 +104,17 @@ namespace ExcelReader
             var resField = scan.FindAll(x => x.IsPrint & x.IsActive);
             ResTable = new DataTable(); 
             foreach (Field field in resField) {
-                ResTable.Columns.Add(field.ResName, typeof(string));
-            }
-        }
-
-        public void WriteResult(Scan scan) {  //TODO Add event for strip progress bar
-            foreach (DataRow row in XlsTable.Rows) {
-                DataRow newRow = ResTable.NewRow();
-                scan.SetValues(row);
-                foreach (DataColumn column in ResTable.Columns) {
-                    newRow[column.ColumnName] = scan.GetValue(column.ColumnName);
+                if (field.Attr == attrName.Field)
+                {
+                    ResTable.Columns.Add(field.ResName, typeof(string));
+                } else if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
+                {
+                    ResTable.Columns.Add(field.ResName.Split('.')[1], typeof(string));
                 }
-                ResTable.Rows.Add(newRow);
-                onStep?.Invoke();
             }
         }
 
-        public void ExportToXls()
+        public void ExportToXls(DataTable resultTable)
         {
             Microsoft.Office.Interop.Excel.Application oXL;
             Microsoft.Office.Interop.Excel._Workbook oWB;
@@ -135,7 +128,7 @@ namespace ExcelReader
             oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
             oSheet.Application.ReferenceStyle = Excel.XlReferenceStyle.xlR1C1;
 
-            string[] title = ResTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+            string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
             oRng = oSheet.get_Range(xlsAdress(1, 1), xlsAdress(title.Length, 1));
             oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
             oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
@@ -144,13 +137,13 @@ namespace ExcelReader
             oRng.Interior.Color = Excel.XlRgbColor.rgbLightGreen;
             // oRng.Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red);
 
-            string[,] data = new string[ResTable.Rows.Count, ResTable.Columns.Count];
+            string[,] data = new string[resultTable.Rows.Count, resultTable.Columns.Count];
 
-            //            ResTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+            //            resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
 
-            for (int r = 0; r < ResTable.Rows.Count; r++) {
-                for (int c = 0; c < ResTable.Columns.Count; c++) {
-                    data[r,c] = ResTable.Rows[r][c].ToString();
+            for (int r = 0; r < resultTable.Rows.Count; r++) {
+                for (int c = 0; c < resultTable.Columns.Count; c++) {
+                    data[r,c] = resultTable.Rows[r][c].ToString();
                 }
             }
 

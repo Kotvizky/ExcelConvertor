@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
-
+using System.Collections;
 
 
 namespace ExcelReader
@@ -33,6 +33,81 @@ namespace ExcelReader
             }
             return result;
         }
+        static private SqlCommand command;
+        private const int fieldLenght = 150;
+        public const string paramMark = "@params";
+        public const string paramName = "@p";
+
+        private static readonly Dictionary<string, DicSQLParam> ServiseParam
+            = new Dictionary<string, DicSQLParam>
+        {
+            { "IP",  new DicSQLParam { ParName = "IP", Type = SqlDbType.Binary, Length = 4} },
+            { "ROW_ID",  new DicSQLParam { ParName = "ROW_ID", Type = SqlDbType.Int, Length = 0} }
+        };
+
+        public static void initCommand(string sqlCommand, string[] param, string sqlDelete = "")
+        {
+            conn.Open();
+            command = new SqlCommand();
+            command.Connection = conn;
+            if (sqlDelete != "")
+            {
+                command.CommandText = sqlDelete;
+                command.ExecuteNonQuery();
+            }
+            if (param.Length > 0)
+            {
+                string paramString = String.Empty;
+                for (int i = 0; i < param.Length; i++)
+                {
+                    string iParamName = String.Format("@{0}", param[i]);
+                    SqlParameter newParam;
+                    if (ServiseParam.ContainsKey(param[i]))
+                    {
+                        DicSQLParam dicParam = ServiseParam[param[i]];
+                        newParam = new SqlParameter(dicParam.ParName,dicParam.Type,dicParam.Length);
+                    }
+                    else
+                    {
+                        newParam = new SqlParameter(iParamName, SqlDbType.Text, fieldLenght);
+                    }
+                    command.Parameters.Add(newParam);
+                    paramString += String.Format(",{0}", iParamName); 
+                }
+            }
+            command.CommandText = sqlCommand;
+            command.Prepare();
+        }
+
+        public static void preperedInsert(ArrayList param)
+        {
+            for (int i = 0; i < param.Count; i++ )
+            {
+                command.Parameters[i].Value = param[i];
+            }
+            command.ExecuteNonQuery();
+        }
+
+        static public void insertData(string query)
+        {
+            SqlDataAdapter dataAdapter = new SqlDataAdapter();
+            SqlCommand Cmd = new SqlCommand(query, conn);
+            conn.Open();
+            int RowsAffected = Cmd.ExecuteNonQuery();
+            conn.Close();
+        }
+
+        static public DataTable executeSQL(string query)
+        {
+            SqlDataAdapter dataAdapter = new SqlDataAdapter();
+            dataAdapter.SelectCommand = new SqlCommand(query, conn);
+            if (conn.State == ConnectionState.Closed) conn.Open();
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+            conn.Close();
+            return table;
+        }
+
 
         static public string ExecuteFunction(string[] parameters)
         {
@@ -63,6 +138,7 @@ namespace ExcelReader
             //return "SQL" + String.Join("--", parameters);
         }
 
+
         static public List<string[]> getDescription(string parameter)
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter();
@@ -88,5 +164,13 @@ namespace ExcelReader
 
             return res;
         }
+
+        struct DicSQLParam
+        {
+            public string ParName;
+            public SqlDbType Type;
+            public int Length;
+        }
+
     }
 }

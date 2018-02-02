@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
-
-using System.Net;
+using System.Reflection;
 using System.Net.Sockets;
+using System.Collections;
 //System.Net
 using System.Data.OleDb;
 using System.IO;
@@ -28,8 +28,9 @@ namespace ExcelReader
         public MainForm()
         {
             InitializeComponent();
-//            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.Text = GetLocalIPAddress();
+            
+            this.Text = Scan.GetLocalIPAddress();
+
             toolStripProgressBar1.ToolTipText = "111";
             this.CenterToScreen();
             //            fileName = "c:\\Users\\IKotvytskyi\\Documents\\test1.xlsx";
@@ -38,6 +39,7 @@ namespace ExcelReader
             file.onSheetChoise += this.getXlsSheet; // method for a excel sheet choice
             file.onStep += this.stepProgressBar;
             scan = new Scan();
+            scan.onShowMessage += this.showStripMessage;
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -66,7 +68,7 @@ namespace ExcelReader
                 // Assign the cursor in the Stream to the Form's Cursor property.  
 
                 fileName = openFileDialog1.FileName;
-                this.Text = String.Format("{0} -- Convert: {1}", GetLocalIPAddress(), Path.GetFileName(fileName));
+                this.Text = String.Format("{0} -- Convert: {1}", Scan.GetLocalIPAddress(), Path.GetFileName(fileName));
                 file.ReadFile(fileName);
                 DataTable table = file.XlsTable;
                 int columns = table.Columns.Count;
@@ -132,27 +134,28 @@ namespace ExcelReader
             dataGridView3.Sort(dataGridView3.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
 
             for (int i = 0; i < dataGridView3.Rows.Count-1; i++) {
-                scan.Add(new Field {
-                    ResName = dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
-                    XlsName = dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
-                    IsPrint = (bool)dataGridView3.Rows[i].Cells[getGridIndex("isPrint")].Value,
-                    Attr = (attrName)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
-                    IsActive = (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
-                });
+                scan.AddField(
+                    resName: dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
+                    xlsName: dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
+                    isPrint: (bool)dataGridView3.Rows[i].Cells[getGridIndex("isPrint")].Value,
+                    attr:  (attrName)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
+                    isActive:  (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
+                    );
             }
-            file.InitResTable(scan);
-            dataGridView4.DataSource = file.ResTable;
+
+            // file.ResTable = scan.initResutTable();
+
+            scan.initResutTable();
+            dataGridView4.DataSource = scan.resultTable;
             textBox1.Text = scan.Matching(file.XlsTable.Columns);
             toolStripProgressBar1.Minimum = 1;
             toolStripProgressBar1.Maximum = file.XlsTable.Rows.Count;
             toolStripProgressBar1.Value = 1;
             toolStripProgressBar1.Step = 1;
             toolStripProgressBar1.Visible = true;
-            file.WriteResult(scan);
+            scan.WriteResult(file.XlsTable);
             toolStripProgressBar1.Visible = false;
-//            MessageBox.Show("Got data!");
             dataGridView4.Show();
-//            MessageBox.Show("Ready!\n" + scan.AllFound().ToString() );
         }
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -167,9 +170,11 @@ namespace ExcelReader
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            if (file.ResTable != null)
+            DataTable result = scan.resultTable;
+
+            if (result != null)
             {
-                file.ExportToXls();
+                file.ExportToXls(result);
             } else
             {
                 MessageBox.Show("Сопоставьте входной файл с шаблона сначала!");
@@ -268,8 +273,6 @@ namespace ExcelReader
             }
         }
 
-        
-
         private void dataGridView3_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             //MessageBox.Show(e.ToString());
@@ -280,24 +283,115 @@ namespace ExcelReader
             //MessageBox.Show(e.ToString());
         }
 
-
-        public static string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
-        }
-
         private void toolStripButton2_Click_1(object sender, EventArgs e)
         {
-            String IP = GetLocalIPAddress();
+            // String IP = Scan.GetLocalIPAddress();
+            Field field = scan.Find(x => x.Attr == attrName.Func);
+            scan.initData(field, file.XlsTable,true);
+            //showStripMessage("Matching result");
+            DataTable funcTable = field.resTable;
+            DataTable resTable = scan.resultTable;
+            List<string> columns = new List<string>();
+            foreach (DataColumn column in funcTable.Columns)
+            {
+                string fieldName = column.ColumnName;
+                if (resTable.Columns.Contains(fieldName))
+                {
+                    columns.Add(fieldName);
+                }
+            }
+
+            for (int i = 0; i < funcTable.Rows.Count; i++)
+            {
+                foreach (string fieldName in columns)
+                {
+
+                    int rowId = (int)funcTable.Rows[i]["ROW_ID"];
+                    resTable.Rows[rowId][fieldName] = funcTable.Rows[i][fieldName].ToString();
+                }
+            }
+            showStripMessage("");
+
+            //for (int i = 0; i < funcTable.Rows.Count; i++)
+            //{
+            //    DataRow[] rows = field.resTable.Select(String.Format("Row_Id = {0}",i));
+            //    if (rows.Length > 0)
+            //    {
+            //        foreach(string fieldName in columns)
+            //        {
+            //            resTable.Rows[i][fieldName] = rows[0][fieldName].ToString();
+            //        }
+            //    } 
+            //}
+
+
+            MessageBox.Show("ok");
         }
+
+        private DataTable joinTable(DataTable tab0, DataTable tab1) {
+            tab0.Columns.Add("Row_Id", typeof(Int32));
+            for (int i = 0; i < tab0.Rows.Count; i++)
+            {
+                tab0.Rows[i]["Row_id"] = i;
+            }
+
+            var c = from t0 in tab0.AsEnumerable()
+                    join t1 in tab1.AsEnumerable() on t0.Field<int>("Row_Id") equals t1.Field<int>("Row_Id")
+                    select new {
+                        Row_Id =
+                            t0.Field<int>("Row_Id")
+                    };
+
+            DataTable table = ConvertToDataTable(c);
+
+            //table = ConvertToDataTable(c);
+
+            return table;
+        }
+
+        #region LinqDatatable
+        //For LinQ Application
+        public DataTable ConvertToDataTable<T>(IEnumerable<T> varlist)
+        {
+            DataTable dtReturn = new DataTable();
+
+            // column names   
+            PropertyInfo[] oProps = null;
+
+            if (varlist == null) return dtReturn;
+
+            foreach (T rec in varlist)
+            {
+                // Use reflection to get property names, to create table, Only first time, others will follow   
+                if (oProps == null)
+                {
+                    oProps = ((Type)rec.GetType()).GetProperties();
+                    foreach (PropertyInfo pi in oProps)
+                    {
+                        Type colType = pi.PropertyType;
+
+                        if ((colType.IsGenericType) && (colType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+                        {
+                            colType = colType.GetGenericArguments()[0];
+                        }
+
+                        dtReturn.Columns.Add(new DataColumn(pi.Name, colType));
+                    }
+                }
+
+                DataRow dr = dtReturn.NewRow();
+
+                foreach (PropertyInfo pi in oProps)
+                {
+                    dr[pi.Name] = pi.GetValue(rec, null) == null ? DBNull.Value : pi.GetValue
+                    (rec, null);
+                }
+
+                dtReturn.Rows.Add(dr);
+            }
+            return dtReturn;
+        }
+        #endregion
 
         private void dataGridView3_MouseClick(object sender, MouseEventArgs e)
         {
@@ -306,31 +400,6 @@ namespace ExcelReader
 
         private void dataGridView3_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            //if (e.RowIndex > 0)
-            //{
-            //    //                if ((byte)dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value == 1)
-            //    int arrIndex = getGridIndex("attr");
-            //    int nameIndex = getGridIndex("xlsName");
-            //    if (dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value != null)
-            //    {
-            //        if ((dataGridView3.Rows[e.RowIndex].Cells[nameIndex].Value != null)
-            //             & (dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value != null))
-                          
-            //        { 
-            //            if (
-            //                ((byte)dataGridView3.Rows[e.RowIndex].Cells[arrIndex].Value == 1)
-            //                & (e.ColumnIndex == nameIndex)
-            //                )
-            //            {
-            //                String funcName = dataGridView3.Rows[e.RowIndex].Cells[nameIndex].Value.ToString();
-            //                string res = SQLFunction.getDescription(funcName);
-            //                toolTip1.Show(String.Format("{0}\n{1}", funcName, res), this, 
-            //                        Cursor.Position.X- this.DesktopLocation.X, Cursor.Position.Y- this.DesktopLocation.Y,5000);
-            //            }
-            //        }
-            //    }
-            //}
-
         }
 
         private void dataGridView1_DefaultValuesNeeded(object sender,
@@ -338,5 +407,19 @@ namespace ExcelReader
         {
             e.Row.Cells["attr"].Value = 0;
         }
+
+        public void showStripMessage(string message)
+        {
+            toolStripLabel1.Visible = true;
+            if (message == "")
+            {
+                //toolStripLabel1.Text = "ok";
+            } else
+            {
+                toolStripLabel1.Text = message;
+                this.Update();
+            }
+        }
+
     }
 }

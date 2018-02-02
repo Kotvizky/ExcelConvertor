@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
@@ -48,7 +49,9 @@ namespace ExcelReader
         public bool Exist { set; get; }
 
         public string FunctionName { private set; get; }
-        string SQLTable { set; get; }
+        public string SQLTable {private set; get; }
+
+        public DataTable resTable;
 
         public List<FunctionFields> Parameters { private set; get; }
 
@@ -61,7 +64,6 @@ namespace ExcelReader
                 FunctionName = XlsName.Split('(')[0];
             }
         }
-
 
         public void parseSQLParameter(List<Field> fields)
         {

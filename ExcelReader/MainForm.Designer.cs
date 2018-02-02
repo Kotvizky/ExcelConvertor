@@ -44,6 +44,8 @@
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.itmplheadBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.collectDataSet = new ExcelReader.CollectDataSet();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -56,6 +58,13 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.bindingNavigatorSaveItems1 = new System.Windows.Forms.ToolStripButton();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.commDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.authorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dateCreateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.operatorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dateModifyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idHeadDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.bindingNavigator2 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem1 = new System.Windows.Forms.ToolStripButton();
@@ -72,34 +81,12 @@
             this.bindingNavigatorSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.bindingNavigatorSaveItems2 = new System.Windows.Forms.ToolStripButton();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.ButtonOpen = new System.Windows.Forms.ToolStripButton();
-            this.ButtonMatching = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.collectDataSet = new ExcelReader.CollectDataSet();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.commDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.authorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dateCreateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.operatorDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dateModifyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idHeadDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
-            this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
-            this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
-            this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
             this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -109,6 +96,20 @@
             this.dateModifyDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idHeadDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idStrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.ButtonOpen = new System.Windows.Forms.ToolStripButton();
+            this.ButtonMatching = new System.Windows.Forms.ToolStripButton();
+            this.ButtonStore = new System.Windows.Forms.ToolStripButton();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.BottomProcessing = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
+            this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
+            this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
+            this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -129,17 +130,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator2)).BeginInit();
             this.bindingNavigator2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fKimpHeadimpStrBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer2
@@ -341,10 +342,20 @@
             this.itmplheadBindingSource.DataMember = "i_tmpl_head";
             this.itmplheadBindingSource.DataSource = this.bindingSource1;
             // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = this.collectDataSet;
+            this.bindingSource1.Position = 0;
+            // 
+            // collectDataSet
+            // 
+            this.collectDataSet.DataSetName = "CollectDataSet";
+            this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(43, 22);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(45, 22);
             this.bindingNavigatorCountItem.Text = "для {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Общее число элементов";
             // 
@@ -449,6 +460,49 @@
             this.dataGridView2.Size = new System.Drawing.Size(276, 209);
             this.dataGridView2.TabIndex = 1;
             // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            // 
+            // commDataGridViewTextBoxColumn
+            // 
+            this.commDataGridViewTextBoxColumn.DataPropertyName = "comm";
+            this.commDataGridViewTextBoxColumn.HeaderText = "comm";
+            this.commDataGridViewTextBoxColumn.Name = "commDataGridViewTextBoxColumn";
+            // 
+            // authorDataGridViewTextBoxColumn
+            // 
+            this.authorDataGridViewTextBoxColumn.DataPropertyName = "author";
+            this.authorDataGridViewTextBoxColumn.HeaderText = "author";
+            this.authorDataGridViewTextBoxColumn.Name = "authorDataGridViewTextBoxColumn";
+            // 
+            // dateCreateDataGridViewTextBoxColumn
+            // 
+            this.dateCreateDataGridViewTextBoxColumn.DataPropertyName = "dateCreate";
+            this.dateCreateDataGridViewTextBoxColumn.HeaderText = "dateCreate";
+            this.dateCreateDataGridViewTextBoxColumn.Name = "dateCreateDataGridViewTextBoxColumn";
+            // 
+            // operatorDataGridViewTextBoxColumn
+            // 
+            this.operatorDataGridViewTextBoxColumn.DataPropertyName = "operator";
+            this.operatorDataGridViewTextBoxColumn.HeaderText = "operator";
+            this.operatorDataGridViewTextBoxColumn.Name = "operatorDataGridViewTextBoxColumn";
+            // 
+            // dateModifyDataGridViewTextBoxColumn
+            // 
+            this.dateModifyDataGridViewTextBoxColumn.DataPropertyName = "dateModify";
+            this.dateModifyDataGridViewTextBoxColumn.HeaderText = "dateModify";
+            this.dateModifyDataGridViewTextBoxColumn.Name = "dateModifyDataGridViewTextBoxColumn";
+            // 
+            // idHeadDataGridViewTextBoxColumn
+            // 
+            this.idHeadDataGridViewTextBoxColumn.DataPropertyName = "idHead";
+            this.idHeadDataGridViewTextBoxColumn.HeaderText = "idHead";
+            this.idHeadDataGridViewTextBoxColumn.Name = "idHeadDataGridViewTextBoxColumn";
+            this.idHeadDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
             // splitter3
             // 
             this.splitter3.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -506,7 +560,7 @@
             // bindingNavigatorCountItem1
             // 
             this.bindingNavigatorCountItem1.Name = "bindingNavigatorCountItem1";
-            this.bindingNavigatorCountItem1.Size = new System.Drawing.Size(43, 22);
+            this.bindingNavigatorCountItem1.Size = new System.Drawing.Size(45, 22);
             this.bindingNavigatorCountItem1.Text = "для {0}";
             this.bindingNavigatorCountItem1.ToolTipText = "Общее число элементов";
             // 
@@ -516,7 +570,7 @@
             this.bindingNavigatorDeleteItem1.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem1.Image")));
             this.bindingNavigatorDeleteItem1.Name = "bindingNavigatorDeleteItem1";
             this.bindingNavigatorDeleteItem1.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorDeleteItem1.Size = new System.Drawing.Size(23, 20);
             this.bindingNavigatorDeleteItem1.Text = "Удалить";
             // 
             // bindingNavigatorMoveFirstItem1
@@ -585,7 +639,7 @@
             this.bindingNavigatorSaveItems2.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorSaveItems2.Image")));
             this.bindingNavigatorSaveItems2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bindingNavigatorSaveItems2.Name = "bindingNavigatorSaveItems2";
-            this.bindingNavigatorSaveItems2.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorSaveItems2.Size = new System.Drawing.Size(23, 20);
             this.bindingNavigatorSaveItems2.Text = "toolStripButton1";
             this.bindingNavigatorSaveItems2.ToolTipText = "Сохранить данные";
             this.bindingNavigatorSaveItems2.Click += new System.EventHandler(this.bindingNavigatorSaveItems2_Click);
@@ -625,156 +679,6 @@
             this.dataGridView3.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView3_RowsAdded);
             this.dataGridView3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridView3_MouseClick);
             // 
-            // toolStrip1
-            // 
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ButtonOpen,
-            this.ButtonMatching,
-            this.toolStripButton1,
-            this.toolStripProgressBar1,
-            this.toolStripButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 605);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(847, 25);
-            this.toolStrip1.TabIndex = 4;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // ButtonOpen
-            // 
-            this.ButtonOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ButtonOpen.Image = ((System.Drawing.Image)(resources.GetObject("ButtonOpen.Image")));
-            this.ButtonOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ButtonOpen.Name = "ButtonOpen";
-            this.ButtonOpen.Size = new System.Drawing.Size(40, 22);
-            this.ButtonOpen.Text = "&Open";
-            this.ButtonOpen.Click += new System.EventHandler(this.Open_Click);
-            // 
-            // ButtonMatching
-            // 
-            this.ButtonMatching.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ButtonMatching.Image = ((System.Drawing.Image)(resources.GetObject("ButtonMatching.Image")));
-            this.ButtonMatching.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ButtonMatching.Name = "ButtonMatching";
-            this.ButtonMatching.Size = new System.Drawing.Size(62, 22);
-            this.ButtonMatching.Text = "&Matching";
-            this.ButtonMatching.ToolTipText = "Matching";
-            this.ButtonMatching.Click += new System.EventHandler(this.toolStripButton2_Click);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(38, 22);
-            this.toolStripButton1.Text = "&Store";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 22);
-            // 
-            // toolStripButton2
-            // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(98, 22);
-            this.toolStripButton2.Text = "toolStripButton2";
-            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click_1);
-            // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = this.collectDataSet;
-            this.bindingSource1.Position = 0;
-            // 
-            // collectDataSet
-            // 
-            this.collectDataSet.DataSetName = "CollectDataSet";
-            this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            // 
-            // commDataGridViewTextBoxColumn
-            // 
-            this.commDataGridViewTextBoxColumn.DataPropertyName = "comm";
-            this.commDataGridViewTextBoxColumn.HeaderText = "comm";
-            this.commDataGridViewTextBoxColumn.Name = "commDataGridViewTextBoxColumn";
-            // 
-            // authorDataGridViewTextBoxColumn
-            // 
-            this.authorDataGridViewTextBoxColumn.DataPropertyName = "author";
-            this.authorDataGridViewTextBoxColumn.HeaderText = "author";
-            this.authorDataGridViewTextBoxColumn.Name = "authorDataGridViewTextBoxColumn";
-            // 
-            // dateCreateDataGridViewTextBoxColumn
-            // 
-            this.dateCreateDataGridViewTextBoxColumn.DataPropertyName = "dateCreate";
-            this.dateCreateDataGridViewTextBoxColumn.HeaderText = "dateCreate";
-            this.dateCreateDataGridViewTextBoxColumn.Name = "dateCreateDataGridViewTextBoxColumn";
-            // 
-            // operatorDataGridViewTextBoxColumn
-            // 
-            this.operatorDataGridViewTextBoxColumn.DataPropertyName = "operator";
-            this.operatorDataGridViewTextBoxColumn.HeaderText = "operator";
-            this.operatorDataGridViewTextBoxColumn.Name = "operatorDataGridViewTextBoxColumn";
-            // 
-            // dateModifyDataGridViewTextBoxColumn
-            // 
-            this.dateModifyDataGridViewTextBoxColumn.DataPropertyName = "dateModify";
-            this.dateModifyDataGridViewTextBoxColumn.HeaderText = "dateModify";
-            this.dateModifyDataGridViewTextBoxColumn.Name = "dateModifyDataGridViewTextBoxColumn";
-            // 
-            // idHeadDataGridViewTextBoxColumn
-            // 
-            this.idHeadDataGridViewTextBoxColumn.DataPropertyName = "idHead";
-            this.idHeadDataGridViewTextBoxColumn.HeaderText = "idHead";
-            this.idHeadDataGridViewTextBoxColumn.Name = "idHeadDataGridViewTextBoxColumn";
-            this.idHeadDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // i_tmpl_headTableAdapter
-            // 
-            this.i_tmpl_headTableAdapter.ClearBeforeFill = true;
-            // 
-            // i_tmpl_strTableAdapter
-            // 
-            this.i_tmpl_strTableAdapter.ClearBeforeFill = true;
-            // 
-            // i_tmpl_strBindingSource
-            // 
-            this.i_tmpl_strBindingSource.DataMember = "i_tmpl_str";
-            this.i_tmpl_strBindingSource.DataSource = this.collectDataSet;
-            // 
-            // tableAdapterManager
-            // 
-            this.tableAdapterManager.attrValueTableAdapter = null;
-            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
-            this.tableAdapterManager.i_tmpl_headTableAdapter = this.i_tmpl_headTableAdapter;
-            this.tableAdapterManager.i_tmpl_strTableAdapter = this.i_tmpl_strTableAdapter;
-            this.tableAdapterManager.UpdateOrder = ExcelReader.CollectDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
-            // 
-            // i_tmpl_headBindingSource
-            // 
-            this.i_tmpl_headBindingSource.DataMember = "i_tmpl_head";
-            this.i_tmpl_headBindingSource.DataSource = this.collectDataSet;
-            // 
-            // attrValueBindingSource
-            // 
-            this.attrValueBindingSource.DataMember = "attrValue";
-            this.attrValueBindingSource.DataSource = this.collectDataSet;
-            // 
-            // attrValueTableAdapter
-            // 
-            this.attrValueTableAdapter.ClearBeforeFill = true;
-            // 
             // nppDataGrid3
             // 
             this.nppDataGrid3.DataPropertyName = "npp";
@@ -810,6 +714,11 @@
             this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.attrDataGrid3.ValueMember = "id";
+            // 
+            // attrValueBindingSource
+            // 
+            this.attrValueBindingSource.DataMember = "attrValue";
+            this.attrValueBindingSource.DataSource = this.collectDataSet;
             // 
             // strFormatData3
             // 
@@ -867,6 +776,107 @@
             this.idStrDataGrid3.Name = "idStrDataGrid3";
             this.idStrDataGrid3.ReadOnly = true;
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ButtonOpen,
+            this.ButtonMatching,
+            this.BottomProcessing,
+            this.ButtonStore,
+            this.toolStripProgressBar1,
+            this.toolStripLabel1});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 605);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(847, 25);
+            this.toolStrip1.TabIndex = 4;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // ButtonOpen
+            // 
+            this.ButtonOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ButtonOpen.Image = ((System.Drawing.Image)(resources.GetObject("ButtonOpen.Image")));
+            this.ButtonOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ButtonOpen.Name = "ButtonOpen";
+            this.ButtonOpen.Size = new System.Drawing.Size(37, 22);
+            this.ButtonOpen.Text = "&Open";
+            this.ButtonOpen.Click += new System.EventHandler(this.Open_Click);
+            // 
+            // ButtonMatching
+            // 
+            this.ButtonMatching.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ButtonMatching.Image = ((System.Drawing.Image)(resources.GetObject("ButtonMatching.Image")));
+            this.ButtonMatching.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ButtonMatching.Name = "ButtonMatching";
+            this.ButtonMatching.Size = new System.Drawing.Size(54, 22);
+            this.ButtonMatching.Text = "&Matching";
+            this.ButtonMatching.ToolTipText = "Matching";
+            this.ButtonMatching.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // ButtonStore
+            // 
+            this.ButtonStore.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ButtonStore.Image = ((System.Drawing.Image)(resources.GetObject("ButtonStore.Image")));
+            this.ButtonStore.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ButtonStore.Name = "ButtonStore";
+            this.ButtonStore.Size = new System.Drawing.Size(37, 22);
+            this.ButtonStore.Text = "&Store";
+            this.ButtonStore.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 22);
+            // 
+            // BottomProcessing
+            // 
+            this.BottomProcessing.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.BottomProcessing.Image = ((System.Drawing.Image)(resources.GetObject("BottomProcessing.Image")));
+            this.BottomProcessing.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.BottomProcessing.Name = "BottomProcessing";
+            this.BottomProcessing.Size = new System.Drawing.Size(62, 22);
+            this.BottomProcessing.Text = "&Processing";
+            this.BottomProcessing.Click += new System.EventHandler(this.toolStripButton2_Click_1);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabel1.Margin = new System.Windows.Forms.Padding(0);
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(31, 25);
+            this.toolStripLabel1.Text = "Start";
+            // 
+            // i_tmpl_headTableAdapter
+            // 
+            this.i_tmpl_headTableAdapter.ClearBeforeFill = true;
+            // 
+            // i_tmpl_strTableAdapter
+            // 
+            this.i_tmpl_strTableAdapter.ClearBeforeFill = true;
+            // 
+            // i_tmpl_strBindingSource
+            // 
+            this.i_tmpl_strBindingSource.DataMember = "i_tmpl_str";
+            this.i_tmpl_strBindingSource.DataSource = this.collectDataSet;
+            // 
+            // tableAdapterManager
+            // 
+            this.tableAdapterManager.attrValueTableAdapter = null;
+            this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
+            this.tableAdapterManager.i_tmpl_headTableAdapter = this.i_tmpl_headTableAdapter;
+            this.tableAdapterManager.i_tmpl_strTableAdapter = this.i_tmpl_strTableAdapter;
+            this.tableAdapterManager.UpdateOrder = ExcelReader.CollectDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
+            // 
+            // i_tmpl_headBindingSource
+            // 
+            this.i_tmpl_headBindingSource.DataMember = "i_tmpl_head";
+            this.i_tmpl_headBindingSource.DataSource = this.collectDataSet;
+            // 
+            // attrValueTableAdapter
+            // 
+            this.attrValueTableAdapter.ClearBeforeFill = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -901,19 +911,19 @@
             this.bindingNavigator1.ResumeLayout(false);
             this.bindingNavigator1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator2)).EndInit();
             this.bindingNavigator2.ResumeLayout(false);
             this.bindingNavigator2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fKimpHeadimpStrBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -969,7 +979,7 @@
         private System.Windows.Forms.ToolStripButton ButtonMatching;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.DataGridView dataGridView4;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton ButtonStore;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -981,7 +991,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn operatorDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dateModifyDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGridViewTextBoxColumn;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton BottomProcessing;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.BindingSource attrValueBindingSource;
         private CollectDataSetTableAdapters.attrValueTableAdapter attrValueTableAdapter;
@@ -999,6 +1009,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dateModifyDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn idStrDataGrid3;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
     }
 }
 
