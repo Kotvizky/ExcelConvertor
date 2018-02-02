@@ -20,6 +20,18 @@ namespace ExcelReader
         public delegate void ShowMessage(string message);
         public event ShowMessage onShowMessage;
 
+        public delegate void initProgressBar(int maximum);
+        public event initProgressBar onInitProgressBar;
+
+        public delegate void hideProgressBar();
+        public event hideProgressBar onHideProgressBar;
+
+        public delegate void stepProgressBar();
+        public event stepProgressBar onStepProgressBar;
+
+        
+
+
         public bool AllFound()  {
             bool result = true;
             bool fieldsExist = false; 
@@ -60,7 +72,8 @@ namespace ExcelReader
                 if (field.Attr == attrName.Field)
                 {
                     resultTable.Columns.Add(field.ResName, typeof(string));
-                } else if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
+                }
+                else if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
                 {
                     resultTable.Columns.Add(field.ResName.Split('.')[1], typeof(string));
                 }
@@ -220,36 +233,31 @@ namespace ExcelReader
             SQLFunction.initCommand(insertCommand, fieldsArray, sqlDelete);
 
             string fields = "";
+            onInitProgressBar?.Invoke(table.Rows.Count);
             foreach (DataRow row in table.Rows)
             {
                 //!!!SetValues(row);
-                SetValues(row);
                 ArrayList values = new ArrayList(parameters.Length);
                 for (int i = 0; i < parameters.Length; i++)
                 {
-                    fields += String.Format(",{0}", parameters[i].SqlName) ;
-                    if (parameters[i].Service)
+                    if (parameters[i].TableName != null)
                     {
-                        serviseFields fieldType = (serviseFields) Enum.Parse(typeof(serviseFields), parameters[i].SqlName);
-                        switch (fieldType)
-                        {
-                            case (serviseFields.IP):
-                                values.Add(ip); 
-                                break;
-                            case (serviseFields.ROW_ID):
-                                values.Add(table.Rows.IndexOf(row));
-                                break;
-                        }
+                        values.Add(row[parameters[i].TableName]);
                     }
-                    else
+                    else if (parameters[i].Value!= null)
                     {
-                        values.Add(GetValue(parameters[i].ResName));
-                        ///!!!values.Add("xxx");
-
+                        values.Add(parameters[i].Value);
+                    }
+                    else if (parameters[i].SqlName == serviseFields.ROW_ID.ToString())
+                    {
+                        values.Add(table.Rows.IndexOf(row));
                     }
                 }
                 SQLFunction.preperedInsert(values);
+                onStepProgressBar?.Invoke();
             }
+            onHideProgressBar?.Invoke();
+
         }
 
         public string funcionString(Field field,string ip)
@@ -292,6 +300,7 @@ namespace ExcelReader
         public void WriteResult(DataTable XlsTable)
         {  //TODO Add event for strip progress bar
             onShowMessage?.Invoke("WriteResult");
+            onInitProgressBar?.Invoke(XlsTable.Rows.Count);
             foreach (DataRow row in XlsTable.Rows)
             {
                 DataRow newRow = resultTable.NewRow();
@@ -301,10 +310,11 @@ namespace ExcelReader
                     newRow[column.ColumnName] = GetValue(column.ColumnName);
                 }
                 resultTable.Rows.Add(newRow);
+                onStepProgressBar?.Invoke();
             }
+            onHideProgressBar?.Invoke();
             onShowMessage?.Invoke("");
         }
-
 
         public void initData(Field field, DataTable table, bool clearData = false)
         {
@@ -376,7 +386,5 @@ namespace ExcelReader
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
-
-
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,6 +39,10 @@ namespace ExcelReader
                     } else
                     {
                         parameters[i].xlsExist = true;
+                        if (SQLArray[i] == serviseFields.IP.ToString())
+                        {
+                            parameters[i].Value = Scan.GetLocalIPByte();
+                        }
                     }
                 }
                 else
@@ -63,6 +68,14 @@ namespace ExcelReader
                         else
                         {
                             parameters[i].xlsExist = true;
+                            if (field.Attr == attrName.Field)
+                            {
+                                parameters[i].TableName = field.XlsName;
+                            }
+                            else if (field.Attr == attrName.Const)
+                            {
+                                parameters[i].Value = field.XlsName;
+                            }
                         }
                     }
                     else
@@ -77,12 +90,15 @@ namespace ExcelReader
                 missingFields = missingFields.Remove(0, 1);
             } 
         }
+
     }
 
     public struct FunctionParameter
     {
         public string SqlName;
         public string ResName;
+        public string TableName;
+        public object Value;
         public bool Service;
         public bool xlsExist;
         public string Print()

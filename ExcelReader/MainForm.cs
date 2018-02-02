@@ -24,6 +24,7 @@ namespace ExcelReader
         private ExcelFile file;
         private Scan scan;
         private string fileName;
+        private ToolStripProgressBar progressBar;
 
         public MainForm()
         {
@@ -40,6 +41,13 @@ namespace ExcelReader
             file.onStep += this.stepProgressBar;
             scan = new Scan();
             scan.onShowMessage += this.showStripMessage;
+            scan.onInitProgressBar += this.initProgressBar;
+            scan.onStepProgressBar += this.stepProgressBar;
+            scan.onHideProgressBar += this.hideProgressBar;
+
+
+            progressBar = toolStripProgressBar1;
+
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -148,13 +156,7 @@ namespace ExcelReader
             scan.initResutTable();
             dataGridView4.DataSource = scan.resultTable;
             textBox1.Text = scan.Matching(file.XlsTable.Columns);
-            toolStripProgressBar1.Minimum = 1;
-            toolStripProgressBar1.Maximum = file.XlsTable.Rows.Count;
-            toolStripProgressBar1.Value = 1;
-            toolStripProgressBar1.Step = 1;
-            toolStripProgressBar1.Visible = true;
             scan.WriteResult(file.XlsTable);
-            toolStripProgressBar1.Visible = false;
             dataGridView4.Show();
         }
 
@@ -243,9 +245,6 @@ namespace ExcelReader
             changeContainerWidth(splitContainer1);
         }
 
-        public void stepProgressBar(){
-            toolStripProgressBar1.PerformStep();
-        }
 
         private void dataGridView3_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -312,19 +311,6 @@ namespace ExcelReader
             }
             showStripMessage("");
 
-            //for (int i = 0; i < funcTable.Rows.Count; i++)
-            //{
-            //    DataRow[] rows = field.resTable.Select(String.Format("Row_Id = {0}",i));
-            //    if (rows.Length > 0)
-            //    {
-            //        foreach(string fieldName in columns)
-            //        {
-            //            resTable.Rows[i][fieldName] = rows[0][fieldName].ToString();
-            //        }
-            //    } 
-            //}
-
-
             MessageBox.Show("ok");
         }
 
@@ -348,6 +334,28 @@ namespace ExcelReader
 
             return table;
         }
+
+        #region PorgressBar
+
+        public void initProgressBar(int maximum)
+        {
+            progressBar.Minimum = 1;
+            progressBar.Maximum = maximum;
+            progressBar.Value = 1;
+            progressBar.Step = 1;
+            progressBar.Visible = true;
+        }
+
+        public void hideProgressBar()
+        {
+            progressBar.Visible = false;
+        }
+
+        public void stepProgressBar(){
+            progressBar.PerformStep();
+        }
+
+        #endregion
 
         #region LinqDatatable
         //For LinQ Application
