@@ -213,49 +213,107 @@ namespace ExcelReader
             return result;
         }
 
-        public void insertData(Field field, DataTable table,  bool clearData = false)
+        public void insertData(Field field, DataTable table, bool clearData = false)
         {
             onShowMessage?.Invoke("insertData");
             string sqlDelete = "";
             if (clearData)
             {
-                sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTable,GetLocalIPAddress(true));
+                sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTable, GetLocalIPAddress(true));
             }
             byte[] ip = GetLocalIPByte();
             FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == paramGroup.inTable)).parameters;
-            string[] fieldsArray = new string[parameters.Length] ;
+            string[] fieldsArray = new string[parameters.Length];
             for (int i = 0; i < parameters.Length; i++)
             {
                 fieldsArray[i] = parameters[i].SqlName;
             }
-            string insertCommand = String.Format("insert into {0}({1}) values (@{2})", 
+            string insertCommand = String.Format("insert into {0}({1}) values (@{2})",
                     field.SQLTable, String.Join(",", fieldsArray), String.Join(",@", fieldsArray));
             SQLFunction.initCommand(insertCommand, fieldsArray, sqlDelete);
 
-            string fields = "";
-            onInitProgressBar?.Invoke(table.Rows.Count);
-            foreach (DataRow row in table.Rows)
+            DataTable inTable = new DataTable();
+
+            for (int i = 0; i < parameters.Length; i++)
             {
-                //!!!SetValues(row);
-                ArrayList values = new ArrayList(parameters.Length);
+                DataColumn column = new DataColumn();
+                if (parameters[i].Service && (parameters[i].SqlName == serviseFields.IP.ToString()))
+                {
+                    inTable.Columns.Add(new DataColumn(
+                                            parameters[i].SqlName,
+                                            Type.GetType("System.Byte[]")));
+                }
+                else if (parameters[i].Service && (parameters[i].SqlName == serviseFields.ROW_ID.ToString()))
+                {
+                    inTable.Columns.Add(new DataColumn(
+                                            parameters[i].SqlName,
+                                            Type.GetType("System.Int32")));
+                }
+                else
+                {
+                    inTable.Columns.Add(new DataColumn(
+                                            parameters[i].SqlName,
+                                            Type.GetType("System.String")));
+                }
+
+            }
+
+            onInitProgressBar?.Invoke(table.Rows.Count);
+
+            DataRow[] rows = new DataRow[table.Rows.Count];
+            //foreach (DataRow row in table.Rows)
+            for (int iRow = 0; iRow < table.Rows.Count; iRow++)
+            {
+                DataRow row = table.Rows[iRow];
+                rows[iRow] = inTable.NewRow();
+
                 for (int i = 0; i < parameters.Length; i++)
                 {
                     if (parameters[i].TableName != null)
                     {
-                        values.Add(row[parameters[i].TableName]);
+                        rows[iRow][parameters[i].SqlName] = row[parameters[i].TableName];
                     }
-                    else if (parameters[i].Value!= null)
+                    else if (parameters[i].Value != null)
                     {
-                        values.Add(parameters[i].Value);
+                        rows[iRow][parameters[i].SqlName] = parameters[i].Value;
                     }
                     else if (parameters[i].SqlName == serviseFields.ROW_ID.ToString())
                     {
-                        values.Add(table.Rows.IndexOf(row));
+                        rows[iRow][parameters[i].SqlName] = table.Rows.IndexOf(row);
                     }
                 }
-                SQLFunction.preperedInsert(values);
                 onStepProgressBar?.Invoke();
             }
+
+            SQLFunction.bulkWrite(field.SQLTable, rows);
+            /*
+
+        foreach (DataRow row in table.Rows)
+        {
+
+            //SQLFunction.preperedInsert(values);
+
+                            ArrayList values = new ArrayList(parameters.Length);
+                            for (int i = 0; i < parameters.Length; i++)
+                            {
+                                if (parameters[i].TableName != null)
+                                {
+                                    values.Add(row[parameters[i].TableName]);
+                                }
+                                else if (parameters[i].Value!= null)
+                                {
+                                    values.Add(parameters[i].Value);
+                                }
+                                else if (parameters[i].SqlName == serviseFields.ROW_ID.ToString())
+                                {
+                                    values.Add(table.Rows.IndexOf(row));
+                                }
+                            }
+                            SQLFunction.preperedInsert(values);
+
+            onStepProgressBar?.Invoke();
+            }
+            */
             onHideProgressBar?.Invoke();
 
         }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Collections;
@@ -65,18 +63,45 @@ namespace ExcelReader
                     if (ServiseParam.ContainsKey(param[i]))
                     {
                         DicSQLParam dicParam = ServiseParam[param[i]];
-                        newParam = new SqlParameter(dicParam.ParName,dicParam.Type,dicParam.Length);
+                        newParam = new SqlParameter(dicParam.ParName, dicParam.Type, dicParam.Length);
                     }
                     else
                     {
                         newParam = new SqlParameter(iParamName, SqlDbType.Text, fieldLenght);
                     }
                     command.Parameters.Add(newParam);
-                    paramString += String.Format(",{0}", iParamName); 
+                    paramString += String.Format(",{0}", iParamName);
                 }
             }
             command.CommandText = sqlCommand;
             command.Prepare();
+        }
+
+        public static void bulkWrite(string tableName,DataRow[] rows)
+        {
+
+            if (conn.State == ConnectionState.Closed) conn.Open();
+            using (SqlBulkCopy bulkCopy =
+                        new SqlBulkCopy(conn))
+            {
+                bulkCopy.DestinationTableName = tableName;
+                try
+                {
+                    // Write from the source to the destination.
+                    bulkCopy.WriteToServer(rows);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    // Close the SqlDataReader. The SqlBulkCopy
+                    // object is automatically closed at the end
+                    // of the using block.
+                    // reader.Close();
+                }
+            }
         }
 
         public static void preperedInsert(ArrayList param)
