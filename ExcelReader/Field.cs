@@ -13,6 +13,7 @@ namespace ExcelReader
         private const string noData = "Н/Д";
 
         // fields in database
+        public short Npp { set; get; }
         public string ResName { set; get; }
         private string xlsName;
         public string XlsName {
@@ -61,7 +62,7 @@ namespace ExcelReader
                 FunctionName = "";
             } else
             {
-                FunctionName = XlsName.Split('(')[0];
+                FunctionName = XlsName.Split('(')[0].Trim();
             }
         }
 
@@ -77,7 +78,7 @@ namespace ExcelReader
             Parameters = new List<FunctionFields>();
             if ((index = getParamIndex(impStructure[0], paramGroup.inTable)) >-1)
             {
-                SQLTable = impStructure[1][index];
+                SQLTable = impStructure[1][index].Trim();
             }
             string[] nameSplit = xlsName.Split('(');
 
@@ -85,8 +86,8 @@ namespace ExcelReader
             {
                 Parameters.Add(new FunctionFields(
                     fields.FindAll(x => (x.Attr == attrName.Field & x.Exist | x.Attr == attrName.Const)),
-                    impStructure[1][index],
-                    nameSplit[1],
+                    impStructure[1][index].Trim(),
+                    nameSplit[1].Trim(),
                     paramGroup.inTable
                     )
                 );

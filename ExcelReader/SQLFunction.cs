@@ -43,6 +43,7 @@ namespace ExcelReader
             { "ROW_ID",  new DicSQLParam { ParName = "ROW_ID", Type = SqlDbType.Int, Length = 0} }
         };
 
+
         public static void initCommand(string sqlCommand, string[] param, string sqlDelete = "")
         {
             conn.Open();
@@ -104,11 +105,32 @@ namespace ExcelReader
             }
         }
 
-        public static void preperedInsert(ArrayList param)
+        public static void clearTable(string sqlCommand)
         {
-            for (int i = 0; i < param.Count; i++ )
+            try
             {
-                command.Parameters[i].Value = param[i];
+                if (conn.State == ConnectionState.Closed) conn.Open();
+            }
+            catch (SqlException e)
+            {
+                // MessageBox.Show(e.ToString());
+                conn.Close();
+            }
+            command = new SqlCommand(sqlCommand,conn);
+            command.ExecuteNonQuery();
+            conn.Close();
+
+        }
+
+
+        public static void preperedInsert(ArrayList param = null)
+        {
+            if (param != null)
+            {
+                for (int i = 0; i < param.Count; i++ )
+                {
+                    command.Parameters[i].Value = param[i];
+                }
             }
             command.ExecuteNonQuery();
         }
@@ -132,7 +154,6 @@ namespace ExcelReader
             conn.Close();
             return table;
         }
-
 
         static public string ExecuteFunction(string[] parameters)
         {
@@ -163,6 +184,32 @@ namespace ExcelReader
             //return "SQL" + String.Join("--", parameters);
         }
 
+        static public int copyTemlpate(int idHead)
+        {
+            try
+            {
+                if (conn.State == ConnectionState.Closed) conn.Open();
+            }
+            catch (SqlException e)
+            {
+                conn.Close();
+            }
+
+            string SQLCommand = @"
+              declare @newId int
+              exec CopyTemlpById @id, @newId out
+              select @newId";
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter();
+            dataAdapter.SelectCommand = new SqlCommand(SQLCommand, conn);
+            SqlParameter newParam = new SqlParameter("id", SqlDbType.Int);
+            newParam.Value = idHead;
+            dataAdapter.SelectCommand.Parameters.Add(newParam);
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+            conn.Close();
+            return (int)table.Rows[0][0];
+        }
 
         static public List<string[]> getDescription(string parameter)
         {

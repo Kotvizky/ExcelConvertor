@@ -29,23 +29,37 @@ namespace ExcelReader
         public delegate void stepProgressBar();
         public event stepProgressBar onStepProgressBar;
 
-        
-
-
         public bool AllFound()  {
             bool result = true;
             bool fieldsExist = false; 
             foreach (Field field in this) {
-                if (field.Attr == 0) {
-                    if (field.Exist)
-                    {
-                        fieldsExist = true;
-                    }
-                    else {
-                        result = false;
+                switch (field.Attr)
+                {
+                    case attrName.Field: 
+                        if (field.Exist)
+                        {
+                            fieldsExist = true;
+                        }
+                        else {
+                            result = false;
+                            break;
+                        }
                         break;
-                    }
-                } 
+                    case attrName.Func:
+                        foreach (FunctionFields funcField in field.Parameters)
+                        {
+                            FunctionParameter[] funcParams = funcField.parameters;
+                            for (int i = 0; i < funcParams.Length; i++)
+                            {
+                                if (!funcParams[i].xlsExist)
+                                {
+                                    result = false;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                }
             }
             if (!fieldsExist) result = false;
             return result;
@@ -53,10 +67,11 @@ namespace ExcelReader
 
         public DataTable resultTable { private set; get; }
 
-        public void AddField(string resName,string xlsName,bool isPrint,
+        public void AddField(short npp, string resName,string xlsName,bool isPrint,
                             attrName attr=0, bool isActive = true) {
             this.Add(new Field
             {
+                Npp = npp,
                 ResName = resName,
                 XlsName = xlsName,
                 IsPrint = isPrint,
@@ -66,7 +81,7 @@ namespace ExcelReader
         }
 
         public void initResutTable() { 
-            var resField = FindAll(x => x.IsPrint & x.IsActive);
+            var resField = FindAll(x => x.IsPrint & x.IsActive).OrderBy(x => x.Npp);
             resultTable = new DataTable(); 
             foreach (Field field in resField) {
                 if (field.Attr == attrName.Field)
@@ -76,6 +91,10 @@ namespace ExcelReader
                 else if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
                 {
                     resultTable.Columns.Add(field.ResName.Split('.')[1], typeof(string));
+                }
+                else if (field.Attr == attrName.Const)
+                {
+                    resultTable.Columns.Add(field.ResName, typeof(string));
                 }
             }
         }
@@ -88,7 +107,6 @@ namespace ExcelReader
 
         public string GetValue(string Name)
         {
-
             string result = String.Empty;
             Field field = this.Find(x => x.ResName == Name);
             if (field == null) return "";
@@ -102,9 +120,6 @@ namespace ExcelReader
                 case attrName.Func:
                     result = GetSQLValue(field);
                     break;
-                //case attrName.Func:
-                //    result = GetSQLValue(field);
-                //    break;
             }
             return result;
         }
@@ -221,9 +236,14 @@ namespace ExcelReader
             {
                 sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTable, GetLocalIPAddress(true));
             }
+
+            SQLFunction.clearTable(sqlDelete);
+
+
+
             byte[] ip = GetLocalIPByte();
             FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == paramGroup.inTable)).parameters;
-            string[] fieldsArray = new string[parameters.Length];
+/*            string[] fieldsArray = new string[parameters.Length];
             for (int i = 0; i < parameters.Length; i++)
             {
                 fieldsArray[i] = parameters[i].SqlName;
@@ -231,7 +251,7 @@ namespace ExcelReader
             string insertCommand = String.Format("insert into {0}({1}) values (@{2})",
                     field.SQLTable, String.Join(",", fieldsArray), String.Join(",@", fieldsArray));
             SQLFunction.initCommand(insertCommand, fieldsArray, sqlDelete);
-
+*/
             DataTable inTable = new DataTable();
 
             for (int i = 0; i < parameters.Length; i++)
@@ -255,7 +275,6 @@ namespace ExcelReader
                                             parameters[i].SqlName,
                                             Type.GetType("System.String")));
                 }
-
             }
 
             onInitProgressBar?.Invoke(table.Rows.Count);
@@ -318,7 +337,7 @@ namespace ExcelReader
 
         }
 
-        public string funcionString(Field field,string ip)
+        public string functionString(Field field,string ip)
         {
 
             FunctionFields funcParameters = field.Parameters.Find(x => (x.Group == paramGroup.inPar));
@@ -380,7 +399,7 @@ namespace ExcelReader
             onShowMessage?.Invoke("Insert Data");
             insertData(field, table, clearData);
 
-            string resFunction = funcionString(field, GetLocalIPAddress());
+            string resFunction = functionString(field, GetLocalIPAddress());
             onShowMessage?.Invoke("Get SQL Data");
             field.resTable = SQLFunction.executeSQL(resFunction);
             columnsRename(field);
@@ -444,5 +463,6 @@ namespace ExcelReader
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
+
     }
 }

@@ -32,7 +32,7 @@ namespace ExcelReader
             
             this.Text = Scan.GetLocalIPAddress();
 
-            toolStripProgressBar1.ToolTipText = "111";
+//            toolStripProgressBar1.ToolTipText = "111";
             this.CenterToScreen();
             //            fileName = "c:\\Users\\IKotvytskyi\\Documents\\test1.xlsx";
             // fileName = "c:\\Users\\IKotvytskyi\\Desktop\\4 Додаток 3_на 01.01.18_нерух.xlsb" ;
@@ -44,10 +44,8 @@ namespace ExcelReader
             scan.onInitProgressBar += this.initProgressBar;
             scan.onStepProgressBar += this.stepProgressBar;
             scan.onHideProgressBar += this.hideProgressBar;
-
-
-            progressBar = toolStripProgressBar1;
-
+            progressBar = toolStripProgressBar2;
+            tabControl1.TabPages.Remove(tabPage1);
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -56,8 +54,30 @@ namespace ExcelReader
             {
                 case Keys.W | Keys.Alt:
                     changeContainerWidth(splitContainer1);
-                    //Process action here.
                     return false;
+
+                case Keys.D | Keys.Alt:
+                    if (dgvTemlpHead.CurrentCell.RowIndex >= 0)
+                    {
+                        string msg = String.Format("Копируем шаблон \"{0} -- {1}\"?",
+                            dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplName"].Value,
+                            dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplComm"].Value
+                            );
+                        DialogResult result = MessageBox.Show(msg, "Warning",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        if (result == DialogResult.Yes)
+                        {
+                            templCopy();
+                        }
+                    }
+                    return false;
+                case Keys.S | Keys.Alt:
+                    bindingNavigatorSaveItems1_Click(this);
+                    bindingNavigatorSaveItems2_Click(this);
+                    MessageBox.Show("Изменения в шаблонах сохранены!");
+
+                    return false;
+
             }
             return false;
         }
@@ -68,7 +88,7 @@ namespace ExcelReader
 
             // Displays an OpenFileDialog so the user can select a Cursor.  
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = "Excel Files|*.xlsx;*.xlsb;*.xlsx";
+            openFileDialog1.Filter = "Excel Files|*.xls;*.xlsx;*.xlsb;*.xlsx";
             openFileDialog1.Title = "Select a Excel file";
 
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -81,7 +101,32 @@ namespace ExcelReader
                 DataTable table = file.XlsTable;
                 int columns = table.Columns.Count;
                 dataGridView1.DataSource = table;
+
+                string[] enabledBtn = {
+                    "ButtonOpen",
+                    "ButtonMatching",
+                    //"BottomProcessing",
+                    //"ButtonStore"
+                };
+                activatStripMenu(enabledBtn);
+                tabControl1.TabPages.Remove(tabPage1);
+                textBox1.Text = String.Empty;
                 MessageBox.Show("ok");
+            }
+        }
+
+        private void activatStripMenu(string[] enableBtn)
+        {
+            foreach (ToolStripButton btn in toolStrip1.Items)
+            {
+                if (enableBtn.Contains(btn.Name))
+                {
+                    btn.Enabled = true;
+                }
+                else
+                {
+                    btn.Enabled = false;
+                }
             }
         }
 
@@ -97,14 +142,14 @@ namespace ExcelReader
             this.i_tmpl_headTableAdapter.Fill(this.collectDataSet.i_tmpl_head);
         }
 
-        private void bindingNavigatorSaveItems1_Click(object sender, EventArgs e)
+        private void bindingNavigatorSaveItems1_Click(object sender, EventArgs e = null)
         {
             this.Validate();
             this.itmplheadBindingSource.EndEdit();
             this.tableAdapterManager.UpdateAll(this.collectDataSet);
         }
 
-        private void bindingNavigatorSaveItems2_Click(object sender, EventArgs e)
+        private void bindingNavigatorSaveItems2_Click(object sender, EventArgs e = null)
         {
             this.Validate();
             this.fKimpHeadimpStrBindingSource.EndEdit();
@@ -129,45 +174,10 @@ namespace ExcelReader
             return dataGridView3.Columns[name + gridPrefix].Index; ; 
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e) 
+        private int getGridValue(string name,int rowIndex, DataGridView dgv)
         {
-
-            if (file.XlsTable == null) {
-                MessageBox.Show("Сперва загрузите теблицу!");
-                return;
-            }
-            scan.Clear();
-
-            string msg = String.Empty;
-            dataGridView3.Sort(dataGridView3.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
-
-            for (int i = 0; i < dataGridView3.Rows.Count-1; i++) {
-                scan.AddField(
-                    resName: dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
-                    xlsName: dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
-                    isPrint: (bool)dataGridView3.Rows[i].Cells[getGridIndex("isPrint")].Value,
-                    attr:  (attrName)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
-                    isActive:  (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
-                    );
-            }
-
-            // file.ResTable = scan.initResutTable();
-
-            scan.initResutTable();
-            dataGridView4.DataSource = scan.resultTable;
-            textBox1.Text = scan.Matching(file.XlsTable.Columns);
-            scan.WriteResult(file.XlsTable);
-            dataGridView4.Show();
-        }
-
-        private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if ((((DataGridView)sender).Name == "dataGridView1")
-                & (e.Button == MouseButtons.Right)) {
-                string name = dataGridView1.Columns[e.ColumnIndex].Name;
-                Clipboard.SetText(name);
-                MessageBox.Show(String.Format("String \'{0}\' has been copied to clipboard",name));
-            }
+            string gridPrefix = "DataGrid3";
+            return dataGridView3.Columns[name + gridPrefix].Index; ;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -183,6 +193,115 @@ namespace ExcelReader
             }
         }
 
+        private void toolStripButton2_Click(object sender, EventArgs e) 
+        {
+
+            if (file.XlsTable == null) {
+                MessageBox.Show("Сперва загрузите теблицу!");
+                return;
+            }
+            scan.Clear();
+
+//            string msg = String.Empty;
+            dataGridView3.Sort(dataGridView3.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
+
+            for (int i = 0; i < dataGridView3.Rows.Count-1; i++) {
+                scan.AddField(
+                    npp: (short)dataGridView3.Rows[i].Cells[getGridIndex("npp")].Value,
+                    resName: dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
+                    xlsName: dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
+                    isPrint: (bool)dataGridView3.Rows[i].Cells[getGridIndex("isPrint")].Value,
+                    attr:  (attrName)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
+                    isActive:  (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
+                    );
+            }
+
+            // file.ResTable = scan.initResutTable();
+            textBox1.Text = scan.Matching(file.XlsTable.Columns);
+
+            if (!scan.AllFound())
+            {
+                MessageBox.Show("Не все поля их шаблона найдены!\n Смотрите подробный отчет");
+                return;
+            }
+
+            activatStripMenu(
+                new string[]  {
+                "ButtonOpen",
+                "ButtonMatching",
+                "BottomProcessing",
+                //"ButtonStore"
+                }
+            );
+
+            tabControl1.TabPages.Remove(tabPage1);
+        }
+
+        private void toolStripButton2_Click_1(object sender, EventArgs e)
+        {
+            // String IP = Scan.GetLocalIPAddress();
+            if (!tabControl1.TabPages.Contains(tabPage1))
+            {
+                tabControl1.TabPages.Insert(0, tabPage1);
+                tabControl1.SelectedIndex = 0;
+            }
+
+            scan.initResutTable();
+
+            scan.WriteResult(file.XlsTable);
+
+            dataGridView4.Columns.Clear();
+            dataGridView4.DataSource = scan.resultTable;
+            dataGridView4.Show();
+
+            Field field = scan.Find(x => x.Attr == attrName.Func);
+            scan.initData(field, file.XlsTable,true);
+            //showStripMessage("Matching result");
+            DataTable funcTable = field.resTable;
+            DataTable resTable = scan.resultTable;
+            List<string> columns = new List<string>();
+            foreach (DataColumn column in funcTable.Columns)
+            {
+                string fieldName = column.ColumnName;
+                if (resTable.Columns.Contains(fieldName))
+                {
+                    columns.Add(fieldName);
+                }
+            }
+
+            for (int i = 0; i < funcTable.Rows.Count; i++)
+            {
+                foreach (string fieldName in columns)
+                {
+                    int rowId = (int)funcTable.Rows[i]["ROW_ID"];
+                    resTable.Rows[rowId][fieldName] = funcTable.Rows[i][fieldName].ToString();
+                }
+            }
+            showStripMessage("");
+
+            activatStripMenu(
+                new string[]  {
+                "ButtonOpen",
+                "ButtonMatching",
+                "BottomProcessing",
+                "ButtonStore"
+                }
+            );
+
+
+            MessageBox.Show("ok");
+        }
+
+        private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if ((((DataGridView)sender).Name == "dataGridView1")
+                & (e.Button == MouseButtons.Right)) {
+                string name = dataGridView1.Columns[e.ColumnIndex].Name;
+                Clipboard.SetText(name);
+                MessageBox.Show(String.Format("String \'{0}\' has been copied to clipboard",name));
+            }
+        }
+        
         private void dataGridView3_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             if (e.RowIndex == dataGridView3.NewRowIndex)
@@ -282,37 +401,6 @@ namespace ExcelReader
             //MessageBox.Show(e.ToString());
         }
 
-        private void toolStripButton2_Click_1(object sender, EventArgs e)
-        {
-            // String IP = Scan.GetLocalIPAddress();
-            Field field = scan.Find(x => x.Attr == attrName.Func);
-            scan.initData(field, file.XlsTable,true);
-            //showStripMessage("Matching result");
-            DataTable funcTable = field.resTable;
-            DataTable resTable = scan.resultTable;
-            List<string> columns = new List<string>();
-            foreach (DataColumn column in funcTable.Columns)
-            {
-                string fieldName = column.ColumnName;
-                if (resTable.Columns.Contains(fieldName))
-                {
-                    columns.Add(fieldName);
-                }
-            }
-
-            for (int i = 0; i < funcTable.Rows.Count; i++)
-            {
-                foreach (string fieldName in columns)
-                {
-
-                    int rowId = (int)funcTable.Rows[i]["ROW_ID"];
-                    resTable.Rows[rowId][fieldName] = funcTable.Rows[i][fieldName].ToString();
-                }
-            }
-            showStripMessage("");
-
-            MessageBox.Show("ok");
-        }
 
         private DataTable joinTable(DataTable tab0, DataTable tab1) {
             tab0.Columns.Add("Row_Id", typeof(Int32));
@@ -418,16 +506,40 @@ namespace ExcelReader
 
         public void showStripMessage(string message)
         {
-            toolStripLabel1.Visible = true;
+            toolStripStatusLabel1.Visible = true;
             if (message == "")
             {
-                //toolStripLabel1.Text = "ok";
+                toolStripStatusLabel1.Text = "";
             } else
             {
-                toolStripLabel1.Text = message;
+                toolStripStatusLabel1.Text = message;
                 this.Update();
             }
         }
 
+        private void toolCopy_Click(object sender, EventArgs e)
+        {
+
+            //dataGridView2.Update();
+            //dataGridView2.Refresh();
+            int res = templCopy();
+
+            MessageBox.Show(res.ToString());
+
+        }
+
+        private int templCopy()
+        {
+            int res = 0;
+            if (dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplIdHead"] != null)
+            {
+                int IdHead = (int)dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplIdHead"].Value;
+                res = SQLFunction.copyTemlpate(IdHead);
+                Form1_Load(this, null);
+                int newRow = dgvTemlpHead.Rows.Count;
+                dgvTemlpHead.CurrentCell = dgvTemlpHead.Rows[newRow - 2].Cells[0];
+            }
+            return res;
+        }
     }
 }
