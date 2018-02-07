@@ -106,10 +106,10 @@ namespace ExcelReader
             foreach (Field field in resField) {
                 if (field.Attr == attrName.Field)
                 {
-                    ResTable.Columns.Add(field.ResName, typeof(string));
+                    ResTable.Columns.Add(field.ResName, typeof(String));
                 } else if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
                 {
-                    ResTable.Columns.Add(field.ResName.Split('.')[1], typeof(string));
+                    ResTable.Columns.Add(field.ResName.Split('.')[1], typeof(String));
                 }
             }
         }
