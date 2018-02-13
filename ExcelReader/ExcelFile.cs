@@ -103,7 +103,7 @@ namespace ExcelReader
         public void InitResTable(Scan scan) {
             var resField = scan.FindAll(x => x.IsPrint & x.IsActive);
             ResTable = new DataTable(); 
-            foreach (Field field in resField) {
+            foreach (FieldXls field in resField) {
                 if (field.Attr == attrName.Field)
                 {
                     ResTable.Columns.Add(field.ResName, typeof(String));
@@ -114,49 +114,64 @@ namespace ExcelReader
             }
         }
 
-        public void ExportToXls(DataTable resultTable)
+        public void ExportToXls(DataTable resultTable, bool showSource = false)
         {
-            Microsoft.Office.Interop.Excel.Application oXL;
-            Microsoft.Office.Interop.Excel._Workbook oWB;
-            Microsoft.Office.Interop.Excel._Worksheet oSheet;
-            Microsoft.Office.Interop.Excel.Range oRng;
+            Excel.Application oXL;
+            Excel._Workbook oWB;
+            Excel._Worksheet oSheet;
             object misvalue = System.Reflection.Missing.Value;
-
-            oXL = new Microsoft.Office.Interop.Excel.Application();
-
-            oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks.Add(""));
-            oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
-            oSheet.Application.ReferenceStyle = Excel.XlReferenceStyle.xlR1C1;
-
-            string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
-            oRng = oSheet.get_Range(xlsAdress(1, 1), xlsAdress(title.Length, 1));
-            oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-            oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-            oRng.Font.Bold = true;
-            oRng.Value2 = title;
-            oRng.Interior.Color = Excel.XlRgbColor.rgbLightGreen;
-            // oRng.Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red);
-
-            string[,] data = new string[resultTable.Rows.Count, resultTable.Columns.Count];
-
-            //            resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
-
-            for (int r = 0; r < resultTable.Rows.Count; r++) {
-                for (int c = 0; c < resultTable.Columns.Count; c++) {
-                    data[r,c] = resultTable.Rows[r][c].ToString();
-                }
+            oXL = new Excel.Application();
+            oWB = oXL.Workbooks.Add("");
+            oSheet = oWB.ActiveSheet;
+            drawTable(oSheet,resultTable, Excel.XlRgbColor.rgbLightGreen);
+            if (showSource)
+            {
+                drawTable(oSheet, XlsTable, Excel.XlRgbColor.rgbAqua, resultTable.Columns.Count + 2, 1  );
             }
-
-            oRng = oSheet.get_Range(xlsAdress(1, 2), xlsAdress(data.GetLength(1), data.GetLength(0) + 1 ));
-            oRng.Value2 = data;
-            oRng.EntireColumn.AutoFit();
 
             oXL.Visible = true;
         }
 
+        void drawTable(Excel._Worksheet oSheet, DataTable resultTable, Excel.XlRgbColor xlsColor,
+            int startCol = 1, int startRow = 1 )
+        {
+            Excel.Range oRng;
+            string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+            oRng = oSheet.get_Range(xlsAdress(startCol, startRow), xlsAdress(startCol - 1 + title.Length, startRow));
+            oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
+            oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            oRng.Font.Bold = true;
+            oRng.Value2 = title;
+            oRng.Interior.Color = xlsColor;
+
+            string[,] data = new string[resultTable.Rows.Count, resultTable.Columns.Count];
+
+            for (int r = 0; r < resultTable.Rows.Count; r++)
+            {
+                for (int c = 0; c < resultTable.Columns.Count; c++)
+                {
+                    data[r, c] = resultTable.Rows[r][c].ToString();
+                }
+            }
+
+            oRng = oSheet.get_Range(xlsAdress(startCol, startRow +1),
+                                    xlsAdress(startCol-1 + data.GetLength(1), startRow - 1 + data.GetLength(0) + 1));
+            oRng.Value2 = data;
+            oRng.EntireColumn.AutoFit();
+        }
+
         private string xlsAdress(int col, int row)
         {
-            return String.Format("{0}{1}", (char)(col + 64), row);
+            col--;
+            int diff = 64;
+            int longht = 26;
+            int num1 = col / longht;
+            int num2 = col % longht;
+            string res = (num1 > 0) ? String.Format("{0}{1}",
+                                        (char)(num1 + diff), (char)(num2 + diff + 1)) 
+                                        : String.Format("{0}", (char)(num2 + diff + 1));
+
+            return String.Format("{0}{1}", res, row);
         }
 
         

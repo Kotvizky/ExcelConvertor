@@ -45,6 +45,8 @@
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.itmplheadBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.collectDataSet = new ExcelReader.CollectDataSet();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -58,6 +60,13 @@
             this.bindingNavigatorSaveItems = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCopy = new System.Windows.Forms.ToolStripButton();
             this.dgvTemlpHead = new System.Windows.Forms.DataGridView();
+            this.dgvTemplName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTemplComm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTemplAuthor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTemplDateCreate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTemplOperator = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTemplDateModify = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvTemplIdHead = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.bindingNavigator2 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem1 = new System.Windows.Forms.ToolStripButton();
@@ -73,39 +82,15 @@
             this.bindingNavigatorMoveLastItem1 = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.bindingNavigatorSaveItems2 = new System.Windows.Forms.ToolStripButton();
-            this.dataGridView3 = new System.Windows.Forms.DataGridView();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.ButtonOpen = new System.Windows.Forms.ToolStripButton();
-            this.ButtonMatching = new System.Windows.Forms.ToolStripButton();
-            this.BottomProcessing = new System.Windows.Forms.ToolStripButton();
-            this.ButtonStore = new System.Windows.Forms.ToolStripButton();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripProgressBar2 = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.collectDataSet = new ExcelReader.CollectDataSet();
-            this.dgvTemplName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvTemplComm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvTemplAuthor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvTemplDateCreate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvTemplOperator = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvTemplDateModify = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvTemplIdHead = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
-            this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
-            this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
-            this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
+            this.dgvTemlpStr = new System.Windows.Forms.DataGridView();
             this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.dataTypeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DataSizeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.dataTypeDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.dataSizeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -115,6 +100,21 @@
             this.dateModifyDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idHeadDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.idStrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.ButtonOpen = new System.Windows.Forms.ToolStripButton();
+            this.ButtonMatching = new System.Windows.Forms.ToolStripButton();
+            this.BottomProcessing = new System.Windows.Forms.ToolStripButton();
+            this.ButtonStore = new System.Windows.Forms.ToolStripButton();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar2 = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
+            this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
+            this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
+            this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -135,16 +135,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpHead)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator2)).BeginInit();
             this.bindingNavigator2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fKimpHeadimpStrBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpStr)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -299,7 +299,7 @@
             // 
             this.splitContainer3.Panel2.AutoScroll = true;
             this.splitContainer3.Panel2.Controls.Add(this.bindingNavigator2);
-            this.splitContainer3.Panel2.Controls.Add(this.dataGridView3);
+            this.splitContainer3.Panel2.Controls.Add(this.dgvTemlpStr);
             this.splitContainer3.Size = new System.Drawing.Size(269, 568);
             this.splitContainer3.SplitterDistance = 240;
             this.splitContainer3.TabIndex = 1;
@@ -348,6 +348,16 @@
             // 
             this.itmplheadBindingSource.DataMember = "i_tmpl_head";
             this.itmplheadBindingSource.DataSource = this.bindingSource1;
+            // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = this.collectDataSet;
+            this.bindingSource1.Position = 0;
+            // 
+            // collectDataSet
+            // 
+            this.collectDataSet.DataSetName = "CollectDataSet";
+            this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // bindingNavigatorCountItem
             // 
@@ -466,6 +476,49 @@
             this.dgvTemlpHead.Name = "dgvTemlpHead";
             this.dgvTemlpHead.Size = new System.Drawing.Size(276, 209);
             this.dgvTemlpHead.TabIndex = 1;
+            // 
+            // dgvTemplName
+            // 
+            this.dgvTemplName.DataPropertyName = "name";
+            this.dgvTemplName.HeaderText = "name";
+            this.dgvTemplName.Name = "dgvTemplName";
+            // 
+            // dgvTemplComm
+            // 
+            this.dgvTemplComm.DataPropertyName = "comm";
+            this.dgvTemplComm.HeaderText = "comm";
+            this.dgvTemplComm.Name = "dgvTemplComm";
+            // 
+            // dgvTemplAuthor
+            // 
+            this.dgvTemplAuthor.DataPropertyName = "author";
+            this.dgvTemplAuthor.HeaderText = "author";
+            this.dgvTemplAuthor.Name = "dgvTemplAuthor";
+            // 
+            // dgvTemplDateCreate
+            // 
+            this.dgvTemplDateCreate.DataPropertyName = "dateCreate";
+            this.dgvTemplDateCreate.HeaderText = "dateCreate";
+            this.dgvTemplDateCreate.Name = "dgvTemplDateCreate";
+            // 
+            // dgvTemplOperator
+            // 
+            this.dgvTemplOperator.DataPropertyName = "operator";
+            this.dgvTemplOperator.HeaderText = "operator";
+            this.dgvTemplOperator.Name = "dgvTemplOperator";
+            // 
+            // dgvTemplDateModify
+            // 
+            this.dgvTemplDateModify.DataPropertyName = "dateModify";
+            this.dgvTemplDateModify.HeaderText = "dateModify";
+            this.dgvTemplDateModify.Name = "dgvTemplDateModify";
+            // 
+            // dgvTemplIdHead
+            // 
+            this.dgvTemplIdHead.DataPropertyName = "idHead";
+            this.dgvTemplIdHead.HeaderText = "idHead";
+            this.dgvTemplIdHead.Name = "dgvTemplIdHead";
+            this.dgvTemplIdHead.ReadOnly = true;
             // 
             // splitter3
             // 
@@ -608,21 +661,23 @@
             this.bindingNavigatorSaveItems2.ToolTipText = "Сохранить данные";
             this.bindingNavigatorSaveItems2.Click += new System.EventHandler(this.bindingNavigatorSaveItems2_Click);
             // 
-            // dataGridView3
+            // dgvTemlpStr
             // 
-            this.dataGridView3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dgvTemlpStr.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView3.AutoGenerateColumns = false;
-            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dgvTemlpStr.AutoGenerateColumns = false;
+            this.dgvTemlpStr.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dgvTemlpStr.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            this.dgvTemlpStr.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTemlpStr.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nppDataGrid3,
             this.resNameDataGrid3,
             this.xlsNameDataGrid3,
             this.isPrintDataGrid3,
             this.attrDataGrid3,
             this.dataTypeDataGrid3,
-            this.DataSizeDataGrid3,
+            this.dataSizeDataGrid3,
             this.strFormatData3,
             this.isActiveDataGrid3,
             this.commDataGrid3,
@@ -632,18 +687,149 @@
             this.dateModifyDataGrid3,
             this.idHeadDataGrid3,
             this.idStrDataGrid3});
-            this.dataGridView3.DataSource = this.fKimpHeadimpStrBindingSource;
-            this.dataGridView3.Location = new System.Drawing.Point(0, 28);
-            this.dataGridView3.Name = "dataGridView3";
-            this.dataGridView3.Size = new System.Drawing.Size(263, 296);
-            this.dataGridView3.TabIndex = 0;
-            this.dataGridView3.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellContentClick);
-            this.dataGridView3.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellMouseEnter);
-            this.dataGridView3.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView3_CellValidated);
-            this.dataGridView3.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView3_CellValidating);
-            this.dataGridView3.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView3_DataError);
-            this.dataGridView3.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView3_RowsAdded);
-            this.dataGridView3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dataGridView3_MouseClick);
+            this.dgvTemlpStr.DataSource = this.fKimpHeadimpStrBindingSource;
+            this.dgvTemlpStr.Location = new System.Drawing.Point(0, 28);
+            this.dgvTemlpStr.Name = "dgvTemlpStr";
+            this.dgvTemlpStr.Size = new System.Drawing.Size(263, 296);
+            this.dgvTemlpStr.TabIndex = 0;
+            this.dgvTemlpStr.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTemlpStr_CellContentClick);
+            this.dgvTemlpStr.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTemlpStr_CellMouseEnter);
+            this.dgvTemlpStr.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTemlpStr_CellValidated);
+            this.dgvTemlpStr.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dgvTemlpStr_CellValidating);
+            this.dgvTemlpStr.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvTemlpStr_DataError);
+            this.dgvTemlpStr.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvTemlpStr_RowsAdded);
+            this.dgvTemlpStr.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dgvTemlpStr_MouseClick);
+            // 
+            // nppDataGrid3
+            // 
+            this.nppDataGrid3.DataPropertyName = "npp";
+            this.nppDataGrid3.FillWeight = 40F;
+            this.nppDataGrid3.HeaderText = "npp";
+            this.nppDataGrid3.Name = "nppDataGrid3";
+            this.nppDataGrid3.Width = 50;
+            // 
+            // resNameDataGrid3
+            // 
+            this.resNameDataGrid3.DataPropertyName = "resName";
+            this.resNameDataGrid3.HeaderText = "resName";
+            this.resNameDataGrid3.Name = "resNameDataGrid3";
+            this.resNameDataGrid3.Width = 74;
+            // 
+            // xlsNameDataGrid3
+            // 
+            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
+            this.xlsNameDataGrid3.HeaderText = "xlsName";
+            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
+            this.xlsNameDataGrid3.Width = 72;
+            // 
+            // isPrintDataGrid3
+            // 
+            this.isPrintDataGrid3.DataPropertyName = "isPrint";
+            this.isPrintDataGrid3.HeaderText = "isPrint";
+            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
+            this.isPrintDataGrid3.Width = 41;
+            // 
+            // attrDataGrid3
+            // 
+            this.attrDataGrid3.DataPropertyName = "attr";
+            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
+            this.attrDataGrid3.DisplayMember = "name";
+            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.attrDataGrid3.HeaderText = "attr";
+            this.attrDataGrid3.Name = "attrDataGrid3";
+            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.attrDataGrid3.ValueMember = "id";
+            this.attrDataGrid3.Width = 47;
+            // 
+            // attrValueBindingSource
+            // 
+            this.attrValueBindingSource.DataMember = "attrValue";
+            this.attrValueBindingSource.DataSource = this.collectDataSet;
+            // 
+            // dataTypeDataGrid3
+            // 
+            this.dataTypeDataGrid3.DataPropertyName = "dataType";
+            this.dataTypeDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.dataTypeDataGrid3.HeaderText = "dataType";
+            this.dataTypeDataGrid3.Name = "dataTypeDataGrid3";
+            this.dataTypeDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataTypeDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataTypeDataGrid3.Width = 77;
+            // 
+            // dataSizeDataGrid3
+            // 
+            this.dataSizeDataGrid3.DataPropertyName = "dataSize";
+            this.dataSizeDataGrid3.HeaderText = "dataSize";
+            this.dataSizeDataGrid3.Name = "dataSizeDataGrid3";
+            this.dataSizeDataGrid3.Width = 73;
+            // 
+            // strFormatData3
+            // 
+            this.strFormatData3.DataPropertyName = "strFormat";
+            this.strFormatData3.HeaderText = "strFormat";
+            this.strFormatData3.Name = "strFormatData3";
+            this.strFormatData3.Width = 75;
+            // 
+            // isActiveDataGrid3
+            // 
+            this.isActiveDataGrid3.DataPropertyName = "isActive";
+            this.isActiveDataGrid3.HeaderText = "isActive";
+            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
+            this.isActiveDataGrid3.Width = 50;
+            // 
+            // commDataGrid3
+            // 
+            this.commDataGrid3.DataPropertyName = "comm";
+            this.commDataGrid3.HeaderText = "comm";
+            this.commDataGrid3.Name = "commDataGrid3";
+            this.commDataGrid3.Width = 60;
+            // 
+            // authorDataGrid3
+            // 
+            this.authorDataGrid3.DataPropertyName = "author";
+            this.authorDataGrid3.HeaderText = "author";
+            this.authorDataGrid3.Name = "authorDataGrid3";
+            this.authorDataGrid3.Width = 62;
+            // 
+            // dateCreateDataGrid3
+            // 
+            this.dateCreateDataGrid3.DataPropertyName = "dateCreate";
+            this.dateCreateDataGrid3.HeaderText = "dateCreate";
+            this.dateCreateDataGrid3.Name = "dateCreateDataGrid3";
+            this.dateCreateDataGrid3.Width = 84;
+            // 
+            // operatorDataGrid3
+            // 
+            this.operatorDataGrid3.DataPropertyName = "operator";
+            this.operatorDataGrid3.HeaderText = "operator";
+            this.operatorDataGrid3.Name = "operatorDataGrid3";
+            this.operatorDataGrid3.Width = 71;
+            // 
+            // dateModifyDataGrid3
+            // 
+            this.dateModifyDataGrid3.DataPropertyName = "dateModify";
+            this.dateModifyDataGrid3.HeaderText = "dateModify";
+            this.dateModifyDataGrid3.Name = "dateModifyDataGrid3";
+            this.dateModifyDataGrid3.Width = 84;
+            // 
+            // idHeadDataGrid3
+            // 
+            this.idHeadDataGrid3.DataPropertyName = "idHead";
+            this.idHeadDataGrid3.HeaderText = "idHead";
+            this.idHeadDataGrid3.Name = "idHeadDataGrid3";
+            this.idHeadDataGrid3.Visible = false;
+            this.idHeadDataGrid3.Width = 66;
+            // 
+            // idStrDataGrid3
+            // 
+            this.idStrDataGrid3.DataPropertyName = "idStr";
+            this.idStrDataGrid3.HeaderText = "idStr";
+            this.idStrDataGrid3.Name = "idStrDataGrid3";
+            this.idStrDataGrid3.ReadOnly = true;
+            this.idStrDataGrid3.Width = 53;
             // 
             // toolStrip1
             // 
@@ -727,64 +913,6 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(31, 17);
             this.toolStripStatusLabel1.Text = "Start";
             // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = this.collectDataSet;
-            this.bindingSource1.Position = 0;
-            // 
-            // collectDataSet
-            // 
-            this.collectDataSet.DataSetName = "CollectDataSet";
-            this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // dgvTemplName
-            // 
-            this.dgvTemplName.DataPropertyName = "name";
-            this.dgvTemplName.HeaderText = "name";
-            this.dgvTemplName.Name = "dgvTemplName";
-            // 
-            // dgvTemplComm
-            // 
-            this.dgvTemplComm.DataPropertyName = "comm";
-            this.dgvTemplComm.HeaderText = "comm";
-            this.dgvTemplComm.Name = "dgvTemplComm";
-            // 
-            // dgvTemplAuthor
-            // 
-            this.dgvTemplAuthor.DataPropertyName = "author";
-            this.dgvTemplAuthor.HeaderText = "author";
-            this.dgvTemplAuthor.Name = "dgvTemplAuthor";
-            // 
-            // dgvTemplDateCreate
-            // 
-            this.dgvTemplDateCreate.DataPropertyName = "dateCreate";
-            this.dgvTemplDateCreate.HeaderText = "dateCreate";
-            this.dgvTemplDateCreate.Name = "dgvTemplDateCreate";
-            // 
-            // dgvTemplOperator
-            // 
-            this.dgvTemplOperator.DataPropertyName = "operator";
-            this.dgvTemplOperator.HeaderText = "operator";
-            this.dgvTemplOperator.Name = "dgvTemplOperator";
-            // 
-            // dgvTemplDateModify
-            // 
-            this.dgvTemplDateModify.DataPropertyName = "dateModify";
-            this.dgvTemplDateModify.HeaderText = "dateModify";
-            this.dgvTemplDateModify.Name = "dgvTemplDateModify";
-            // 
-            // dgvTemplIdHead
-            // 
-            this.dgvTemplIdHead.DataPropertyName = "idHead";
-            this.dgvTemplIdHead.HeaderText = "idHead";
-            this.dgvTemplIdHead.Name = "dgvTemplIdHead";
-            this.dgvTemplIdHead.ReadOnly = true;
-            // 
-            // attrValueBindingSource
-            // 
-            this.attrValueBindingSource.DataMember = "attrValue";
-            this.attrValueBindingSource.DataSource = this.collectDataSet;
-            // 
             // i_tmpl_headTableAdapter
             // 
             this.i_tmpl_headTableAdapter.ClearBeforeFill = true;
@@ -815,119 +943,6 @@
             // 
             this.attrValueTableAdapter.ClearBeforeFill = true;
             // 
-            // nppDataGrid3
-            // 
-            this.nppDataGrid3.DataPropertyName = "npp";
-            this.nppDataGrid3.FillWeight = 40F;
-            this.nppDataGrid3.HeaderText = "npp";
-            this.nppDataGrid3.Name = "nppDataGrid3";
-            this.nppDataGrid3.Width = 40;
-            // 
-            // resNameDataGrid3
-            // 
-            this.resNameDataGrid3.DataPropertyName = "resName";
-            this.resNameDataGrid3.HeaderText = "resName";
-            this.resNameDataGrid3.Name = "resNameDataGrid3";
-            // 
-            // xlsNameDataGrid3
-            // 
-            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
-            this.xlsNameDataGrid3.HeaderText = "xlsName";
-            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
-            // 
-            // isPrintDataGrid3
-            // 
-            this.isPrintDataGrid3.DataPropertyName = "isPrint";
-            this.isPrintDataGrid3.HeaderText = "isPrint";
-            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
-            this.isPrintDataGrid3.Width = 30;
-            // 
-            // attrDataGrid3
-            // 
-            this.attrDataGrid3.DataPropertyName = "attr";
-            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
-            this.attrDataGrid3.DisplayMember = "name";
-            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
-            this.attrDataGrid3.HeaderText = "attr";
-            this.attrDataGrid3.Name = "attrDataGrid3";
-            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.attrDataGrid3.ValueMember = "id";
-            this.attrDataGrid3.Width = 50;
-            // 
-            // dataTypeDataGrid3
-            // 
-            this.dataTypeDataGrid3.DataPropertyName = "dataType";
-            this.dataTypeDataGrid3.HeaderText = "dataType";
-            this.dataTypeDataGrid3.Name = "dataTypeDataGrid3";
-            this.dataTypeDataGrid3.Width = 50;
-            // 
-            // DataSizeDataGrid3
-            // 
-            this.DataSizeDataGrid3.DataPropertyName = "DataSize";
-            this.DataSizeDataGrid3.HeaderText = "DataSize";
-            this.DataSizeDataGrid3.Name = "DataSizeDataGrid3";
-            this.DataSizeDataGrid3.Width = 30;
-            // 
-            // strFormatData3
-            // 
-            this.strFormatData3.DataPropertyName = "strFormat";
-            this.strFormatData3.HeaderText = "strFormat";
-            this.strFormatData3.Name = "strFormatData3";
-            // 
-            // isActiveDataGrid3
-            // 
-            this.isActiveDataGrid3.DataPropertyName = "isActive";
-            this.isActiveDataGrid3.HeaderText = "isActive";
-            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
-            this.isActiveDataGrid3.Width = 30;
-            // 
-            // commDataGrid3
-            // 
-            this.commDataGrid3.DataPropertyName = "comm";
-            this.commDataGrid3.HeaderText = "comm";
-            this.commDataGrid3.Name = "commDataGrid3";
-            // 
-            // authorDataGrid3
-            // 
-            this.authorDataGrid3.DataPropertyName = "author";
-            this.authorDataGrid3.HeaderText = "author";
-            this.authorDataGrid3.Name = "authorDataGrid3";
-            // 
-            // dateCreateDataGrid3
-            // 
-            this.dateCreateDataGrid3.DataPropertyName = "dateCreate";
-            this.dateCreateDataGrid3.HeaderText = "dateCreate";
-            this.dateCreateDataGrid3.Name = "dateCreateDataGrid3";
-            // 
-            // operatorDataGrid3
-            // 
-            this.operatorDataGrid3.DataPropertyName = "operator";
-            this.operatorDataGrid3.HeaderText = "operator";
-            this.operatorDataGrid3.Name = "operatorDataGrid3";
-            // 
-            // dateModifyDataGrid3
-            // 
-            this.dateModifyDataGrid3.DataPropertyName = "dateModify";
-            this.dateModifyDataGrid3.HeaderText = "dateModify";
-            this.dateModifyDataGrid3.Name = "dateModifyDataGrid3";
-            // 
-            // idHeadDataGrid3
-            // 
-            this.idHeadDataGrid3.DataPropertyName = "idHead";
-            this.idHeadDataGrid3.HeaderText = "idHead";
-            this.idHeadDataGrid3.Name = "idHeadDataGrid3";
-            this.idHeadDataGrid3.Visible = false;
-            // 
-            // idStrDataGrid3
-            // 
-            this.idStrDataGrid3.DataPropertyName = "idStr";
-            this.idStrDataGrid3.HeaderText = "idStr";
-            this.idStrDataGrid3.Name = "idStrDataGrid3";
-            this.idStrDataGrid3.ReadOnly = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -938,6 +953,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainForm";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
@@ -963,19 +979,19 @@
             this.bindingNavigator1.ResumeLayout(false);
             this.bindingNavigator1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpHead)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator2)).EndInit();
             this.bindingNavigator2.ResumeLayout(false);
             this.bindingNavigator2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fKimpHeadimpStrBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpStr)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -992,7 +1008,7 @@
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.Splitter splitter3;
         private System.Windows.Forms.DataGridView dgvTemlpHead;
-        private System.Windows.Forms.DataGridView dataGridView3;
+        private System.Windows.Forms.DataGridView dgvTemlpStr;
         private System.Windows.Forms.BindingNavigator bindingNavigator1;
         private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
         private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
@@ -1057,8 +1073,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn xlsNameDataGrid3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isPrintDataGrid3;
         private System.Windows.Forms.DataGridViewComboBoxColumn attrDataGrid3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataTypeDataGrid3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DataSizeDataGrid3;
+        private System.Windows.Forms.DataGridViewComboBoxColumn dataTypeDataGrid3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataSizeDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn strFormatData3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isActiveDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn commDataGrid3;

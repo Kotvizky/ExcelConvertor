@@ -14,6 +14,7 @@ using System.Collections;
 //System.Net
 using System.Data.OleDb;
 using System.IO;
+using System.Globalization;
 
 
 namespace ExcelReader
@@ -46,6 +47,12 @@ namespace ExcelReader
             scan.onHideProgressBar += this.hideProgressBar;
             progressBar = toolStripProgressBar2;
             tabControl1.TabPages.Remove(tabPage1);
+            //ArrayList elements = new ArrayList();
+            foreach (dataType dataType in Enum.GetValues(typeof(dataType)))
+            {
+                dataTypeDataGrid3.Items.Add(dataType.ToString());
+            }
+            //dataTypeDataGrid3.Items.AddRange(elements.ToArray());
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -71,7 +78,7 @@ namespace ExcelReader
                         }
                     }
                     return false;
-                case Keys.S | Keys.Alt:
+                case Keys.S | Keys.Control:
                     bindingNavigatorSaveItems1_Click(this);
                     bindingNavigatorSaveItems2_Click(this);
                     MessageBox.Show("Изменения в шаблонах сохранены!");
@@ -100,7 +107,21 @@ namespace ExcelReader
                 file.ReadFile(fileName);
                 DataTable table = file.XlsTable;
                 int columns = table.Columns.Count;
+                DataColumn col = table.Columns.Add("ROW_ID", typeof(Int32));
+                col.SetOrdinal(0);
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    table.Rows[i]["ROW_ID"] = i;
+                }
+                col = table.Columns.Add("Check_Result", typeof(String));
+                col.SetOrdinal(1);
+
                 dataGridView1.DataSource = table;
+
+                //foreach (DataGridViewRow row in dataGridView1.Rows)
+                //{
+                //    row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
+                //}
 
                 string[] enabledBtn = {
                     "ButtonOpen",
@@ -132,7 +153,7 @@ namespace ExcelReader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: данная строка кода позволяет загрузить данные в таблицу "collectDataSet.attrValue". При необходимости она может быть перемещена или удалена.
+            //  данная строка кода позволяет загрузить данные в таблицу "collectDataSet.attrValue". При необходимости она может быть перемещена или удалена.
             this.attrValueTableAdapter.Fill(this.collectDataSet.attrValue);
             //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_str". 
             //При необходимости она может быть перемещена или удалена.
@@ -171,22 +192,22 @@ namespace ExcelReader
 
         private int getGridIndex(string name) {
             string gridPrefix = "DataGrid3";
-            return dataGridView3.Columns[name + gridPrefix].Index; ; 
+            return dgvTemlpStr.Columns[name + gridPrefix].Index; ; 
         }
 
         private int getGridValue(string name,int rowIndex, DataGridView dgv)
         {
             string gridPrefix = "DataGrid3";
-            return dataGridView3.Columns[name + gridPrefix].Index; ;
+            return dgvTemlpStr.Columns[name + gridPrefix].Index; ;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            DataTable result = scan.resultTable;
+            DataTable result = scan.ResTable;
 
             if (result != null)
             {
-                file.ExportToXls(result);
+                file.ExportToXls(result,scan.printAllFields);
             } else
             {
                 MessageBox.Show("Сопоставьте входной файл с шаблона сначала!");
@@ -202,28 +223,33 @@ namespace ExcelReader
             }
             scan.Clear();
 
-//            string msg = String.Empty;
-            dataGridView3.Sort(dataGridView3.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
+            dgvTemlpStr.Sort(dgvTemlpStr.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
 
-            for (int i = 0; i < dataGridView3.Rows.Count-1; i++) {
+            for (int i = 0; i < dgvTemlpStr.Rows.Count-1; i++) {
                 scan.AddField(
-                    npp: (short)dataGridView3.Rows[i].Cells[getGridIndex("npp")].Value,
-                    resName: dataGridView3.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
-                    xlsName: dataGridView3.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
-                    isPrint: (bool)dataGridView3.Rows[i].Cells[getGridIndex("isPrint")].Value,
-                    attr:  (attrName)dataGridView3.Rows[i].Cells[getGridIndex("attr")].Value,
-                    isActive:  (bool)dataGridView3.Rows[i].Cells[getGridIndex("IsActive")].Value
+                    npp: (short)dgvTemlpStr.Rows[i].Cells[getGridIndex("npp")].Value,
+                    resName: dgvTemlpStr.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
+                    xlsName: dgvTemlpStr.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
+                    isPrint: (bool)dgvTemlpStr.Rows[i].Cells[getGridIndex("isPrint")].Value,
+                    type: dgvTemlpStr.Rows[i].Cells[getGridIndex("dataType")].Value.ToString(),
+                    size: (short)dgvTemlpStr.Rows[i].Cells[getGridIndex("dataSize")].Value,
+                    attr:  (attrName)dgvTemlpStr.Rows[i].Cells[getGridIndex("attr")].Value,
+                    isActive:  (bool)dgvTemlpStr.Rows[i].Cells[getGridIndex("IsActive")].Value
                     );
             }
 
             // file.ResTable = scan.initResutTable();
-            textBox1.Text = scan.Matching(file.XlsTable.Columns);
+            textBox1.Text = scan.Matching(file.XlsTable);
 
             if (!scan.AllFound())
             {
                 MessageBox.Show("Не все поля их шаблона найдены!\n Смотрите подробный отчет");
+                tabControl1.TabPages.Remove(tabPage1);
                 return;
             }
+
+            scan.InitXlsFields();
+            scan.ChechFields();
 
             activatStripMenu(
                 new string[]  {
@@ -234,7 +260,15 @@ namespace ExcelReader
                 }
             );
 
-            tabControl1.TabPages.Remove(tabPage1);
+            dataGridView4.Columns.Clear();
+            dataGridView4.DataSource = scan.ResTable;
+            dataGridView4.Show();
+
+            if (!tabControl1.TabPages.Contains(tabPage1))
+            {
+                tabControl1.TabPages.Insert(0, tabPage1);
+                tabControl1.SelectedIndex = 0;
+            }
         }
 
         private void toolStripButton2_Click_1(object sender, EventArgs e)
@@ -246,37 +280,18 @@ namespace ExcelReader
                 tabControl1.SelectedIndex = 0;
             }
 
-            scan.initResutTable();
-
-            scan.WriteResult(file.XlsTable);
-
+            //scan.initResultFromXls(file.XlsTable);
+            scan.InitAllField();
+            dataGridView4.AutoGenerateColumns = false;
             dataGridView4.Columns.Clear();
-            dataGridView4.DataSource = scan.resultTable;
-            dataGridView4.Show();
+            dataGridView4.AutoGenerateColumns = true;
+            //dataGridView4.AutoGenerateColumnsChanged;
 
-            Field field = scan.Find(x => x.Attr == attrName.Func);
-            scan.initData(field, file.XlsTable,true);
-            //showStripMessage("Matching result");
-            DataTable funcTable = field.resTable;
-            DataTable resTable = scan.resultTable;
-            List<string> columns = new List<string>();
-            foreach (DataColumn column in funcTable.Columns)
-            {
-                string fieldName = column.ColumnName;
-                if (resTable.Columns.Contains(fieldName))
-                {
-                    columns.Add(fieldName);
-                }
-            }
+            //dataGridView4.DataSource = scan.ResTable;
 
-            for (int i = 0; i < funcTable.Rows.Count; i++)
-            {
-                foreach (string fieldName in columns)
-                {
-                    int rowId = (int)funcTable.Rows[i]["ROW_ID"];
-                    resTable.Rows[rowId][fieldName] = funcTable.Rows[i][fieldName].ToString();
-                }
-            }
+
+            //scan.WriteResult(file.XlsTable);
+
             showStripMessage("");
 
             activatStripMenu(
@@ -302,15 +317,15 @@ namespace ExcelReader
             }
         }
         
-        private void dataGridView3_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void dgvTemlpStr_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (e.RowIndex == dataGridView3.NewRowIndex)
+            if (e.RowIndex == dgvTemlpStr.NewRowIndex)
             {
                 if (e.RowIndex > 0) {
                     int npp = 0;
                     int tmpNpp = 0;
                     for (int i = 1; i < e.RowIndex - 1; i++) {
-                        tmpNpp = Int32.Parse(dataGridView3.Rows[i].Cells[getGridIndex("npp")].Value.ToString());
+                        tmpNpp = Int32.Parse(dgvTemlpStr.Rows[i].Cells[getGridIndex("npp")].Value.ToString());
                         if (npp < tmpNpp) {
                             npp = tmpNpp;
                         }
@@ -342,7 +357,7 @@ namespace ExcelReader
             return choosenSheet;
         }
 
-        private void dataGridView3_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        private void dgvTemlpStr_DataError(object sender, DataGridViewDataErrorEventArgs anError)
         {
             MessageBox.Show(anError.Exception.Message);
             anError.ThrowException = false;
@@ -365,9 +380,9 @@ namespace ExcelReader
         }
 
 
-        private void dataGridView3_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvTemlpStr_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView grid = dataGridView3;
+            DataGridView grid = dgvTemlpStr;
             if (Control.ModifierKeys == Keys.Control)
             {
                 if ((grid.Rows[e.RowIndex].Cells[e.ColumnIndex] != null) 
@@ -391,12 +406,12 @@ namespace ExcelReader
             }
         }
 
-        private void dataGridView3_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void dgvTemlpStr_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             //MessageBox.Show(e.ToString());
         }
 
-        private void dataGridView3_CellValidated(object sender, DataGridViewCellEventArgs e)
+        private void dgvTemlpStr_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
             //MessageBox.Show(e.ToString());
         }
@@ -489,12 +504,12 @@ namespace ExcelReader
         }
         #endregion
 
-        private void dataGridView3_MouseClick(object sender, MouseEventArgs e)
+        private void dgvTemlpStr_MouseClick(object sender, MouseEventArgs e)
         {
 
         }
 
-        private void dataGridView3_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        private void dgvTemlpStr_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
         }
 
@@ -540,6 +555,55 @@ namespace ExcelReader
                 dgvTemlpHead.CurrentCell = dgvTemlpHead.Rows[newRow - 2].Cells[0];
             }
             return res;
+        }
+
+        class my1 {
+            public override string ToString()
+            {
+                return "My object";
+            }
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            string[] formats = { "yyyyMMdd", "HHmmss" };
+
+            string dateString =  "20130816" ;
+
+            DateTime parsedDate;
+
+            DateTime.TryParseExact(dateString, formats, null,
+                                                DateTimeStyles.AllowWhiteSpaces |
+                                                DateTimeStyles.AdjustToUniversal,
+                                                out parsedDate);
+
+            my1 my1 = new my1();
+
+            object myDate = my1;
+
+            MessageBox.Show(parsedDate.ToString() + " -- " + ((object)myDate).ToString());
+
+        }
+
+        private void toolStripButton1_Click_2(object sender, EventArgs e)
+        {
+            int col = 174;
+            col--;
+            int diff = 64;
+            int longht = 26;
+            int num1 = col / longht;
+            int num2 = col % longht;
+
+            string res = (num1 > 0) ? String.Format("{0}{1}", (char)(num1 + diff), (char)(num2 + diff+1)) : String.Format("{0}", (char)(num2 + diff+1));
+
+            MessageBox.Show(res);
+
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            dgvTemlpStr.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvTemlpStr.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
         }
     }
 }

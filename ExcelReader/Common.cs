@@ -14,7 +14,7 @@ namespace ExcelReader
         public bool Ready;
         public string missingFields;
 
-        public FunctionFields(List<Field> fields, string SQLString,
+        public FunctionFields(List<FieldBase> fields, string SQLString,
             string paramString, paramGroup group, string fildPrexid = "")
         {
             missingFields = "";
@@ -59,7 +59,7 @@ namespace ExcelReader
                         {
                             resName = paramArray[i];
                         }
-                        Field field = fields.Find(x => (x.ResName == resName) );
+                        FieldBase field = fields.Find(x => (x.ResName == resName) );
                         if (field == null)
                         {
                             missingFields += devider + paramArray[i];

@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ExcelReader
 {
-    class Field
+    class FieldFunc : FieldBase
     {
-        private const string noData = "Н/Д";
 
-        // fields in database
-        public short Npp { set; get; }
-        public string ResName { set; get; }
-        private string xlsName;
-        public string XlsName {
+        public override string XlsName
+        {
             set
             {
                 xlsName = value;
@@ -28,9 +23,7 @@ namespace ExcelReader
             }
         }
 
-        public bool IsPrint { set; get; }
-        private attrName attr;
-        public attrName Attr
+        public override attrName Attr
         {
             set
             {
@@ -43,30 +36,39 @@ namespace ExcelReader
             }
         }
 
-        public string StrFormat { set; get; }
-        public bool IsActive { set; get; }
-        // <-- fields in database
+        public override string InitValue()
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool Exist { set; get; }
+        public override object Value
+        {
+            get
+            {
+                return ToString();
+            }
+        }
 
         public string FunctionName { private set; get; }
-        public string SQLTable {private set; get; }
+        public string SQLTable { private set; get; }
 
         public DataTable resTable;
 
         public List<FunctionFields> Parameters { private set; get; }
 
-        public void setFunctionName() {
+        public void setFunctionName()
+        {
             if (attr != attrName.Func)
             {
                 FunctionName = "";
-            } else
+            }
+            else
             {
                 FunctionName = XlsName.Split('(')[0].Trim();
             }
         }
 
-        public void parseSQLParameter(List<Field> fields)
+        public void parseSQLParameter(List<FieldBase> fields)
         {
             if (FunctionName == "")
             {
@@ -76,7 +78,7 @@ namespace ExcelReader
             List<string[]> impStructure = SQLFunction.getDescription(FunctionName);
             int index;
             Parameters = new List<FunctionFields>();
-            if ((index = getParamIndex(impStructure[0], paramGroup.inTable)) >-1)
+            if ((index = getParamIndex(impStructure[0], paramGroup.inTable)) > -1)
             {
                 SQLTable = impStructure[1][index].Trim();
             }
@@ -98,7 +100,7 @@ namespace ExcelReader
                 Parameters.Add(new FunctionFields(
                     fields.FindAll(x => ((x.Attr == attrName.Field) & x.Exist | x.Attr == attrName.Const)),
                     impStructure[1][index],
-                    nameSplit[2], 
+                    nameSplit[2],
                     paramGroup.inPar
                     )
                 );
@@ -119,7 +121,7 @@ namespace ExcelReader
                     if (outPar.parameters[i].xlsExist & (!outPar.parameters[i].Service))
                     {
                         string resField = String.Format("{0}.{1}", FunctionName, outPar.parameters[i].ResName);
-                        Field outField = fields.Find(x => (x.ResName == resField));
+                        FieldBase outField = fields.Find(x => (x.ResName == resField));
                         outField.Exist = true;
                     }
                 }
@@ -127,46 +129,10 @@ namespace ExcelReader
             }
         }
 
-        private int getParamIndex(string [] arrayNames,  paramGroup group)
+        private int getParamIndex(string[] arrayNames, paramGroup group)
         {
-            return  Array.IndexOf(arrayNames, Enum.GetName(typeof(paramGroup), group));
+            return Array.IndexOf(arrayNames, Enum.GetName(typeof(paramGroup), group));
         }
 
-        public bool findParameters(List<Field> fields)
-        {
-            //foreach (FunctionFields parameter in Parameters)
-            //{
-            //    FunctionFields = new FunctionFields(fields, XlsName);
-            //    Exist = FunctionFields.Ready;
-            //}
-            //return Exist;
-            return true;
-        }
-
-        private string value;
-        public string Value {
-            set {
-                this.value = value;
-            }
-            get {
-                if (this.Exist)
-                {
-                    return this.value;
-                }
-                else
-                {
-                    return noData;
-                }
-            }
-        }
     }
-
-    enum attrName : byte { Field = 0, Func, Answer, Const };
-    enum funcParameter : byte { Table = 1, In, Out }
-    enum spetialFields { Ip, RowId }
-    enum paramGroup  { inTable, tabFields, inPar, outPar }
-    enum serviseFields {IP,ROW_ID}
-
 }
-
-
