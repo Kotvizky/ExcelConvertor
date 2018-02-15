@@ -12,8 +12,6 @@ namespace ExcelReader
     {
         private const string noData = "Н/Д";
 
-        private string value;
-
         public override string InitValue()
         {
             ValidValue result = Validator(new ValidData() {
@@ -39,26 +37,7 @@ namespace ExcelReader
             }
         }
 
-        public Func<ValidData, ValidValue> Validator { set; get; }
-
-        public struct ValidValue{
-            public object Value;
-            public string Error;
-        }
-
-        public struct ValidData
-        {
-            public object Value;
-            public int Size;
-        }
     }
-
-    enum attrName : byte { Field = 0, Func, Answer, Const };
-    enum funcParameter : byte { Table = 1, In, Out }
-    enum spetialFields { Ip, RowId }
-    enum paramGroup  { inTable, tabFields, inPar, outPar }
-    enum serviseFields {IP,ROW_ID}
-    enum dataType {String,DateTime,Double}
 
 }
 

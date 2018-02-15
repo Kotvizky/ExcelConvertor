@@ -9,13 +9,13 @@ namespace ExcelReader
 {
     struct FunctionFields
     {
-        public paramGroup Group;
+        public GroupNames Group;
         public FunctionParameter[] parameters;
         public bool Ready;
         public string missingFields;
 
         public FunctionFields(List<FieldBase> fields, string SQLString,
-            string paramString, paramGroup group, string fildPrexid = "")
+            string paramString, GroupNames group, string fildPrexid = "")
         {
             missingFields = "";
 
@@ -51,7 +51,7 @@ namespace ExcelReader
                     {
                         parameters[i].ResName = paramArray[i];
                         string resName;
-                        if ( group == paramGroup.outPar )
+                        if ( group == GroupNames.outPar )
                         {
                             resName = String.Format("{0}.{1}", fildPrexid, paramArray[i] );
                         }
@@ -90,7 +90,6 @@ namespace ExcelReader
                 missingFields = missingFields.Remove(0, 1);
             } 
         }
-
     }
 
     public struct FunctionParameter
@@ -101,11 +100,31 @@ namespace ExcelReader
         public object Value;
         public bool Service;
         public bool xlsExist;
+
         public string Print()
         {
-            return String.Format("SqlName - {0};\t\tResName - {1};\t\tService - {2};\t\txlsExist - {3}",
+            return String.Format("SqlName - {0};\t\t\tResName - {1};\t\t\tService - {2};\t\t\txlsExist - {3}",
                 SqlName,ResName,Service.ToString(),xlsExist.ToString());
         } 
     }
+
+    public struct ValidValue
+    {
+        public object Value;
+        public string Error;
+    }
+
+    public struct ValidData
+    {
+        public object Value;
+        public int Size;
+    }
+
+    enum attrName : byte { Field = 0, Func, Answer, Const };
+    enum funcParameter : byte { Table = 1, In, Out }
+    enum spetialFields { Ip, RowId }
+    enum GroupNames { inTable, tabFields, inPar, outPar }
+    enum serviseFields { IP, ROW_ID }
+    enum dataType { String, DateTime, Double }
 
 }

@@ -91,6 +91,8 @@ namespace ExcelReader
         private const string errNull = "null";
         private const string errConver = "err. convert";
 
+        public bool AllFound { get; private set; }
+
         public bool printAllFields { private set; get; }
         private DataTable xlsTable;
         public DataTable ResTable { private set; get; }
@@ -118,6 +120,12 @@ namespace ExcelReader
                 case attrName.Func:
                     newField = new FieldFunc();
                     break;
+                case attrName.Const:
+                    newField = new FieldConst();
+                    break;
+                case attrName.Answer:
+                    newField = new FieldAnswer();
+                    break;
                 default:
                     newField = new FieldXls();
                     break;
@@ -137,48 +145,12 @@ namespace ExcelReader
             }
         }
 
-        public bool AllFound()  {
-            bool result = true;
-            bool fieldsExist = false; 
-            foreach (FieldBase field in this) {
-                switch (field.Attr)
-                {
-                    case attrName.Field: 
-                        if (field.Exist)
-                        {
-                            fieldsExist = true;
-                        }
-                        else {
-                            result = false;
-                            break;
-                        }
-                        break;
-                    case attrName.Func:
-
-                        foreach (FunctionFields funcField in ((FieldFunc)field).Parameters)
-                        {
-                            FunctionParameter[] funcParams = funcField.parameters;
-                            for (int i = 0; i < funcParams.Length; i++)
-                            {
-                                if (!funcParams[i].xlsExist)
-                                {
-                                    result = false;
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                }
-            }
-            if (!fieldsExist) result = false;
-            return result;
-        }
 
         #region Validation functions
 
-        public static FieldXls.ValidValue ValidToStr(FieldXls.ValidData value)
+        public static ValidValue ValidToStr(ValidData value)
         {
-            FieldXls.ValidValue result = new FieldXls.ValidValue()
+            ValidValue result = new ValidValue()
                 { Value = value.Value.ToString(), Error = String.Empty };
 
             string strResult = (string)value.Value.ToString();
@@ -191,10 +163,10 @@ namespace ExcelReader
             return result;
         }
 
-        public static FieldXls.ValidValue ValidToDouble(FieldXls.ValidData tabValue)
+        public static ValidValue ValidToDouble(ValidData tabValue)
         {
 
-            FieldXls.ValidValue result = new FieldXls.ValidValue()
+            ValidValue result = new ValidValue()
                 { Value = 0m, Error = String.Empty };
 
             object value = tabValue.Value;
@@ -225,10 +197,10 @@ namespace ExcelReader
             return result;
         }
 
-        public static FieldXls.ValidValue ValidToDT(FieldXls.ValidData tabValue)
+        public static ValidValue ValidToDT(ValidData tabValue)
         {
 
-            FieldXls.ValidValue result = new FieldXls.ValidValue()
+            ValidValue result = new ValidValue()
             { Value = new DateTime(0001,1,1), Error = String.Empty };
 
             object value = tabValue.Value;
@@ -254,6 +226,24 @@ namespace ExcelReader
 
 
         #region Initialization Result table
+
+
+        public void Processing()
+        {
+            GetFunctionResult();
+        }
+
+        private void GetFunctionResult()
+        {
+            foreach(FieldFunc field in FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
+            {
+                if (field.initSQLTable())
+                {
+                    // fill SQL Table
+                }
+            }
+        }
+
         public void InitXlsFields()
         {
             var resField = FindAll(x => x.IsActive && (x.Attr == attrName.Field)).OrderBy(x => x.Npp);
@@ -309,26 +299,6 @@ namespace ExcelReader
             }
         }
 
-
-        public void InitResutTable() { 
-            var resField = FindAll(x => x.IsActive &&( x.Attr != attrName.Func) ).OrderBy(x => x.Npp);
-            
-            ResTable = new DataTable();
-            foreach (FieldXls field in resField) {
-                if (field.Attr == attrName.Field)
-                {
-                    ResTable.Columns.Add(field.ResName, field.Type);
-                }
-                else if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
-                {
-                    ResTable.Columns.Add(field.ResName.Split('.')[1], typeof(string));
-                }
-                else if (field.Attr == attrName.Const)
-                {
-                    ResTable.Columns.Add(field.ResName, typeof(string));
-                }
-            }
-        }
 
         public void initResultFromXls(DataTable table) {
             var resField = FindAll(x => x.IsPrint & x.IsActive & (x.Attr != attrName.Func)).OrderBy(x => x.Npp);
@@ -425,6 +395,7 @@ namespace ExcelReader
         public string Matching(DataTable table) { 
 
             xlsTable = table;
+            AllFound = true;
             DataColumnCollection columns = xlsTable.Columns;
 
             string message = "Поля \r\n -----";
@@ -432,11 +403,12 @@ namespace ExcelReader
             {
                 if (columns.Contains(field.XlsName))
                 {
-                    string reportValidation = setValidator(field,columns[field.XlsName]);
+                    string reportValidation = setValidator(field,columns[field.XlsName].DataType.Name);
                     if (reportValidation != String.Empty)
                     {
                         message += String.Format("\r\n(+):\t{0} -> {1}, convert error {2}", field.XlsName, field.ResName,reportValidation);
                         field.Exist = false;
+                        AllFound = false;
                     }
                     else
                     {
@@ -447,23 +419,78 @@ namespace ExcelReader
                 else
                 {
                     message += String.Format("\r\n(-):\t{0} -> {1}\tполе не найдено!", field.XlsName, field.ResName);
+                    AllFound = false;
+                }
+            }
+
+            message += "\r\n\r\nКонстанты \r\n -----";
+
+            foreach (FieldBase field in this.FindAll(x => (x.Attr == attrName.Const) & x.IsActive))
+            {
+                string reportValidation = setValidator(field, dataType.String.ToString());
+                if (reportValidation != String.Empty)
+                {
+                    message += String.Format("\r\n{0} -> {1}\r\n", field.ResName, reportValidation);
+                }
+                else 
+                {
+                    string reportInit = field.InitValue();
+                    if (reportInit == String.Empty)
+                    {
+                        message += String.Format("\r\n{0} -> {1} ({2})\r\n", field.ResName, field.Validator.Method.Name,field.Value);
+                        field.Exist = true;
+                    }
+                    else
+                    {
+                        message += String.Format("\r\n{0} -> {1} (convert error {2})\r\n", field.ResName, field.Validator.Method.Name, reportInit);
+                        AllFound = false;
+                    }
                 }
             }
 
             message += "\r\n\r\nФункции \r\n -----";
 
-            foreach (FieldBase fieldType in this.FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
+            foreach (FieldFunc fieldFunc in this.FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
             {
-                FieldFunc field = (FieldFunc)fieldType;
-                field.parseSQLParameter(this);
-                foreach(FunctionFields functionFields in field.Parameters)
+
+                fieldFunc.initSQLParameter(this);
+
+                ArrayList paramGpoups = new ArrayList(new ParamGroup[]  {
+                    fieldFunc.FieldsParam,
+                    fieldFunc.InParam,
+                    fieldFunc.OutParam
+                });
+
+
+                foreach (ParamGroup paramGroup in paramGpoups)
                 {
-                    message += String.Format("\r\r\n{0}  Ready - {1} < ====== \r\n", functionFields.Group,functionFields.Ready);
-                    for (int i = 0; i < functionFields.parameters.Length; i++)  {
-                        message += String.Format("\r\n{0}", functionFields.parameters[i].Print());
+                    message += String.Format("\r\n\r\n{0}  Ready - {1} < ====== {2} \r\n---\r\n", 
+                        paramGroup.GroupName, paramGroup.AllFound,paramGroup.msgError);
+
+                    if (!paramGroup.AllFound) AllFound = false;
+
+                    foreach (ParamBase param in paramGroup)
+                    {
+                        message += String.Format("\r\n{0}", param.Print());
                     }
+
                 }
             }
+
+            message += "\r\n Ответ сервера \r\n -----";
+
+            foreach (FieldAnswer field in this.FindAll(x => ((x.Attr == attrName.Answer) && x.IsActive))) {
+                if (field.Param == null)
+                {
+                    message += String.Format("\r\nParameter for field {0} not found" , field.ResRow);
+                    AllFound = false;
+                }
+                else
+                {
+                    message += String.Format("\r\n {0} ok", field.ResName);
+                }
+            }
+
             return message;
         }
 
@@ -491,21 +518,15 @@ namespace ExcelReader
 
         }
 
-        string setValidator(FieldXls field,DataColumn column)
+        string setValidator(FieldBase field, string inTypeStr)
         {
-            //string inType = field.Type.Name;
-            //string outType = column.DataType.Name;
-
             string result = String.Empty;
             bool convert = true;
-
             try
             {
-                dataType outType= (dataType)Enum.Parse(typeof(dataType), field.Type.Name);
-                dataType inType = (dataType)Enum.Parse(typeof(dataType), column.DataType.Name);
-
+                dataType inType = (dataType)Enum.Parse(typeof(dataType), inTypeStr);
+                dataType outType = (dataType)Enum.Parse(typeof(dataType), field.Type.Name);
                 var func = ConvertList.Find(x => (x.InType == inType) && (x.OutType == outType));
-
                 if (func != null)
                 {
                     field.Validator = func.Validator;
@@ -514,18 +535,15 @@ namespace ExcelReader
                 {
                     convert = false;
                 }
-
             }
             catch (ArgumentException)
             {
                 convert = false;
             }
-
             if (!convert)
             {
-                result = String.Format("{0} {1}->{2}", errConver, column.DataType.Name, field.Type.Name);
+                result = String.Format("{0} {1}->{2}", errConver, inTypeStr, field.Type.Name);
             }
-
             return result;
         }
 
@@ -534,7 +552,7 @@ namespace ExcelReader
             string result = "";
             if (clearData)
             {
-                result = String.Format("delete from {0} ", field.SQLTable);
+                result = String.Format("delete from {0} ", field.SQLTableName);
             }
 
             if (field.Attr != attrName.Func)
@@ -543,7 +561,7 @@ namespace ExcelReader
             }
             string fields = "";
             string values = "";
-            FunctionFields tableParameters = field.Parameters.Find(x => (x.Group == paramGroup.inTable));
+            FunctionFields tableParameters = field.Parameters.Find(x => (x.Group == GroupNames.inTable));
             foreach (DataRow row in table.Rows)
             {
                 /// !!!SetValues(row); 
@@ -569,7 +587,7 @@ namespace ExcelReader
                     }
                 }
                 result += String.Format("\ninsert into {0}({1}) values({2})",
-                    field.SQLTable,
+                    field.SQLTableName,
                     fields.Remove(0, 1),
                     values.Remove(0, 1)
                     );
@@ -585,7 +603,7 @@ namespace ExcelReader
             string sqlDelete = "";
             if (clearData)
             {
-                sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTable, GetLocalIPAddress(true));
+                sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTableName, GetLocalIPAddress(true));
             }
 
             SQLFunction.clearTable(sqlDelete);
@@ -593,7 +611,7 @@ namespace ExcelReader
 
 
             byte[] ip = GetLocalIPByte();
-            FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == paramGroup.inTable)).parameters;
+            FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == GroupNames.inTable)).parameters;
 /*            string[] fieldsArray = new string[parameters.Length];
             for (int i = 0; i < parameters.Length; i++)
             {
@@ -655,35 +673,8 @@ namespace ExcelReader
                 onStepProgressBar?.Invoke();
             }
 
-            SQLFunction.bulkWrite(field.SQLTable, rows);
-            /*
+            SQLFunction.bulkWrite(field.SQLTableName, rows);
 
-        foreach (DataRow row in table.Rows)
-        {
-
-            //SQLFunction.preperedInsert(values);
-
-                            ArrayList values = new ArrayList(parameters.Length);
-                            for (int i = 0; i < parameters.Length; i++)
-                            {
-                                if (parameters[i].TableName != null)
-                                {
-                                    values.Add(row[parameters[i].TableName]);
-                                }
-                                else if (parameters[i].Value!= null)
-                                {
-                                    values.Add(parameters[i].Value);
-                                }
-                                else if (parameters[i].SqlName == serviseFields.ROW_ID.ToString())
-                                {
-                                    values.Add(table.Rows.IndexOf(row));
-                                }
-                            }
-                            SQLFunction.preperedInsert(values);
-
-            onStepProgressBar?.Invoke();
-            }
-            */
             onHideProgressBar?.Invoke();
 
         }
@@ -691,7 +682,7 @@ namespace ExcelReader
         public string functionString(FieldFunc field,string ip)
         {
 
-            FunctionFields funcParameters = field.Parameters.Find(x => (x.Group == paramGroup.inPar));
+            FunctionFields funcParameters = field.Parameters.Find(x => (x.Group == GroupNames.inPar));
             string values = String.Empty;
             for (int i = 0; i < funcParameters.parameters.Length; i++)
             {
@@ -715,12 +706,12 @@ namespace ExcelReader
 
         public void columnsRename(FieldFunc field)
         {
-            FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == paramGroup.outPar)).parameters;
+            FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == GroupNames.outPar)).parameters;
             for(int i = 0; i < parameters.Length; i++)
             {
-                if (field.resTable.Columns.Contains(parameters[i].SqlName) & (parameters[i].ResName != null))
+                if (field.ResTable.Columns.Contains(parameters[i].SqlName) & (parameters[i].ResName != null))
                 {
-                    field.resTable.Columns[parameters[i].SqlName].ColumnName = parameters[i].ResName;
+                    field.ResTable.Columns[parameters[i].SqlName].ColumnName = parameters[i].ResName;
                 }
             }
         }
@@ -747,16 +738,12 @@ namespace ExcelReader
 
         public void initSQLData(FieldFunc field, DataTable table, bool clearData = false)
         {
-
             onShowMessage?.Invoke("Insert Data");
             insertData(field, table, clearData);
 
             string resFunction = functionString(field, GetLocalIPAddress());
             onShowMessage?.Invoke("Get SQL Data");
-            field.resTable = SQLFunction.executeSQL(resFunction);
             columnsRename(field);
-            //File.WriteAllText("C:\\Users\\IKotvytskyi\\Desktop\\query.sql", resInsert);
-            //File.WriteAllText("C:\\Users\\IKotvytskyi\\Desktop\\function.sql", resFunction);
         }
 
         public static string GetLocalIPAddress(bool isHex = false)
@@ -820,7 +807,7 @@ namespace ExcelReader
         {
             public dataType InType { set; get; }
             public dataType OutType { set; get; }
-            public Func<FieldXls.ValidData, FieldXls.ValidValue> Validator { set; get; }
+            public Func<ValidData, ValidValue> Validator { set; get; }
         }
 
     }

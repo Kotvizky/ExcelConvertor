@@ -50,23 +50,46 @@ namespace ExcelReader
         }
 
         public string FunctionName { private set; get; }
-        public string SQLTable { private set; get; }
 
-        public DataTable resTable;
+        public string SQLTableName { private set; get; }
 
-        public List<FunctionFields> Parameters { private set; get; }
+        #region Function parameters groups
 
-        public void setFunctionName()
+        public ParamGroup FieldsParam { private set;  get; }
+
+        public ParamGroup InParam { private set; get; }
+
+        public ParamGroup OutParam { private set; get; }
+
+        #endregion
+
+        public DataTable ResTable { private set; get; }
+        public int ResTableIndex { protected set; get; }
+        private DataRow resRow;
+
+        public override DataRow ResRow
         {
-            if (attr != attrName.Func)
+            get
             {
-                FunctionName = "";
-            }
-            else
-            {
-                FunctionName = XlsName.Split('(')[0].Trim();
+                return resRow;
             }
         }
+
+        private void SetResRow(int index)
+        {
+            ResTableIndex = index;
+            resRow = ResTable.Rows[index];
+        }
+
+        public bool initSQLTable()
+        {
+            ResTable = SQLFunction.getResultTable(SQLTableName);
+            return (ResTable != null);
+        }
+
+        public DataRow SQLRow { private set; get; }
+
+        public List<FunctionFields> Parameters { private set; get; }
 
         public void parseSQLParameter(List<FieldBase> fields)
         {
@@ -74,45 +97,45 @@ namespace ExcelReader
             {
                 return;
             }
-            string[] splitName = XlsName.Split('(');
+            //string[] splitName = XlsName.Split('(');
             List<string[]> impStructure = SQLFunction.getDescription(FunctionName);
             int index;
             Parameters = new List<FunctionFields>();
-            if ((index = getParamIndex(impStructure[0], paramGroup.inTable)) > -1)
+            if ((index = getParamIndex(impStructure[0], GroupNames.inTable)) > -1)
             {
-                SQLTable = impStructure[1][index].Trim();
+                SQLTableName = impStructure[1][index].Trim();
             }
             string[] nameSplit = xlsName.Split('(');
 
-            if ((index = getParamIndex(impStructure[0], paramGroup.tabFields)) > -1)
+            if ((index = getParamIndex(impStructure[0], GroupNames.tabFields)) > -1)
             {
                 Parameters.Add(new FunctionFields(
                     fields.FindAll(x => (x.Attr == attrName.Field & x.Exist | x.Attr == attrName.Const)),
                     impStructure[1][index].Trim(),
                     nameSplit[1].Trim(),
-                    paramGroup.inTable
+                    GroupNames.inTable
                     )
                 );
             }
 
-            if ((index = getParamIndex(impStructure[0], paramGroup.inPar)) > -1)
+            if ((index = getParamIndex(impStructure[0], GroupNames.inPar)) > -1)
             {
                 Parameters.Add(new FunctionFields(
                     fields.FindAll(x => ((x.Attr == attrName.Field) & x.Exist | x.Attr == attrName.Const)),
                     impStructure[1][index],
                     nameSplit[2],
-                    paramGroup.inPar
+                    GroupNames.inPar
                     )
                 );
             }
 
-            if ((index = getParamIndex(impStructure[0], paramGroup.outPar)) > -1)
+            if ((index = getParamIndex(impStructure[0], GroupNames.outPar)) > -1)
             {
                 FunctionFields outPar = new FunctionFields(
                     fields.FindAll(x => (x.Attr == attrName.Answer)),
                     impStructure[1][index],
                     nameSplit[3],
-                    paramGroup.outPar,
+                    GroupNames.outPar,
                     FunctionName
                     );
                 Parameters.Add(outPar);
@@ -129,10 +152,80 @@ namespace ExcelReader
             }
         }
 
-        private int getParamIndex(string[] arrayNames, paramGroup group)
+        public void initSQLParameter(List<FieldBase> fields) //parseSQLParameter 
         {
-            return Array.IndexOf(arrayNames, Enum.GetName(typeof(paramGroup), group));
+            if (FunctionName == "")
+            {
+                return;
+            }
+
+            string[] nameSplit = xlsName.Split('(');
+            DataTable impStructure = SQLFunction.getFuncDescription(FunctionName);
+            SQLTableName = impStructure.Rows[0][SqlParam[GroupNames.inTable]].ToString(); // impStructure[1][index].Trim();
+
+            if (impStructure.Columns.Contains(SqlParam[GroupNames.tabFields]))
+            {
+                FieldsParam = new ParamGroup(
+                    impStructure.Rows[0][SqlParam[GroupNames.tabFields]].ToString(),
+                    nameSplit[1].Trim(),
+                    GroupNames.tabFields,
+                    Scan.FindAll(x => ((x.Attr == attrName.Field) || (x.Attr == attrName.Const)) && x.IsActive ),
+                    this
+                    );
+            }
+
+            if (impStructure.Columns.Contains(SqlParam[GroupNames.inPar]))
+            {
+                InParam = new ParamGroup(
+                    impStructure.Rows[0][SqlParam[GroupNames.inPar]].ToString(),
+                    nameSplit[2].Trim(),
+                    GroupNames.inPar,
+                    Scan.FindAll(x => ((x.Attr == attrName.Field) || (x.Attr == attrName.Const)) && x.IsActive),
+                    this
+                    );
+            }
+
+            if (impStructure.Columns.Contains(SqlParam[GroupNames.outPar]))
+            {
+                OutParam = new ParamGroup(
+                    impStructure.Rows[0][SqlParam[GroupNames.outPar]].ToString(),
+                    nameSplit[3].Trim(),
+                    GroupNames.outPar,
+                    Scan.FindAll(x => (x.Attr == attrName.Answer)  && x.IsActive),
+                    this
+                    );
+            }
+
         }
+
+        //string getValueFromSQLParam(string )
+
+        private void setFunctionName()
+        {
+            if (attr != attrName.Func)
+            {
+                FunctionName = "";
+            }
+            else
+            {
+                FunctionName = XlsName.Split('(')[0].Trim();
+            }
+        }
+
+        private int getParamIndex(string[] arrayNames, GroupNames group)
+        {
+            return Array.IndexOf(arrayNames, Enum.GetName(typeof(GroupNames), group));
+        }
+
+        public static readonly Dictionary<GroupNames, string> SqlParam
+            = new Dictionary<GroupNames, string>
+        {
+            { GroupNames.inTable,    "inTable"},
+            { GroupNames.tabFields,  "tabFields"},
+            { GroupNames.inPar,      "inPar"},
+            { GroupNames.outPar,      "outPar"}
+        };
+
 
     }
 }

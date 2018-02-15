@@ -864,7 +864,7 @@
             this.ButtonMatching.Size = new System.Drawing.Size(54, 22);
             this.ButtonMatching.Text = "&Matching";
             this.ButtonMatching.ToolTipText = "Matching";
-            this.ButtonMatching.Click += new System.EventHandler(this.toolStripButton2_Click);
+            this.ButtonMatching.Click += new System.EventHandler(this.matching_Click);
             // 
             // BottomProcessing
             // 
@@ -875,7 +875,7 @@
             this.BottomProcessing.Name = "BottomProcessing";
             this.BottomProcessing.Size = new System.Drawing.Size(62, 22);
             this.BottomProcessing.Text = "&Processing";
-            this.BottomProcessing.Click += new System.EventHandler(this.toolStripButton2_Click_1);
+            this.BottomProcessing.Click += new System.EventHandler(this.processing_Click);
             // 
             // ButtonStore
             // 

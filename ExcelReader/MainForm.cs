@@ -214,7 +214,7 @@ namespace ExcelReader
             }
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e) 
+        private void matching_Click(object sender, EventArgs e) 
         {
 
             if (file.XlsTable == null) {
@@ -238,10 +238,9 @@ namespace ExcelReader
                     );
             }
 
-            // file.ResTable = scan.initResutTable();
             textBox1.Text = scan.Matching(file.XlsTable);
 
-            if (!scan.AllFound())
+            if (!scan.AllFound)
             {
                 MessageBox.Show("Не все поля их шаблона найдены!\n Смотрите подробный отчет");
                 tabControl1.TabPages.Remove(tabPage1);
@@ -250,7 +249,6 @@ namespace ExcelReader
 
             scan.InitXlsFields();
             scan.ChechFields();
-
             activatStripMenu(
                 new string[]  {
                 "ButtonOpen",
@@ -271,7 +269,7 @@ namespace ExcelReader
             }
         }
 
-        private void toolStripButton2_Click_1(object sender, EventArgs e)
+        private void processing_Click(object sender, EventArgs e)
         {
             // String IP = Scan.GetLocalIPAddress();
             if (!tabControl1.TabPages.Contains(tabPage1))
@@ -281,7 +279,9 @@ namespace ExcelReader
             }
 
             //scan.initResultFromXls(file.XlsTable);
+
             scan.InitAllField();
+            scan.Processing();
             dataGridView4.AutoGenerateColumns = false;
             dataGridView4.Columns.Clear();
             dataGridView4.AutoGenerateColumns = true;

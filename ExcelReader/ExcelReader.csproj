@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FieldAnswer.cs" />
     <Compile Include="FieldBase.cs" />
     <Compile Include="CollectDataSet.cs">
       <DependentUpon>CollectDataSet.xsd</DependentUpon>
@@ -79,6 +80,11 @@
     </Compile>
     <Compile Include="FieldConst.cs" />
     <Compile Include="FieldFunc.cs" />
+    <Compile Include="ParamAnswer.cs" />
+    <Compile Include="ParamGroup.cs" />
+    <Compile Include="ParamBase.cs" />
+    <Compile Include="ParamSys.cs" />
+    <Compile Include="ParamToSql.cs" />
     <Compile Include="Scan.cs" />
     <Compile Include="ExcelFile.cs" />
     <Compile Include="FieldXls.cs" />

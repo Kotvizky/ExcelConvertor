@@ -9,6 +9,11 @@ namespace ExcelReader
 {
     abstract class FieldBase
     {
+        
+        public FieldBase()
+        {
+
+        }
         // fields in database
         public short Npp { set; get; }
         public string ResName { set; get; }
@@ -44,19 +49,19 @@ namespace ExcelReader
                 return Scan.XlsRow;
             }
         }
-        public DataRow ResRow {
+        public virtual DataRow ResRow {
             get
             {
                 return Scan.ResRow;
             }
         }
-        //private Type Type;
         public Type Type { set; get; }
         public short DataSize { set; get; }
 
         public string StrFormat { set; get; }
         public bool IsActive { set; get; }
-        // <-- fields in database
+
+        public Func<ValidData, ValidValue> Validator { set; get; } = null;
 
         public bool Exist { set; get; }
 
@@ -73,7 +78,7 @@ namespace ExcelReader
             DataRow resRow,
             string typeVal,
             int dataSize
-            )
+        )
         {
             Npp = npp;
             ResName = resName;
@@ -86,6 +91,5 @@ namespace ExcelReader
 
         public Scan Scan;
         public abstract string InitValue();
-        //public abstract void writeValue();
     }
 }

@@ -8,7 +8,6 @@ namespace ExcelReader
 {
     class FieldConst : FieldBase
     {
-
         object value;
 
         public override object Value
@@ -21,7 +20,25 @@ namespace ExcelReader
 
         public override string InitValue()
         {
-            throw new NotImplementedException();
+            ValidValue result = Validator(new ValidData()
+            {
+                Value = xlsName,
+                Size = DataSize
+            });
+
+            if (result.Error == String.Empty)
+            {
+                value = result.Value;
+            }
+            else
+            {
+                result.Error = String.Format("{0}:{1};", ResName, result.Error);
+                value = null;
+            }
+            return result.Error;
         }
+
+        //public Func<ValidData, ValidValue> Validator { set; get; }
+
     }
 }

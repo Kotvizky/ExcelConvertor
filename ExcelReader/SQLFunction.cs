@@ -44,6 +44,26 @@ namespace ExcelReader
         };
 
 
+        public static DataTable getResultTable(string tableName)
+        {
+            DataTable result = null;
+            switch (tableName)
+            {
+                case "inVal":
+                    result = new DataTable();
+                    result.Columns.AddRange(
+                     new DataColumn[] {
+                        new DataColumn("Ip",Type.GetType("System.Byte[]")),
+                        new DataColumn("Row_Id",Type.GetType("System.Int32")),
+                        new DataColumn("BusId",Type.GetType("System.String")),
+                        new DataColumn("Account",Type.GetType("System.String")),
+                        new DataColumn("ContractNum",Type.GetType("System.String"))
+                    });
+                    break;
+            }
+            return result;
+        }
+
         public static void initCommand(string sqlCommand, string[] param, string sqlDelete = "")
         {
             conn.Open();
@@ -121,7 +141,6 @@ namespace ExcelReader
             conn.Close();
 
         }
-
 
         public static void preperedInsert(ArrayList param = null)
         {
@@ -236,6 +255,21 @@ namespace ExcelReader
 
             return res;
         }
+
+        static public DataTable getFuncDescription(string parameter)
+        {
+            SqlDataAdapter dataAdapter = new SqlDataAdapter();
+            dataAdapter.SelectCommand = new SqlCommand("select * from [dbo].[impFunc] where fnName = @name", conn);
+            dataAdapter.SelectCommand.Parameters.Add("@name", SqlDbType.VarChar);
+            dataAdapter.SelectCommand.Parameters[0].SqlValue = parameter;
+
+            //fn_getUkrSotz
+
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+            return table;
+        }
+
 
         struct DicSQLParam
         {
