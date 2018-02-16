@@ -43,8 +43,7 @@ namespace ExcelReader
             { "ROW_ID",  new DicSQLParam { ParName = "ROW_ID", Type = SqlDbType.Int, Length = 0} }
         };
 
-
-        public static DataTable getResultTable(string tableName)
+        public static DataTable GetResultTable(string tableName)
         {
             DataTable result = null;
             switch (tableName)
@@ -64,7 +63,7 @@ namespace ExcelReader
             return result;
         }
 
-        public static void initCommand(string sqlCommand, string[] param, string sqlDelete = "")
+        public static void InitCommand(string sqlCommand, string[] param, string sqlDelete = "")
         {
             conn.Open();
             command = new SqlCommand();
@@ -98,7 +97,7 @@ namespace ExcelReader
             command.Prepare();
         }
 
-        public static void bulkWrite(string tableName,DataRow[] rows)
+        public static void BulkWrite(string tableName,DataRow[] rows)
         {
 
             if (conn.State == ConnectionState.Closed) conn.Open();
@@ -125,7 +124,7 @@ namespace ExcelReader
             }
         }
 
-        public static void clearTable(string sqlCommand)
+        public static void ExecuteNonQuery(string sqlCommand)
         {
             try
             {
@@ -133,7 +132,6 @@ namespace ExcelReader
             }
             catch (SqlException e)
             {
-                // MessageBox.Show(e.ToString());
                 conn.Close();
             }
             command = new SqlCommand(sqlCommand,conn);
@@ -269,7 +267,6 @@ namespace ExcelReader
             dataAdapter.Fill(table);
             return table;
         }
-
 
         struct DicSQLParam
         {

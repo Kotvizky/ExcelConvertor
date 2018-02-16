@@ -21,6 +21,8 @@ namespace ExcelReader
                 if (outName == serviseFields.IP.ToString())
                 {
                     SysValue = Scan.GetLocalIPByte();
+                    strValue = Scan.GetLocalIPAddress(true);
+
                 }
             }
         }
@@ -28,6 +30,17 @@ namespace ExcelReader
 
         public object SysValue { protected set; get; } = null;
 
+        private string strValue = String.Empty;
+
+        public override string ToString()
+        {
+            if (strValue != String.Empty)
+            {
+                return "0x" + strValue;
+            }
+            return base.ToString();
+
+        }
 
         public override object Value
         {
@@ -43,7 +56,7 @@ namespace ExcelReader
 
         public override void InitField()
         {
-            OwnField.ResRow[OutName] = Value;
+            OwnField.SqlRow[OutName] = Value;
         }
     }
 }

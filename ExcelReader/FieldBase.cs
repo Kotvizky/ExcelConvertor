@@ -17,6 +17,7 @@ namespace ExcelReader
         // fields in database
         public short Npp { set; get; }
         public string ResName { set; get; }
+        public Scan Scan;
         protected string xlsName;
         public virtual string XlsName
         {
@@ -67,17 +68,9 @@ namespace ExcelReader
 
         public abstract object Value { get; }
 
-        public void initFields(
-            short npp,
-            string resName,
-            string xlsName,
-            bool isPrint,
-            attrName attr,
-            bool isActive,
-            DataRow xlsRow,
-            DataRow resRow,
-            string typeVal,
-            int dataSize
+        public void initFields(short npp, string resName, string xlsName, bool isPrint,
+            attrName attr, bool isActive, DataRow xlsRow, DataRow resRow,
+            string typeVal, int dataSize
         )
         {
             Npp = npp;
@@ -89,7 +82,6 @@ namespace ExcelReader
             Type = Type.GetType(typeVal);
         }
 
-        public Scan Scan;
         public abstract string InitValue();
     }
 }

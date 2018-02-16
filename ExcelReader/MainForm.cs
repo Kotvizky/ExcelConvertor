@@ -291,6 +291,7 @@ namespace ExcelReader
 
 
             //scan.WriteResult(file.XlsTable);
+            scan.GetFunctionResult();
 
             showStripMessage("");
 

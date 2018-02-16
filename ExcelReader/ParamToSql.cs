@@ -30,7 +30,7 @@ namespace ExcelReader
 
         public override void InitField()
         {
-            OwnField.SQLRow[OutName] = Value;
+            OwnField.SqlRow[OutName] = Value;
         }
     }
 }

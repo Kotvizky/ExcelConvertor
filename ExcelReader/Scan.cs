@@ -233,15 +233,23 @@ namespace ExcelReader
             GetFunctionResult();
         }
 
-        private void GetFunctionResult()
+        public void GetFunctionResult()
         {
             foreach(FieldFunc field in FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
             {
                 if (field.initSQLTable())
                 {
-                    // fill SQL Table
+                    field.InitSqlTable();
+                    for (int i = 0; i < ResTable.Rows.Count; i++)
+                    {
+                        ResRow = this.ResTable.Rows[i];
+                        field.InitSqlValues(i);
+                    }
+                    field.InsertToServer();
+                    field.FillResult();
                 }
             }
+
         }
 
         public void InitXlsFields()
@@ -274,16 +282,21 @@ namespace ExcelReader
             {
                 if (field.Attr == attrName.Field) continue;
                 DataColumn column = null;
+                DataColumnCollection columns = ResTable.Columns;
+                string colNume = String.Empty;
                 if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
                 {
-                    column = ResTable.Columns.Add(field.ResName.Split('.')[1], field.Type);
+                    colNume = field.ResName.Split('.')[1];
                 }
                 else if (field.Attr == attrName.Const)
                 {
-                    column = ResTable.Columns.Add(field.ResName, field.Type);
+                    colNume = field.ResName;
                 }
-                if (column != null)
+                if (colNume != String.Empty)
                 {
+                     
+                    if (columns.Contains(colNume)) columns.Remove(colNume);
+                    column = ResTable.Columns.Add(colNume, field.Type);
                     column.SetOrdinal(newFields.IndexOf(field));
                 }
             }
@@ -456,9 +469,9 @@ namespace ExcelReader
                 fieldFunc.initSQLParameter(this);
 
                 ArrayList paramGpoups = new ArrayList(new ParamGroup[]  {
-                    fieldFunc.FieldsParam,
-                    fieldFunc.InParam,
-                    fieldFunc.OutParam
+                    fieldFunc.ParamsField,
+                    fieldFunc.ParamsIn,
+                    fieldFunc.ParamsOut
                 });
 
 
@@ -606,7 +619,7 @@ namespace ExcelReader
                 sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTableName, GetLocalIPAddress(true));
             }
 
-            SQLFunction.clearTable(sqlDelete);
+            SQLFunction.ExecuteNonQuery(sqlDelete);
 
 
 
@@ -673,7 +686,7 @@ namespace ExcelReader
                 onStepProgressBar?.Invoke();
             }
 
-            SQLFunction.bulkWrite(field.SQLTableName, rows);
+            SQLFunction.BulkWrite(field.SQLTableName, rows);
 
             onHideProgressBar?.Invoke();
 
@@ -709,9 +722,9 @@ namespace ExcelReader
             FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == GroupNames.outPar)).parameters;
             for(int i = 0; i < parameters.Length; i++)
             {
-                if (field.ResTable.Columns.Contains(parameters[i].SqlName) & (parameters[i].ResName != null))
+                if (field.InSqlTable.Columns.Contains(parameters[i].SqlName) & (parameters[i].ResName != null))
                 {
-                    field.ResTable.Columns[parameters[i].SqlName].ColumnName = parameters[i].ResName;
+                    field.InSqlTable.Columns[parameters[i].SqlName].ColumnName = parameters[i].ResName;
                 }
             }
         }
@@ -741,7 +754,7 @@ namespace ExcelReader
             onShowMessage?.Invoke("Insert Data");
             insertData(field, table, clearData);
 
-            string resFunction = functionString(field, GetLocalIPAddress());
+            //string resFunction = functionString(field, GetLocalIPAddress());
             onShowMessage?.Invoke("Get SQL Data");
             columnsRename(field);
         }

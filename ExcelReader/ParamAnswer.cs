@@ -27,13 +27,16 @@ namespace ExcelReader
         {
             get
             {
-                return OwnField.SQLRow[this.ParamName];
+                return OwnField.SqlCurrentRow[this.OutName];
             }
         }
 
         public override void InitField()
         {
-            OwnField.ResRow[OutName] = Value;
+            if (Field != null)
+            {
+                OwnField.ResCurrentRow[Field.ResName.Split('.')[1]] = Value;
+            }
         }
     }
 }

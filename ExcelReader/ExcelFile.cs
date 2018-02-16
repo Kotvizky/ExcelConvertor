@@ -170,7 +170,6 @@ namespace ExcelReader
             string res = (num1 > 0) ? String.Format("{0}{1}",
                                         (char)(num1 + diff), (char)(num2 + diff + 1)) 
                                         : String.Format("{0}", (char)(num2 + diff + 1));
-
             return String.Format("{0}{1}", res, row);
         }
 
