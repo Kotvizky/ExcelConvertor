@@ -43,6 +43,44 @@ namespace ExcelReader
             { "ROW_ID",  new DicSQLParam { ParName = "ROW_ID", Type = SqlDbType.Int, Length = 0} }
         };
 
+        static string sqlCommHead =
+            @"select idHead, idParent, name, comm
+              from i_tmpl_head";
+
+        static string commStr =
+            @"select idStr,idHead,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
+                strFormat,isActive,comm,author,dateCreate,operator,dateModify
+            from i_tmpl_str
+            where idHead = @idHead";
+
+        static SqlDataAdapter tbStrAdapter = new SqlDataAdapter(commStr,  conn );
+
+        static SqlCommandBuilder tbStrBuilder;
+
+        public static void getTbHeadData(DataTable table) {
+            SqlDataAdapter adapter = new SqlDataAdapter(sqlCommHead,conn);
+            adapter.Fill(table);
+        }
+
+        public static void intTbStrParam()
+        {
+            tbStrAdapter.SelectCommand.Parameters.Add(new SqlParameter("idHead", Type.GetType("System.Int32")));
+            tbStrBuilder = new SqlCommandBuilder(tbStrAdapter);
+        }
+
+        public static void getTbStrData(DataTable table, int idHead)
+        {
+//            tbStrAdapter.SelectCommand.Parameters[0].Value = idHead;
+            table.Clear();
+
+            //tbStrAdapter.SelectCommand = new SqlCommand(commStr, conn);
+            //tbStrAdapter.SelectCommand.Parameters.Add(new SqlParameter("idHead", Type.GetType("System.Int32")));
+            tbStrAdapter.SelectCommand.Parameters[0].Value = idHead;
+
+
+            tbStrAdapter.Fill(table);
+        }
+
         public static DataTable GetResultTable(string tableName)
         {
             DataTable result = null;
@@ -97,7 +135,7 @@ namespace ExcelReader
             command.Prepare();
         }
 
-        public static void BulkWrite(string tableName,DataRow[] rows)
+        public static void BulkWrite(string tableName, DataRow[] rows)
         {
 
             if (conn.State == ConnectionState.Closed) conn.Open();

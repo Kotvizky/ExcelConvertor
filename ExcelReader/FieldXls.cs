@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExcelReader
 {
-    class FieldXls : FieldBase
+    class FieldXls: FieldBase
     {
         private const string noData = "Н/Д";
 
@@ -19,13 +19,9 @@ namespace ExcelReader
                 Size = DataSize
             });
 
-            if (result.Error == String.Empty) {
-                ResRow[ResName] = result.Value;
-            }
-            else
-            {
+            ResRow[ResName] = result.Value;
+            if (result.Error != String.Empty) 
                 result.Error = String.Format("{0}:{1};",ResName, result.Error);
-            }
             return result.Error;
         }
 

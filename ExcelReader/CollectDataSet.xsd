@@ -287,7 +287,7 @@ SELECT id, name FROM attrValue WHERE (id = @id)</CommandText>
   <xs:element name="CollectDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="CollectDataSet" msprop:Generator_UserDSName="CollectDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="i_tmpl_head" msprop:Generator_TableClassName="i_tmpl_headDataTable" msprop:Generator_TableVarName="tablei_tmpl_head" msprop:Generator_RowChangedName="i_tmpl_headRowChanged" msprop:Generator_TablePropName="i_tmpl_head" msprop:Generator_RowDeletingName="i_tmpl_headRowDeleting" msprop:Generator_RowChangingName="i_tmpl_headRowChanging" msprop:Generator_RowEvHandlerName="i_tmpl_headRowChangeEventHandler" msprop:Generator_RowDeletedName="i_tmpl_headRowDeleted" msprop:Generator_RowClassName="i_tmpl_headRow" msprop:Generator_UserTableName="i_tmpl_head" msprop:Generator_RowEvArgName="i_tmpl_headRowChangeEvent">
+        <xs:element name="i_tmpl_head" msprop:Generator_TableClassName="i_tmpl_headDataTable" msprop:Generator_TableVarName="tablei_tmpl_head" msprop:Generator_TablePropName="i_tmpl_head" msprop:Generator_RowDeletingName="i_tmpl_headRowDeleting" msprop:Generator_RowChangingName="i_tmpl_headRowChanging" msprop:Generator_RowEvHandlerName="i_tmpl_headRowChangeEventHandler" msprop:Generator_RowDeletedName="i_tmpl_headRowDeleted" msprop:Generator_UserTableName="i_tmpl_head" msprop:Generator_RowChangedName="i_tmpl_headRowChanged" msprop:Generator_RowEvArgName="i_tmpl_headRowChangeEvent" msprop:Generator_RowClassName="i_tmpl_headRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="idHead" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnidHead" msprop:Generator_ColumnPropNameInRow="idHead" msprop:Generator_ColumnPropNameInTable="idHeadColumn" msprop:Generator_UserColumnName="idHead" type="xs:int" />
@@ -324,7 +324,7 @@ SELECT id, name FROM attrValue WHERE (id = @id)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="i_tmpl_str" msprop:Generator_TableClassName="i_tmpl_strDataTable" msprop:Generator_TableVarName="tablei_tmpl_str" msprop:Generator_RowChangedName="i_tmpl_strRowChanged" msprop:Generator_TablePropName="i_tmpl_str" msprop:Generator_RowDeletingName="i_tmpl_strRowDeleting" msprop:Generator_RowChangingName="i_tmpl_strRowChanging" msprop:Generator_RowEvHandlerName="i_tmpl_strRowChangeEventHandler" msprop:Generator_RowDeletedName="i_tmpl_strRowDeleted" msprop:Generator_RowClassName="i_tmpl_strRow" msprop:Generator_UserTableName="i_tmpl_str" msprop:Generator_RowEvArgName="i_tmpl_strRowChangeEvent">
+        <xs:element name="i_tmpl_str" msprop:Generator_TableClassName="i_tmpl_strDataTable" msprop:Generator_TableVarName="tablei_tmpl_str" msprop:Generator_TablePropName="i_tmpl_str" msprop:Generator_RowDeletingName="i_tmpl_strRowDeleting" msprop:Generator_RowChangingName="i_tmpl_strRowChanging" msprop:Generator_RowEvHandlerName="i_tmpl_strRowChangeEventHandler" msprop:Generator_RowDeletedName="i_tmpl_strRowDeleted" msprop:Generator_UserTableName="i_tmpl_str" msprop:Generator_RowChangedName="i_tmpl_strRowChanged" msprop:Generator_RowEvArgName="i_tmpl_strRowChangeEvent" msprop:Generator_RowClassName="i_tmpl_strRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="idStr" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnidStr" msprop:Generator_ColumnPropNameInRow="idStr" msprop:Generator_ColumnPropNameInTable="idStrColumn" msprop:Generator_UserColumnName="idStr" type="xs:int" />
@@ -339,7 +339,7 @@ SELECT id, name FROM attrValue WHERE (id = @id)</CommandText>
               <xs:element name="xlsName" msprop:Generator_ColumnVarNameInTable="columnxlsName" msprop:Generator_ColumnPropNameInRow="xlsName" msprop:Generator_ColumnPropNameInTable="xlsNameColumn" msprop:Generator_UserColumnName="xlsName" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
-                    <xs:maxLength value="250" />
+                    <xs:maxLength value="500" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
@@ -388,7 +388,7 @@ SELECT id, name FROM attrValue WHERE (id = @id)</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="attrValue" msprop:Generator_TableClassName="attrValueDataTable" msprop:Generator_TableVarName="tableattrValue" msprop:Generator_TablePropName="attrValue" msprop:Generator_RowDeletingName="attrValueRowDeleting" msprop:Generator_RowChangingName="attrValueRowChanging" msprop:Generator_RowEvHandlerName="attrValueRowChangeEventHandler" msprop:Generator_RowDeletedName="attrValueRowDeleted" msprop:Generator_UserTableName="attrValue" msprop:Generator_RowChangedName="attrValueRowChanged" msprop:Generator_RowEvArgName="attrValueRowChangeEvent" msprop:Generator_RowClassName="attrValueRow">
+        <xs:element name="attrValue" msprop:Generator_TableClassName="attrValueDataTable" msprop:Generator_TableVarName="tableattrValue" msprop:Generator_RowChangedName="attrValueRowChanged" msprop:Generator_TablePropName="attrValue" msprop:Generator_RowDeletingName="attrValueRowDeleting" msprop:Generator_RowChangingName="attrValueRowChanging" msprop:Generator_RowEvHandlerName="attrValueRowChangeEventHandler" msprop:Generator_RowDeletedName="attrValueRowDeleted" msprop:Generator_RowClassName="attrValueRow" msprop:Generator_UserTableName="attrValue" msprop:Generator_RowEvArgName="attrValueRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="id" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_UserColumnName="id" type="xs:unsignedByte" />
@@ -419,8 +419,8 @@ SELECT id, name FROM attrValue WHERE (id = @id)</CommandText>
   </xs:element>
   <xs:annotation>
     <xs:appinfo>
-      <msdata:Relationship name="FK_impHead_impStr" msdata:parent="i_tmpl_head" msdata:child="i_tmpl_str" msdata:parentkey="idHead" msdata:childkey="idHead" msprop:Generator_UserChildTable="i_tmpl_str" msprop:Generator_ChildPropName="Geti_tmpl_strRows" msprop:Generator_UserRelationName="FK_impHead_impStr" msprop:Generator_RelationVarName="relationFK_impHead_impStr" msprop:Generator_UserParentTable="i_tmpl_head" msprop:Generator_ParentPropName="i_tmpl_headRow" />
-      <msdata:Relationship name="FK_impStr_attrValue" msdata:parent="attrValue" msdata:child="i_tmpl_str" msdata:parentkey="id" msdata:childkey="attr" msprop:Generator_UserChildTable="i_tmpl_str" msprop:Generator_ChildPropName="Geti_tmpl_strRows" msprop:Generator_UserRelationName="FK_impStr_attrValue" msprop:Generator_RelationVarName="relationFK_impStr_attrValue" msprop:Generator_UserParentTable="attrValue" msprop:Generator_ParentPropName="attrValueRow" />
+      <msdata:Relationship name="FK_impHead_impStr" msdata:parent="i_tmpl_head" msdata:child="i_tmpl_str" msdata:parentkey="idHead" msdata:childkey="idHead" msprop:Generator_UserChildTable="i_tmpl_str" msprop:Generator_ChildPropName="Geti_tmpl_strRows" msprop:Generator_UserRelationName="FK_impHead_impStr" msprop:Generator_ParentPropName="i_tmpl_headRow" msprop:Generator_RelationVarName="relationFK_impHead_impStr" msprop:Generator_UserParentTable="i_tmpl_head" />
+      <msdata:Relationship name="FK_impStr_attrValue" msdata:parent="attrValue" msdata:child="i_tmpl_str" msdata:parentkey="id" msdata:childkey="attr" msprop:Generator_UserChildTable="i_tmpl_str" msprop:Generator_ChildPropName="Geti_tmpl_strRows" msprop:Generator_UserRelationName="FK_impStr_attrValue" msprop:Generator_ParentPropName="attrValueRow" msprop:Generator_RelationVarName="relationFK_impStr_attrValue" msprop:Generator_UserParentTable="attrValue" />
     </xs:appinfo>
   </xs:annotation>
 </xs:schema>

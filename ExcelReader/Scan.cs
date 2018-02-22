@@ -117,14 +117,20 @@ namespace ExcelReader
 
             switch (attr)
             {
-                case attrName.Func:
-                    newField = new FieldFunc();
+                case attrName.Answer:
+                    newField = new FieldAnswer();
                     break;
                 case attrName.Const:
                     newField = new FieldConst();
                     break;
-                case attrName.Answer:
-                    newField = new FieldAnswer();
+                case attrName.Expr:
+                    newField = new FieldExpr();
+                    break;
+                case attrName.Func:
+                    newField = new FieldFunc();
+                    ((FieldFunc)newField).onInitProgressBar += this.onInitProgressBar;
+                    ((FieldFunc)newField).onStepProgressBar += this.onStepProgressBar;
+                    ((FieldFunc)newField).onHideProgressBar += this.onHideProgressBar;
                     break;
                 default:
                     newField = new FieldXls();
@@ -177,7 +183,6 @@ namespace ExcelReader
             if (value == DBNull.Value)
             {
                 result.Error = errNull;
-                result.Value = 0D;
             }
             else
             {
@@ -230,10 +235,27 @@ namespace ExcelReader
 
         public void Processing()
         {
+            InitAllFields();
             GetFunctionResult();
+            writeConstants();
+            AddExpressions();
+            RemoveNotPrint();
         }
 
-        public void GetFunctionResult()
+        void AddExpressions()
+        {
+            List<FieldBase> fields = FindAll(x => (x.Attr == attrName.Expr) && x.IsActive);
+            foreach(FieldExpr field in fields) field.InitField();
+            foreach(DataRow row in ResTable.Rows)
+            {
+                ResRow = row;
+                foreach (FieldExpr field in fields) field.InitValue();
+            }
+            fields.Reverse();
+            foreach (FieldExpr field in fields) field.RemoveField();
+        }
+
+        void GetFunctionResult()
         {
             foreach(FieldFunc field in FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
             {
@@ -249,15 +271,32 @@ namespace ExcelReader
                     field.FillResult();
                 }
             }
+            onHideProgressBar?.Invoke();
+        }
+
+        void writeConstants()
+        {
+            List<FieldBase> fieldsConst = FindAll(x => (x.Attr == attrName.Const) && x.IsPrint);
+            if (fieldsConst.Count > 0)
+            {
+                foreach (DataRow row in ResTable.Rows)
+                {
+                    foreach (var field in fieldsConst)
+                    {
+                        row[field.ResName] = field.Value;
+                    }
+                }
+            }
 
         }
 
         public void InitXlsFields()
         {
-            var resField = FindAll(x => x.IsActive && (x.Attr == attrName.Field)).OrderBy(x => x.Npp);
+            var resField = FindAll(x => x.IsActive && (x.Attr == attrName.Field) ).OrderBy(x => x.Npp);
 
             ResTable = new DataTable();
-            foreach (FieldXls field in resField)
+            ResTable.Locale = CultureInfo.InvariantCulture;
+            foreach (FieldBase field in resField)
             {
                 if (field.Attr == attrName.Field)
                 {
@@ -274,30 +313,35 @@ namespace ExcelReader
             }
         }
 
-        public void InitAllField()
+        void InitAllFields()
         {
-            List<FieldBase> newFields = this.FindAll(x => x.IsActive && x.IsPrint ).OrderBy(x => x.Npp).ToList();
+            DataColumnCollection columns = ResTable.Columns;
+            List<FieldBase> newFields = this.FindAll(x => x.IsActive && (x.Attr != attrName.Expr)).OrderBy(x => x.Npp).ToList();
 
             foreach (FieldBase field in newFields)
             {
-                if (field.Attr == attrName.Field) continue;
                 DataColumn column = null;
-                DataColumnCollection columns = ResTable.Columns;
-                string colNume = String.Empty;
-                if ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0))
+                int npp = newFields.IndexOf(field);
+                string colNume = ((field.Attr == attrName.Answer) & (field.ResName.IndexOf(".") > 0)) 
+                    ? field.ResName.Split('.')[1]
+                    :field.ResName;
+                if (columns.Contains(colNume))
+                    column = columns[colNume];
+                else column = ResTable.Columns.Add(colNume, field.Type);
+                column.SetOrdinal(npp);
+            }
+        }
+
+        void RemoveNotPrint()
+        {
+            List<FieldBase> newFields = this.FindAll(x => x.IsActive && !x.IsPrint ).OrderBy(x => x.Npp).ToList();
+            DataColumnCollection columns = ResTable.Columns;
+            foreach (FieldBase field in newFields)
+            {
+                if (columns.Contains(field.ResName))
                 {
-                    colNume = field.ResName.Split('.')[1];
-                }
-                else if (field.Attr == attrName.Const)
-                {
-                    colNume = field.ResName;
-                }
-                if (colNume != String.Empty)
-                {
-                     
-                    if (columns.Contains(colNume)) columns.Remove(colNume);
-                    column = ResTable.Columns.Add(colNume, field.Type);
-                    column.SetOrdinal(newFields.IndexOf(field));
+                    columns.Remove(columns[field.ResName]);
+                    continue;
                 }
             }
         }
@@ -510,24 +554,29 @@ namespace ExcelReader
         public void ChechFields()
         {
             string ErrorFied = "Errors";
-            var fields = this.FindAll(x => x.GetType().Equals(typeof(FieldXls)) && (x.Attr == attrName.Field));
             ResTable.Rows.Clear();
             if (!ResTable.Columns.Contains(ErrorFied))
             {
                 ResTable.Columns.Add(ErrorFied,typeof(String)).SetOrdinal(0);
             }
 
+
+            onInitProgressBar?.Invoke(xlsTable.Rows.Count);
+            var fields = this.FindAll(x => (x.Attr == attrName.Field) && x.IsActive);
             foreach (DataRow curRow in xlsTable.Rows)
             {
                 XlsRow = curRow;
                 ResRow = ResTable.NewRow();
                 ResTable.Rows.Add(ResRow);
-                foreach (FieldXls field in fields)
+                foreach (FieldBase field in fields)
                 {
                     string error = field.InitValue();
-                    ResRow[ErrorFied] = ResRow[ErrorFied] + error; 
+                    ResRow[ErrorFied] = ResRow[ErrorFied] + error;
+                    onStepProgressBar?.Invoke();
                 }
             }
+            onHideProgressBar?.Invoke();
+
 
         }
 
@@ -560,175 +609,6 @@ namespace ExcelReader
             return result;
         }
 
-        public string insertString(FieldFunc field, DataTable table, string ip, bool clearData = false )
-        {
-            string result = "";
-            if (clearData)
-            {
-                result = String.Format("delete from {0} ", field.SQLTableName);
-            }
-
-            if (field.Attr != attrName.Func)
-            {
-                return result;
-            }
-            string fields = "";
-            string values = "";
-            FunctionFields tableParameters = field.Parameters.Find(x => (x.Group == GroupNames.inTable));
-            foreach (DataRow row in table.Rows)
-            {
-                /// !!!SetValues(row); 
-                for (int i = 0; i < tableParameters.parameters.Length; i++)
-                {
-                    fields += String.Format(",{0}", tableParameters.parameters[i].SqlName) ;
-                    if (tableParameters.parameters[i].Service)
-                    {
-                        serviseFields fieldType = (serviseFields) Enum.Parse(typeof(serviseFields), tableParameters.parameters[i].SqlName);
-                        switch (fieldType)
-                        {
-                            case (serviseFields.IP):
-                                values += String.Format(", {0}", ip); 
-                                break;
-                            case (serviseFields.ROW_ID):
-                                values += String.Format(", {0}" , table.Rows.IndexOf(row));
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        values += String.Format(",'{0}'", GetValue(tableParameters.parameters[i].ResName).Replace("'","''")) ;
-                    }
-                }
-                result += String.Format("\ninsert into {0}({1}) values({2})",
-                    field.SQLTableName,
-                    fields.Remove(0, 1),
-                    values.Remove(0, 1)
-                    );
-                fields = "";
-                values = "";
-            }
-            return result;
-        }
-
-        public void insertData(FieldFunc field, DataTable table, bool clearData = false)
-        {
-            onShowMessage?.Invoke("insertData");
-            string sqlDelete = "";
-            if (clearData)
-            {
-                sqlDelete = String.Format("delete from {0} where IP = 0x{1} ", field.SQLTableName, GetLocalIPAddress(true));
-            }
-
-            SQLFunction.ExecuteNonQuery(sqlDelete);
-
-
-
-            byte[] ip = GetLocalIPByte();
-            FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == GroupNames.inTable)).parameters;
-/*            string[] fieldsArray = new string[parameters.Length];
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                fieldsArray[i] = parameters[i].SqlName;
-            }
-            string insertCommand = String.Format("insert into {0}({1}) values (@{2})",
-                    field.SQLTable, String.Join(",", fieldsArray), String.Join(",@", fieldsArray));
-            SQLFunction.initCommand(insertCommand, fieldsArray, sqlDelete);
-*/
-            DataTable inTable = new DataTable();
-
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                DataColumn column = new DataColumn();
-                if (parameters[i].Service && (parameters[i].SqlName == serviseFields.IP.ToString()))
-                {
-                    inTable.Columns.Add(new DataColumn(
-                                            parameters[i].SqlName,
-                                            Type.GetType("System.Byte[]")));
-                }
-                else if (parameters[i].Service && (parameters[i].SqlName == serviseFields.ROW_ID.ToString()))
-                {
-                    inTable.Columns.Add(new DataColumn(
-                                            parameters[i].SqlName,
-                                            Type.GetType("System.Int32")));
-                }
-                else
-                {
-                    inTable.Columns.Add(new DataColumn(
-                                            parameters[i].SqlName,
-                                            Type.GetType("System.String")));
-                }
-            }
-
-            onInitProgressBar?.Invoke(table.Rows.Count);
-
-            DataRow[] rows = new DataRow[table.Rows.Count];
-            //foreach (DataRow row in table.Rows)
-            for (int iRow = 0; iRow < table.Rows.Count; iRow++)
-            {
-                DataRow row = table.Rows[iRow];
-                rows[iRow] = inTable.NewRow();
-
-                for (int i = 0; i < parameters.Length; i++)
-                {
-                    if (parameters[i].TableName != null)
-                    {
-                        rows[iRow][parameters[i].SqlName] = row[parameters[i].TableName];
-                    }
-                    else if (parameters[i].Value != null)
-                    {
-                        rows[iRow][parameters[i].SqlName] = parameters[i].Value;
-                    }
-                    else if (parameters[i].SqlName == serviseFields.ROW_ID.ToString())
-                    {
-                        rows[iRow][parameters[i].SqlName] = table.Rows.IndexOf(row);
-                    }
-                }
-                onStepProgressBar?.Invoke();
-            }
-
-            SQLFunction.BulkWrite(field.SQLTableName, rows);
-
-            onHideProgressBar?.Invoke();
-
-        }
-
-        public string functionString(FieldFunc field,string ip)
-        {
-
-            FunctionFields funcParameters = field.Parameters.Find(x => (x.Group == GroupNames.inPar));
-            string values = String.Empty;
-            for (int i = 0; i < funcParameters.parameters.Length; i++)
-            {
-                if (funcParameters.parameters[i].Service)
-                {
-                    serviseFields fieldType = (serviseFields)Enum.Parse(typeof(serviseFields), funcParameters.parameters[i].SqlName);
-                    switch (fieldType)
-                    {
-                        case (serviseFields.IP):
-                            values += String.Format(", '{0}'", ip);
-                            break;
-                    }
-                }
-                else
-                {
-                    values += String.Format(",'{0}'", GetValue(funcParameters.parameters[i].ResName).Replace("'", "''"));
-                }
-            }
-            return String.Format("select * from {0}({1}) order by row_id",field.FunctionName,values.Remove(0,1));
-        }
-
-        public void columnsRename(FieldFunc field)
-        {
-            FunctionParameter[] parameters = field.Parameters.Find(x => (x.Group == GroupNames.outPar)).parameters;
-            for(int i = 0; i < parameters.Length; i++)
-            {
-                if (field.InSqlTable.Columns.Contains(parameters[i].SqlName) & (parameters[i].ResName != null))
-                {
-                    field.InSqlTable.Columns[parameters[i].SqlName].ColumnName = parameters[i].ResName;
-                }
-            }
-        }
-
         public void WriteResult(DataTable XlsTable)
         {  
             onShowMessage?.Invoke("WriteResult");
@@ -747,16 +627,6 @@ namespace ExcelReader
             }
             onHideProgressBar?.Invoke();
             onShowMessage?.Invoke("");
-        }
-
-        public void initSQLData(FieldFunc field, DataTable table, bool clearData = false)
-        {
-            onShowMessage?.Invoke("Insert Data");
-            insertData(field, table, clearData);
-
-            //string resFunction = functionString(field, GetLocalIPAddress());
-            onShowMessage?.Invoke("Get SQL Data");
-            columnsRename(field);
         }
 
         public static string GetLocalIPAddress(bool isHex = false)

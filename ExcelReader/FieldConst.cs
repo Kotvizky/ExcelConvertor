@@ -26,7 +26,7 @@ namespace ExcelReader
                 Size = DataSize
             });
 
-            if (result.Error == String.Empty)
+            if (result.Error == "")
             {
                 value = result.Value;
             }
@@ -37,8 +37,6 @@ namespace ExcelReader
             }
             return result.Error;
         }
-
-        //public Func<ValidData, ValidValue> Validator { set; get; }
 
     }
 }

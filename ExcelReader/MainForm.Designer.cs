@@ -30,10 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textColumnFilter = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dgvTableXls = new System.Windows.Forms.DataGridView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
@@ -42,6 +44,7 @@
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.olvDataTree = new BrightIdeasSoftware.DataTreeListView();
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.itmplheadBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -119,7 +122,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTableXls)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
@@ -132,6 +135,7 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.olvDataTree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).BeginInit();
@@ -158,8 +162,10 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.label1);
+            this.splitContainer2.Panel1.Controls.Add(this.textColumnFilter);
             this.splitContainer2.Panel1.Controls.Add(this.splitter1);
-            this.splitContainer2.Panel1.Controls.Add(this.dataGridView1);
+            this.splitContainer2.Panel1.Controls.Add(this.dgvTableXls);
             // 
             // splitContainer2.Panel2
             // 
@@ -168,6 +174,26 @@
             this.splitContainer2.Size = new System.Drawing.Size(542, 568);
             this.splitContainer2.SplitterDistance = 257;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 235);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Column filter";
+            // 
+            // textColumnFilter
+            // 
+            this.textColumnFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textColumnFilter.Location = new System.Drawing.Point(73, 232);
+            this.textColumnFilter.Name = "textColumnFilter";
+            this.textColumnFilter.Size = new System.Drawing.Size(469, 20);
+            this.textColumnFilter.TabIndex = 6;
+            this.textColumnFilter.TextChanged += new System.EventHandler(this.textColumnFilter_TextChanged);
             // 
             // splitter1
             // 
@@ -179,15 +205,20 @@
             this.splitter1.TabIndex = 4;
             this.splitter1.TabStop = false;
             // 
-            // dataGridView1
+            // dgvTableXls
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(542, 257);
-            this.dataGridView1.TabIndex = 3;
-            this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseDoubleClick);
+            this.dgvTableXls.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvTableXls.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTableXls.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.dgvTableXls.Location = new System.Drawing.Point(0, 0);
+            this.dgvTableXls.Name = "dgvTableXls";
+            this.dgvTableXls.ShowCellErrors = false;
+            this.dgvTableXls.Size = new System.Drawing.Size(542, 228);
+            this.dgvTableXls.TabIndex = 3;
+            this.dgvTableXls.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTableXls_CellContentClick);
+            this.dgvTableXls.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseDoubleClick);
             // 
             // tabControl1
             // 
@@ -291,6 +322,7 @@
             // splitContainer3.Panel1
             // 
             this.splitContainer3.Panel1.AutoScroll = true;
+            this.splitContainer3.Panel1.Controls.Add(this.olvDataTree);
             this.splitContainer3.Panel1.Controls.Add(this.bindingNavigator1);
             this.splitContainer3.Panel1.Controls.Add(this.dgvTemlpHead);
             this.splitContainer3.Panel1.Controls.Add(this.splitter3);
@@ -303,6 +335,24 @@
             this.splitContainer3.Size = new System.Drawing.Size(269, 568);
             this.splitContainer3.SplitterDistance = 240;
             this.splitContainer3.TabIndex = 1;
+            // 
+            // olvDataTree
+            // 
+            this.olvDataTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvDataTree.CellEditUseWholeCell = false;
+            this.olvDataTree.DataSource = null;
+            this.olvDataTree.Location = new System.Drawing.Point(-1, 106);
+            this.olvDataTree.Name = "olvDataTree";
+            this.olvDataTree.RootKeyValueString = "";
+            this.olvDataTree.ShowGroups = false;
+            this.olvDataTree.Size = new System.Drawing.Size(267, 131);
+            this.olvDataTree.TabIndex = 3;
+            this.olvDataTree.UseCompatibleStateImageBehavior = false;
+            this.olvDataTree.View = System.Windows.Forms.View.Details;
+            this.olvDataTree.VirtualMode = true;
+            this.olvDataTree.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.olvDataTree_MouseDoubleClick);
             // 
             // bindingNavigator1
             // 
@@ -474,7 +524,7 @@
             this.dgvTemlpHead.DataSource = this.itmplheadBindingSource;
             this.dgvTemlpHead.Location = new System.Drawing.Point(0, 28);
             this.dgvTemlpHead.Name = "dgvTemlpHead";
-            this.dgvTemlpHead.Size = new System.Drawing.Size(276, 209);
+            this.dgvTemlpHead.Size = new System.Drawing.Size(260, 72);
             this.dgvTemlpHead.TabIndex = 1;
             // 
             // dgvTemplName
@@ -573,6 +623,7 @@
             // 
             this.fKimpHeadimpStrBindingSource.DataMember = "FK_impHead_impStr";
             this.fKimpHeadimpStrBindingSource.DataSource = this.itmplheadBindingSource;
+            this.fKimpHeadimpStrBindingSource.CurrentChanged += new System.EventHandler(this.fKimpHeadimpStrBindingSource_CurrentChanged);
             // 
             // bindingNavigatorCountItem1
             // 
@@ -718,9 +769,10 @@
             // xlsNameDataGrid3
             // 
             this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle3;
             this.xlsNameDataGrid3.HeaderText = "xlsName";
+            this.xlsNameDataGrid3.MaxInputLength = 1000;
             this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
             this.xlsNameDataGrid3.Width = 72;
             // 
@@ -956,10 +1008,11 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTableXls)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
@@ -975,6 +1028,7 @@
             this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.olvDataTree)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
             this.bindingNavigator1.ResumeLayout(false);
             this.bindingNavigator1.PerformLayout();
@@ -1002,7 +1056,7 @@
         #endregion
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgvTableXls;
         private System.Windows.Forms.Splitter splitter2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer3;
@@ -1068,6 +1122,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvTemplOperator;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvTemplDateModify;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvTemplIdHead;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textColumnFilter;
         private System.Windows.Forms.DataGridViewTextBoxColumn nppDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn resNameDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn xlsNameDataGrid3;
@@ -1084,6 +1140,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dateModifyDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn idStrDataGrid3;
+        private BrightIdeasSoftware.DataTreeListView olvDataTree;
     }
 }
 

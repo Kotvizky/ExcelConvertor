@@ -1068,7 +1068,7 @@ namespace ExcelReader {
                 this.columnidHead.AllowDBNull = false;
                 this.columnresName.AllowDBNull = false;
                 this.columnresName.MaxLength = 250;
-                this.columnxlsName.MaxLength = 250;
+                this.columnxlsName.MaxLength = 500;
                 this.columnstrFormat.MaxLength = 25;
                 this.columncomm.MaxLength = 500;
                 this.columnauthor.MaxLength = 85;

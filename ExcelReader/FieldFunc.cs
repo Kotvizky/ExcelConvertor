@@ -10,6 +10,13 @@ namespace ExcelReader
     class FieldFunc : FieldBase
     {
 
+        public event Scan.initProgressBar onInitProgressBar;
+
+        public event Scan.hideProgressBar onHideProgressBar;
+
+        public event Scan.stepProgressBar onStepProgressBar;
+
+
         public override string XlsName
         {
             set
@@ -78,69 +85,6 @@ namespace ExcelReader
         }
 
         public DataRow SqlRow { private set; get; }
-
-        public List<FunctionFields> Parameters { private set; get; }
-
-        public void parseSQLParameter(List<FieldBase> fields)
-        {
-            if (FunctionName == "")
-            {
-                return;
-            }
-            //string[] splitName = XlsName.Split('(');
-            List<string[]> impStructure = SQLFunction.getDescription(FunctionName);
-            int index;
-            Parameters = new List<FunctionFields>();
-            if ((index = getParamIndex(impStructure[0], GroupNames.inTable)) > -1)
-            {
-                SQLTableName = impStructure[1][index].Trim();
-            }
-            string[] nameSplit = xlsName.Split('(');
-
-            if ((index = getParamIndex(impStructure[0], GroupNames.tabFields)) > -1)
-            {
-                Parameters.Add(new FunctionFields(
-                    fields.FindAll(x => (x.Attr == attrName.Field & x.Exist | x.Attr == attrName.Const)),
-                    impStructure[1][index].Trim(),
-                    nameSplit[1].Trim(),
-                    GroupNames.inTable
-                    )
-                );
-            }
-
-            if ((index = getParamIndex(impStructure[0], GroupNames.inPar)) > -1)
-            {
-                Parameters.Add(new FunctionFields(
-                    fields.FindAll(x => ((x.Attr == attrName.Field) & x.Exist | x.Attr == attrName.Const)),
-                    impStructure[1][index],
-                    nameSplit[2],
-                    GroupNames.inPar
-                    )
-                );
-            }
-
-            if ((index = getParamIndex(impStructure[0], GroupNames.outPar)) > -1)
-            {
-                FunctionFields outPar = new FunctionFields(
-                    fields.FindAll(x => (x.Attr == attrName.Answer)),
-                    impStructure[1][index],
-                    nameSplit[3],
-                    GroupNames.outPar,
-                    FunctionName
-                    );
-                Parameters.Add(outPar);
-                for (int i = 0; i < outPar.parameters.Length; i++)
-                {
-                    if (outPar.parameters[i].xlsExist & (!outPar.parameters[i].Service))
-                    {
-                        string resField = String.Format("{0}.{1}", FunctionName, outPar.parameters[i].ResName);
-                        FieldBase outField = fields.Find(x => (x.ResName == resField));
-                        outField.Exist = true;
-                    }
-                }
-
-            }
-        }
 
         public void initSQLParameter(List<FieldBase> fields) //parseSQLParameter 
         {
@@ -269,6 +213,8 @@ namespace ExcelReader
         public void FillResult()
         {
             ExecServerFunc();
+            onInitProgressBar?.Invoke(ResSqlTable.Rows.Count);
+
             foreach (DataRow row in ResSqlTable.Rows)
             {
                 SqlCurrentRow = row;
@@ -277,11 +223,13 @@ namespace ExcelReader
                 {
                     param.InitField();
                 }
+                onStepProgressBar?.Invoke();
             }
+            onHideProgressBar?.Invoke();
 
         }
 
-        
+
         #endregion
 
         private int getParamIndex(string[] arrayNames, GroupNames group)

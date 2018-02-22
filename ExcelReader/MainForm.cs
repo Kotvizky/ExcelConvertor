@@ -15,12 +15,18 @@ using System.Collections;
 using System.Data.OleDb;
 using System.IO;
 using System.Globalization;
+using BrightIdeasSoftware;
 
 
 namespace ExcelReader
 {
     public partial class MainForm : Form
     {
+
+        DataTable tbHead = new DataTable();
+        DataTable tbString = new DataTable();
+        int idHead;
+
 
         private ExcelFile file;
         private Scan scan;
@@ -30,13 +36,17 @@ namespace ExcelReader
         public MainForm()
         {
             InitializeComponent();
-            
-            this.Text = Scan.GetLocalIPAddress();
+            //            showCalcGrid();
 
-//            toolStripProgressBar1.ToolTipText = "111";
+            initOlvHeadTable();
+            SQLFunction.getTbHeadData(tbHead);
+            olvDataTree.DataSource = tbHead;
+            autosizeColumns();
+
+            SQLFunction.intTbStrParam();
+
+            this.Text = Scan.GetLocalIPAddress();
             this.CenterToScreen();
-            //            fileName = "c:\\Users\\IKotvytskyi\\Documents\\test1.xlsx";
-            // fileName = "c:\\Users\\IKotvytskyi\\Desktop\\4 Додаток 3_на 01.01.18_нерух.xlsb" ;
             file = new ExcelFile();
             file.onSheetChoise += this.getXlsSheet; // method for a excel sheet choice
             file.onStep += this.stepProgressBar;
@@ -45,14 +55,63 @@ namespace ExcelReader
             scan.onInitProgressBar += this.initProgressBar;
             scan.onStepProgressBar += this.stepProgressBar;
             scan.onHideProgressBar += this.hideProgressBar;
+
             progressBar = toolStripProgressBar2;
             tabControl1.TabPages.Remove(tabPage1);
-            //ArrayList elements = new ArrayList();
             foreach (dataType dataType in Enum.GetValues(typeof(dataType)))
             {
                 dataTypeDataGrid3.Items.Add(dataType.ToString());
             }
             //dataTypeDataGrid3.Items.AddRange(elements.ToArray());
+        }
+
+        void initOlvHeadTable()
+        {
+            olvDataTree.KeyAspectName = "idHead";
+            olvDataTree.ParentKeyAspectName = "idParent";
+            olvDataTree.RootKeyValue = 0;
+            olvDataTree.ShowKeyColumns = false;
+            olvDataTree.CellEditActivation = ObjectListView.CellEditActivateMode.F2Only;
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration();
+            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.LightSeaGreen), 2);
+            rbd.BoundsPadding = new Size(1, 1);
+            rbd.CornerRounding = 4.0f;
+
+            // Put the decoration onto the hot item
+            this.olvDataTree.HotItemStyle = new HotItemStyle();
+            olvDataTree.HotItemStyle.Decoration = rbd;
+            olvDataTree.UseHotItem = true;
+        }
+
+        private void autosizeColumns()
+        {
+            foreach (ColumnHeader col in olvDataTree.Columns)
+            {
+                //auto resize column width
+
+                int colWidthBeforeAutoResize = col.Width;
+                col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+                int colWidthAfterAutoResizeByHeader = col.Width;
+                col.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                int colWidthAfterAutoResizeByContent = col.Width;
+
+                if (colWidthAfterAutoResizeByHeader > colWidthAfterAutoResizeByContent)
+                    col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                //first column
+                if (col.Index == 0)
+                    //we have to manually take care of tree structure, checkbox and image
+                    col.Width += 16 + 16 + olvDataTree.SmallImageSize.Width;
+                //last column
+                else if (col.Index == olvDataTree.Columns.Count - 1)
+                    //avoid "fill free space" bug
+                    if (colWidthBeforeAutoResize > colWidthAfterAutoResizeByContent)
+                        col.Width = colWidthBeforeAutoResize;
+                    else
+                        col.Width = colWidthAfterAutoResizeByContent;
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -116,7 +175,7 @@ namespace ExcelReader
                 col = table.Columns.Add("Check_Result", typeof(String));
                 col.SetOrdinal(1);
 
-                dataGridView1.DataSource = table;
+                dgvTableXls.DataSource = table;
 
                 //foreach (DataGridViewRow row in dataGridView1.Rows)
                 //{
@@ -232,7 +291,9 @@ namespace ExcelReader
                     xlsName: dgvTemlpStr.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
                     isPrint: (bool)dgvTemlpStr.Rows[i].Cells[getGridIndex("isPrint")].Value,
                     type: dgvTemlpStr.Rows[i].Cells[getGridIndex("dataType")].Value.ToString(),
-                    size: (short)dgvTemlpStr.Rows[i].Cells[getGridIndex("dataSize")].Value,
+                    size: (dgvTemlpStr.Rows[i].Cells[getGridIndex("dataSize")].Value == DBNull.Value)
+                        ? (short)0
+                        : (short)dgvTemlpStr.Rows[i].Cells[getGridIndex("dataSize")].Value,
                     attr:  (attrName)dgvTemlpStr.Rows[i].Cells[getGridIndex("attr")].Value,
                     isActive:  (bool)dgvTemlpStr.Rows[i].Cells[getGridIndex("IsActive")].Value
                     );
@@ -280,18 +341,10 @@ namespace ExcelReader
 
             //scan.initResultFromXls(file.XlsTable);
 
-            scan.InitAllField();
             scan.Processing();
             dataGridView4.AutoGenerateColumns = false;
             dataGridView4.Columns.Clear();
             dataGridView4.AutoGenerateColumns = true;
-            //dataGridView4.AutoGenerateColumnsChanged;
-
-            //dataGridView4.DataSource = scan.ResTable;
-
-
-            //scan.WriteResult(file.XlsTable);
-            scan.GetFunctionResult();
 
             showStripMessage("");
 
@@ -299,7 +352,7 @@ namespace ExcelReader
                 new string[]  {
                 "ButtonOpen",
                 "ButtonMatching",
-                "BottomProcessing",
+                //"BottomProcessing",
                 "ButtonStore"
                 }
             );
@@ -310,9 +363,9 @@ namespace ExcelReader
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if ((((DataGridView)sender).Name == "dataGridView1")
+            if ((((DataGridView)sender).Name == "dgvTableXls")
                 & (e.Button == MouseButtons.Right)) {
-                string name = dataGridView1.Columns[e.ColumnIndex].Name;
+                string name = dgvTableXls.Columns[e.ColumnIndex].Name;
                 Clipboard.SetText(name);
                 MessageBox.Show(String.Format("String \'{0}\' has been copied to clipboard",name));
             }
@@ -605,6 +658,118 @@ namespace ExcelReader
         {
             dgvTemlpStr.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvTemlpStr.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+        }
+
+
+        private void textColumnFilter_TextChanged(object sender, EventArgs e)
+        {
+            //MessageBox.Show(textColumnFilter.Text);
+            if (dgvTableXls.DataSource == null) return;
+            dgvTableXls_changeColumns(textColumnFilter.Text);
+        }
+
+        private void dgvTableXls_changeColumns(string filter)
+        {
+            if (filter == String.Empty)
+            {
+                foreach (DataGridViewColumn col in dgvTableXls.Columns)
+                {
+                    col.Visible = true;
+                }
+            }
+            else
+            {
+                foreach (DataGridViewColumn col in dgvTableXls.Columns)
+                {
+                    bool res = false;
+                    foreach(string str in filter.Split(';'))
+                    {
+                        if (col.Name.ToLower().Contains(str.ToLower()))
+                        {
+                            res = true;
+                            break;
+                        }
+                    }
+
+                    if (res)
+                    {
+                        col.Visible = true;
+                    }
+                    else
+                    {
+                        col.Visible = false;
+                    }
+                }
+            }
+        }
+
+        private void toolStripButton1_Click_3(object sender, EventArgs e)
+        {
+            showCalcGrid();
+        }
+
+        void showCalcGrid()
+        {
+
+            System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+            customCulture.NumberFormat.NumberDecimalSeparator = ".";
+            DataTable table = new DataTable();
+
+            //table.Locale = System.Globalization
+            //    CultureInfo.InvariantCulture;
+            //table.Locale.NumberFormat.NumberDecimalSeparator = ".";
+
+            // Create the first column.
+            DataColumn priceColumn = new DataColumn("price", Type.GetType("System.Decimal"));
+//            priceColumn.DataType = System.Type.GetType("System.decimal");
+            priceColumn.ColumnName = "price";
+            priceColumn.DefaultValue = "50,1";
+
+
+            // Create third column.
+            DataColumn totalColumn = new DataColumn();
+            totalColumn.DataType = System.Type.GetType("System.String");
+            totalColumn.ColumnName = "total";
+            totalColumn.Expression = "[price]";
+
+            // Add columns to DataTable.
+            table.Columns.Add(priceColumn);
+            table.Columns.Add(totalColumn);
+
+            DataRow row = table.NewRow();
+            table.Rows.Add(row);
+            DataView view = new DataView(table);
+            dgvTableXls.DataSource = view;
+
+        }
+
+        private void toolStripButton1_Click_4(object sender, EventArgs e)
+        {
+            double a = 0.003;
+            MessageBox.Show(a.ToString(CultureInfo.InvariantCulture));
+        }
+
+        private void dgvTableXls_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void fKimpHeadimpStrBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void olvDataTree_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int index = olvDataTree.SelectedIndex;
+            if (index > 0)
+            {
+                idHead = (int)tbHead.Rows[index - 1]["idHead"];
+                //MessageBox.Show(idHead.ToString());
+                SQLFunction.getTbStrData(tbString,idHead);
+                MessageBox.Show(tbString.Rows.Count.ToString());
+                dgvTemlpStr.DataSource = tbString;
+            }
         }
     }
 }
