@@ -12,7 +12,6 @@ using System.Net.NetworkInformation;
 using System.Globalization;
 
 
-
 namespace ExcelReader
 {
     class Scan : List<FieldBase>
@@ -23,6 +22,8 @@ namespace ExcelReader
             ConvertList = new List<ValidFunc>();
             FillConvertList();
         }
+
+        const string ErrorFied = "Errors";
 
         private void FillConvertList()
         {
@@ -132,6 +133,9 @@ namespace ExcelReader
                     ((FieldFunc)newField).onStepProgressBar += this.onStepProgressBar;
                     ((FieldFunc)newField).onHideProgressBar += this.onHideProgressBar;
                     break;
+                case attrName.System:
+                    newField = new FieldSystem();
+                    break;
                 default:
                     newField = new FieldXls();
                     break;
@@ -195,8 +199,6 @@ namespace ExcelReader
                     if (ex is FormatException)
                         // FormatException
                         result.Error = errConver;
-
-                    throw;
                 }
             }
             return result;
@@ -553,7 +555,6 @@ namespace ExcelReader
 
         public void ChechFields()
         {
-            string ErrorFied = "Errors";
             ResTable.Rows.Clear();
             if (!ResTable.Columns.Contains(ErrorFied))
             {

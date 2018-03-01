@@ -36,7 +36,7 @@ namespace ExcelReader
         public int Size;
     }
 
-    enum attrName : byte { Field = 0, Func, Answer, Const, Expr };
+    enum attrName : byte { Field = 0, Func, Answer, Const, Expr, System };
     enum funcParameter : byte { Table = 1, In, Out }
     enum spetialFields { Ip, RowId }
     enum GroupNames { inTable, tabFields, inPar, outPar }

@@ -44,7 +44,7 @@ namespace ExcelReader
         };
 
         static string sqlCommHead =
-            @"select idHead, idParent, name, comm
+            @"select idHead, idParent, name, comm, isGroup
               from i_tmpl_head";
 
         static string commStr =
@@ -70,15 +70,14 @@ namespace ExcelReader
 
         public static void getTbStrData(DataTable table, int idHead)
         {
-//            tbStrAdapter.SelectCommand.Parameters[0].Value = idHead;
             table.Clear();
-
-            //tbStrAdapter.SelectCommand = new SqlCommand(commStr, conn);
-            //tbStrAdapter.SelectCommand.Parameters.Add(new SqlParameter("idHead", Type.GetType("System.Int32")));
             tbStrAdapter.SelectCommand.Parameters[0].Value = idHead;
-
-
             tbStrAdapter.Fill(table);
+        }
+
+        public static void updateTbStrData(DataTable table)
+        {
+            tbStrAdapter.Update(table);
         }
 
         public static DataTable GetResultTable(string tableName)

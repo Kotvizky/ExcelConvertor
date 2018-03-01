@@ -23,10 +23,7 @@ namespace ExcelReader
     public partial class MainForm : Form
     {
 
-        DataTable tbHead = new DataTable();
         DataTable tbString = new DataTable();
-        int idHead;
-
 
         private ExcelFile file;
         private Scan scan;
@@ -38,12 +35,8 @@ namespace ExcelReader
             InitializeComponent();
             //            showCalcGrid();
 
-            initOlvHeadTable();
-            SQLFunction.getTbHeadData(tbHead);
-            olvDataTree.DataSource = tbHead;
-            autosizeColumns();
-
-            SQLFunction.intTbStrParam();
+            tbHeadClass.setProperty(olvDataTree,textTmplName);
+            tbStrClass.setProperty(dgvTemlpStr, bNTmplStr);
 
             this.Text = Scan.GetLocalIPAddress();
             this.CenterToScreen();
@@ -65,53 +58,182 @@ namespace ExcelReader
             //dataTypeDataGrid3.Items.AddRange(elements.ToArray());
         }
 
-        void initOlvHeadTable()
-        {
-            olvDataTree.KeyAspectName = "idHead";
-            olvDataTree.ParentKeyAspectName = "idParent";
-            olvDataTree.RootKeyValue = 0;
-            olvDataTree.ShowKeyColumns = false;
-            olvDataTree.CellEditActivation = ObjectListView.CellEditActivateMode.F2Only;
+        static class tbHeadClass {
 
-            // Make the decoration
-            RowBorderDecoration rbd = new RowBorderDecoration();
-            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.LightSeaGreen), 2);
-            rbd.BoundsPadding = new Size(1, 1);
-            rbd.CornerRounding = 4.0f;
+            static TextBox textTmplName;
 
-            // Put the decoration onto the hot item
-            this.olvDataTree.HotItemStyle = new HotItemStyle();
-            olvDataTree.HotItemStyle.Decoration = rbd;
-            olvDataTree.UseHotItem = true;
+            public static DataTreeListView olvDataTree;
+
+            public static DataTable tbHead = new DataTable();
+
+            public static int Index
+            {
+                get
+                {
+                    DataRow row = ((DataRowView)olvDataTree.SelectedObject).Row;
+                    int index = -1;
+                    if (!(bool)(row["isGroup"]))
+                        index = (int)(row["idHead"]);
+                    if (index > 0)
+                    {
+                        textTmplName.Text = String.Format("{0}\r\n{1}", 
+                            row["name"],
+                             row["comm"]
+                             );
+                        return (int)row["idHead"];
+                    }
+                    textTmplName.Text = "";
+                    return index;
+                }
+            }
+
+            public static void setProperty(DataTreeListView _olvDataTree, TextBox _textBox)
+            {
+                textTmplName = _textBox;
+                textTmplName.Text = "___";
+                olvDataTree = _olvDataTree;
+                initOlvHeadTable();
+                getData();
+                olvDataTree.DataSource = tbHeadClass.tbHead;
+                autosizeColumns();
+            }
+
+            public static void getData()
+            {
+                tbHead.Clear();
+                SQLFunction.getTbHeadData(tbHead);
+            }
+
+            static void initOlvHeadTable()
+            {
+                olvDataTree.KeyAspectName = "idHead";
+                olvDataTree.ParentKeyAspectName = "idParent";
+                olvDataTree.RootKeyValue = 0;
+                olvDataTree.ShowKeyColumns = false;
+                olvDataTree.CellEditActivation = ObjectListView.CellEditActivateMode.F2Only;
+
+                // Make the decoration
+                RowBorderDecoration rbd = new RowBorderDecoration();
+                rbd.BorderPen = new Pen(Color.FromArgb(128, Color.LightSeaGreen), 2);
+                rbd.BoundsPadding = new Size(1, 1);
+                rbd.CornerRounding = 4.0f;
+
+                // Put the decoration onto the hot item
+                olvDataTree.HotItemStyle = new HotItemStyle();
+                olvDataTree.HotItemStyle.Decoration = rbd;
+                olvDataTree.UseHotItem = true;
+            }
+
+            static void autosizeColumns()
+            {
+                foreach (ColumnHeader col in olvDataTree.Columns)
+                {
+                    //auto resize column width
+
+                    int colWidthBeforeAutoResize = col.Width;
+                    col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+                    int colWidthAfterAutoResizeByHeader = col.Width;
+                    col.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                    int colWidthAfterAutoResizeByContent = col.Width;
+
+                    if (colWidthAfterAutoResizeByHeader > colWidthAfterAutoResizeByContent)
+                        col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+                    //first column
+                    if (col.Index == 0)
+                        //we have to manually take care of tree structure, checkbox and image
+                        col.Width += 16 + 16 + olvDataTree.SmallImageSize.Width;
+                    //last column
+                    else if (col.Index == olvDataTree.Columns.Count - 1)
+                        //avoid "fill free space" bug
+                        if (colWidthBeforeAutoResize > colWidthAfterAutoResizeByContent)
+                            col.Width = colWidthBeforeAutoResize;
+                        else
+                            col.Width = colWidthAfterAutoResizeByContent;
+                }
+            }
+
         }
 
-        private void autosizeColumns()
-        {
-            foreach (ColumnHeader col in olvDataTree.Columns)
+        static class tbStrClass {
+
+            static int idHead;
+
+            static BindingNavigator Bng;
+
+            static DataGridView Dgv;
+
+            public static DataTable tbString = new DataTable();
+
+            public static void setProperty(DataGridView dgv, BindingNavigator bng)
             {
-                //auto resize column width
-
-                int colWidthBeforeAutoResize = col.Width;
-                col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-                int colWidthAfterAutoResizeByHeader = col.Width;
-                col.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-                int colWidthAfterAutoResizeByContent = col.Width;
-
-                if (colWidthAfterAutoResizeByHeader > colWidthAfterAutoResizeByContent)
-                    col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-
-                //first column
-                if (col.Index == 0)
-                    //we have to manually take care of tree structure, checkbox and image
-                    col.Width += 16 + 16 + olvDataTree.SmallImageSize.Width;
-                //last column
-                else if (col.Index == olvDataTree.Columns.Count - 1)
-                    //avoid "fill free space" bug
-                    if (colWidthBeforeAutoResize > colWidthAfterAutoResizeByContent)
-                        col.Width = colWidthBeforeAutoResize;
-                    else
-                        col.Width = colWidthAfterAutoResizeByContent;
+                Bng = bng;
+                Dgv = dgv;
+                Dgv.AutoGenerateColumns = false;
+                Dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                BindingSource bs = new BindingSource() { DataSource = tbString};
+                tbStrClass.Bng.BindingSource = bs;
+                Dgv.DataSource = bs;
+                SQLFunction.intTbStrParam();
+                //if (tbString.Columns.Count > 0)
+                //    Dgv.Sort(Dgv.Columns["nppDataGrid3"],ListSortDirection.Ascending);
+                //Dgv.Columns["nppDataGrid3"].HeaderCell.SortGlyphDirection = SortOrder.Ascending;
             }
+
+            static void autoSizeColumn()
+            {
+                //Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+                //Dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            }
+
+            public static void getTbStrData(int _idHead)
+            {
+                idHead = _idHead;
+
+                if (idHead <0)
+                {
+                    tbString.Clear();
+                    disabledGrid();
+                }
+                else
+                {
+                    enableGrid();
+                    SQLFunction.getTbStrData(tbString, idHead);
+                    tbString.Columns["idHead"].DefaultValue = idHead;
+                    setTbProperty();
+                    //autoSizeColumn();
+                    Dgv.Sort(Dgv.Columns["nppDataGrid3"], ListSortDirection.Ascending);
+                    Dgv.Columns["nppDataGrid3"].HeaderCell.SortGlyphDirection = SortOrder.Ascending;
+                }
+            }
+
+            static void enableGrid()
+            {
+                Bng.Enabled = true;
+                Dgv.Enabled = true;
+            }
+
+            static void disabledGrid()
+            {
+                Bng.Enabled = false;
+                Dgv.Enabled = false;
+            }
+
+            static void setTbProperty()
+            {
+                tbString.Columns["resName"].AllowDBNull = false;
+            }
+
+            public static void update()
+            {
+                SQLFunction.updateTbStrData(tbString);
+                getTbStrData(idHead);
+            }
+        }
+
+        private void olvDataTree_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            tbStrClass.getTbStrData(tbHeadClass.Index);
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -123,25 +245,29 @@ namespace ExcelReader
                     return false;
 
                 case Keys.D | Keys.Alt:
-                    if (dgvTemlpHead.CurrentCell.RowIndex >= 0)
-                    {
-                        string msg = String.Format("Копируем шаблон \"{0} -- {1}\"?",
-                            dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplName"].Value,
-                            dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplComm"].Value
-                            );
-                        DialogResult result = MessageBox.Show(msg, "Warning",
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                        if (result == DialogResult.Yes)
-                        {
-                            templCopy();
-                        }
-                    }
+                    //if (dgvTemlpHead.CurrentCell.RowIndex >= 0)
+                    //{
+                    //    string msg = String.Format("Копируем шаблон \"{0} -- {1}\"?",
+                    //        dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplName"].Value,
+                    //        dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplComm"].Value
+                    //        );
+                    //    DialogResult result = MessageBox.Show(msg, "Warning",
+                    //    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    //    if (result == DialogResult.Yes)
+                    //    {
+                    //        templCopy();
+                    //    }
+                    //}
                     return false;
                 case Keys.S | Keys.Control:
                     bindingNavigatorSaveItems1_Click(this);
                     bindingNavigatorSaveItems2_Click(this);
                     MessageBox.Show("Изменения в шаблонах сохранены!");
 
+                    return false;
+                case Keys.F5:
+                    if (olvDataTree.Focused)
+                        tbHeadClass.setProperty(olvDataTree, textTmplName);
                     return false;
 
             }
@@ -174,13 +300,7 @@ namespace ExcelReader
                 }
                 col = table.Columns.Add("Check_Result", typeof(String));
                 col.SetOrdinal(1);
-
                 dgvTableXls.DataSource = table;
-
-                //foreach (DataGridViewRow row in dataGridView1.Rows)
-                //{
-                //    row.HeaderCell.Value = String.Format("{0}", row.Index + 1);
-                //}
 
                 string[] enabledBtn = {
                     "ButtonOpen",
@@ -191,7 +311,7 @@ namespace ExcelReader
                 activatStripMenu(enabledBtn);
                 tabControl1.TabPages.Remove(tabPage1);
                 textBox1.Text = String.Empty;
-                MessageBox.Show("ok");
+                MessageBox.Show(String.Format("Файл \"{0}\" загружен", Path.GetFileName(fileName)));
             }
         }
 
@@ -232,8 +352,10 @@ namespace ExcelReader
         private void bindingNavigatorSaveItems2_Click(object sender, EventArgs e = null)
         {
             this.Validate();
-            this.fKimpHeadimpStrBindingSource.EndEdit();
-            this.tableAdapterManager.UpdateAll(this.collectDataSet);
+            tbStrClass.update();
+            MessageBox.Show("Шаблон сохранен!");
+            //this.fKimpHeadimpStrBindingSource.EndEdit();
+            //this.tableAdapterManager.UpdateAll(this.collectDataSet);
         }
 
         private void changeContainerWidth(SplitContainer container) {
@@ -345,7 +467,6 @@ namespace ExcelReader
             dataGridView4.AutoGenerateColumns = false;
             dataGridView4.Columns.Clear();
             dataGridView4.AutoGenerateColumns = true;
-
             showStripMessage("");
 
             activatStripMenu(
@@ -373,26 +494,35 @@ namespace ExcelReader
         
         private void dgvTemlpStr_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (e.RowIndex == dgvTemlpStr.NewRowIndex)
+            if ((e.RowIndex == dgvTemlpStr.NewRowIndex-1) || (e.RowIndex == dgvTemlpStr.NewRowIndex ))
             {
                 if (e.RowIndex > 0) {
-                    int npp = 0;
-                    int tmpNpp = 0;
-                    for (int i = 1; i < e.RowIndex - 1; i++) {
-                        tmpNpp = Int32.Parse(dgvTemlpStr.Rows[i].Cells[getGridIndex("npp")].Value.ToString());
-                        if (npp < tmpNpp) {
-                            npp = tmpNpp;
-                        }
+
+                    int npp = int.MinValue;
+                    foreach (DataRow rd in tbStrClass.tbString.Rows)
+                    {
+                        short accountLevel = rd.Field<short>("npp");
+                        npp = Math.Max(npp, accountLevel);
                     }
+
+                    DataGridView dgv = ((DataGridView)sender);
+                    //DataGridViewColumn col = dgv.Columns[getGridIndex("npp")];
+                    //((DataGridView)sender).Sort(col,ListSortDirection.Ascending);
+                    int index = e.RowIndex;
+                    if (e.RowIndex == dgvTemlpStr.NewRowIndex) index--;
+
+                    DataGridViewRow row = dgv.Rows[index];
+
+                    //int npp = Int32.Parse(dgvTemlpStr.Rows[index - 1].Cells[getGridIndex("npp")].Value.ToString());
                     npp = ((npp/10) + 1) * 10;
-                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("npp")].Value = npp.ToString();
+                    row.Cells[getGridIndex("npp")].Value = npp.ToString();
 
                     // set default value
-
-                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("isPrint")].Value = true;
-                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("attr")].Value = 0;
-                    ((DataGridView)sender).Rows[e.RowIndex - 1].Cells[getGridIndex("IsActive")].Value = true;
-
+                    row.Cells[getGridIndex("DataType")].Value = "String";
+                    row.Cells[getGridIndex("DataSize")].Value = 0;
+                    row.Cells[getGridIndex("isPrint")].Value = true;
+                    row.Cells[getGridIndex("attr")].Value = 0;
+                    row.Cells[getGridIndex("IsActive")].Value = true;
                 }
             }
         }
@@ -407,7 +537,6 @@ namespace ExcelReader
                 choosenSheet = sheetList[0].ToString();
             }
             form.Dispose();
-            MessageBox.Show(choosenSheet);
             return choosenSheet;
         }
 
@@ -433,31 +562,9 @@ namespace ExcelReader
             changeContainerWidth(splitContainer1);
         }
 
-
         private void dgvTemlpStr_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView grid = dgvTemlpStr;
-            if (Control.ModifierKeys == Keys.Control)
-            {
-                if ((grid.Rows[e.RowIndex].Cells[e.ColumnIndex] != null) 
-                    & (grid.Rows[e.RowIndex].Cells[e.ColumnIndex] != null) )
-                {
-                    string funcName = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                    funcName = funcName.Split('(')[0];
-                    List<string[]> res = SQLFunction.getDescription(funcName);
-                    string message = "";
-                    for (int i = 0; i < res[0].Length; i++)
-                    {
-                        message += String.Format("\n{0}\t\t{1}",res[0][i], res[1][i]);
-                    }
-                    
-                    Clipboard.SetText(String.Format("{0}\n{1}", funcName, message));
-                    this.fKimpHeadimpStrBindingSource.EndEdit();
-                    grid.EndEdit();
-                    MessageBox.Show("Данные скопированы в буфер");
-                }
-                //                MessageBox.Show("Mouse");
-            }
+
         }
 
         private void dgvTemlpStr_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -469,7 +576,6 @@ namespace ExcelReader
         {
             //MessageBox.Show(e.ToString());
         }
-
 
         private DataTable joinTable(DataTable tab0, DataTable tab1) {
             tab0.Columns.Add("Row_Id", typeof(Int32));
@@ -600,22 +706,15 @@ namespace ExcelReader
         private int templCopy()
         {
             int res = 0;
-            if (dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplIdHead"] != null)
-            {
-                int IdHead = (int)dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplIdHead"].Value;
-                res = SQLFunction.copyTemlpate(IdHead);
-                Form1_Load(this, null);
-                int newRow = dgvTemlpHead.Rows.Count;
-                dgvTemlpHead.CurrentCell = dgvTemlpHead.Rows[newRow - 2].Cells[0];
-            }
+            //if (dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplIdHead"] != null)
+            //{
+            //    int IdHead = (int)dgvTemlpHead.Rows[dgvTemlpHead.CurrentCell.RowIndex].Cells["dgvTemplIdHead"].Value;
+            //    res = SQLFunction.copyTemlpate(IdHead);
+            //    Form1_Load(this, null);
+            //    int newRow = dgvTemlpHead.Rows.Count;
+            //    dgvTemlpHead.CurrentCell = dgvTemlpHead.Rows[newRow - 2].Cells[0];
+            //}
             return res;
-        }
-
-        class my1 {
-            public override string ToString()
-            {
-                return "My object";
-            }
         }
 
         private void toolStripButton1_Click_1(object sender, EventArgs e)
@@ -631,11 +730,7 @@ namespace ExcelReader
                                                 DateTimeStyles.AdjustToUniversal,
                                                 out parsedDate);
 
-            my1 my1 = new my1();
-
-            object myDate = my1;
-
-            MessageBox.Show(parsedDate.ToString() + " -- " + ((object)myDate).ToString());
+            MessageBox.Show(parsedDate.ToString());
 
         }
 
@@ -659,7 +754,6 @@ namespace ExcelReader
             dgvTemlpStr.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvTemlpStr.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
         }
-
 
         private void textColumnFilter_TextChanged(object sender, EventArgs e)
         {
@@ -759,17 +853,5 @@ namespace ExcelReader
 
         }
 
-        private void olvDataTree_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            int index = olvDataTree.SelectedIndex;
-            if (index > 0)
-            {
-                idHead = (int)tbHead.Rows[index - 1]["idHead"];
-                //MessageBox.Show(idHead.ToString());
-                SQLFunction.getTbStrData(tbString,idHead);
-                MessageBox.Show(tbString.Rows.Count.ToString());
-                dgvTemlpStr.DataSource = tbString;
-            }
-        }
     }
 }

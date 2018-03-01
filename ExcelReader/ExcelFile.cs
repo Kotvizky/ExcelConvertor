@@ -16,6 +16,8 @@ namespace ExcelReader
     class ExcelFile
     {
 
+        const string dateFormat = @"dd.MM.yyyy";
+
         public delegate string SheetChoice(object[] sheetList);
 
         public event SheetChoice onSheetChoise;
@@ -84,9 +86,10 @@ namespace ExcelReader
                             object[] sheetList = new object[sheetRows.Length];
                             for (int i = 0; i < sheetRows.Length; i++)
                             {
-                                sheetList[i] = sheetRows[i]["TABLE_NAME"].ToString();
+                                sheetName = sheetRows[i]["TABLE_NAME"].ToString();
+                                sheetList[i] = sheetName.Substring(0,sheetName.Length - 1);
                             }
-                            sheetName = onSheetChoise(sheetList);
+                            sheetName = onSheetChoise(sheetList) + "$";
                         }
                     }
                     cmd.CommandText = "SELECT * FROM [" + sheetName + "] ";
@@ -128,7 +131,6 @@ namespace ExcelReader
             {
                 drawTable(oSheet, XlsTable, Excel.XlRgbColor.rgbAqua, resultTable.Columns.Count + 2, 1  );
             }
-
             oXL.Visible = true;
         }
 
@@ -150,7 +152,9 @@ namespace ExcelReader
             {
                 for (int c = 0; c < resultTable.Columns.Count; c++)
                 {
-                    data[r, c] = resultTable.Rows[r][c].ToString();
+                    if (resultTable.Rows[r][c].GetType() == Type.GetType("System.DateTime"))
+                        data[r, c] = ((DateTime)resultTable.Rows[r][c]).ToString(dateFormat);
+                    else data[r, c] = resultTable.Rows[r][c].ToString();
                 }
             }
 

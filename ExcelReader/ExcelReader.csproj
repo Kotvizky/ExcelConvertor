@@ -82,6 +82,7 @@
     <Compile Include="FieldConst.cs" />
     <Compile Include="FieldExpr.cs" />
     <Compile Include="FieldFunc.cs" />
+    <Compile Include="FieldSystem.cs" />
     <Compile Include="ParamAnswer.cs" />
     <Compile Include="ParamGroup.cs" />
     <Compile Include="ParamBase.cs" />
