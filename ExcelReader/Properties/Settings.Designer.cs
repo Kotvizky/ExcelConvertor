@@ -32,5 +32,32 @@ namespace ExcelReader.Properties {
                 return ((string)(this["CollectConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(",")]
+        public string NumberDecimalSeparator {
+            get {
+                return ((string)(this["NumberDecimalSeparator"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("dd.MM.yyyy")]
+        public string ShortDatePattern {
+            get {
+                return ((string)(this["ShortDatePattern"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowNullDoubleError {
+            get {
+                return ((bool)(this["ShowNullDoubleError"]));
+            }
+        }
     }
 }

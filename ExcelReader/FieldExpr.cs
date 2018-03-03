@@ -9,6 +9,10 @@ namespace ExcelReader
 {
     class FieldExpr : FieldBase
     {
+        public FieldExpr(DataRow row, Scan scan) : base(row, scan)
+        {
+        }
+
         public override object Value
         {
             get

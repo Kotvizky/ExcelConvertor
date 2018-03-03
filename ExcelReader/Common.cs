@@ -34,6 +34,7 @@ namespace ExcelReader
     {
         public object Value;
         public int Size;
+        public bool isPos;
     }
 
     enum attrName : byte { Field = 0, Func, Answer, Const, Expr, System };

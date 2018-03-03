@@ -12,11 +12,19 @@ namespace ExcelReader
     {
         private const string noData = "Н/Д";
 
+        public bool isPos;
+
+        public FieldXls(DataRow row, Scan scan) : base(row, scan)
+        {
+            isPos = (bool)row["isPos"];
+        }
+
         public override string InitValue()
         {
             ValidValue result = Validator(new ValidData() {
                 Value = XlsRow[xlsName],
-                Size = DataSize
+                Size = DataSize,
+                isPos = this.isPos
             });
 
             ResRow[ResName] = result.Value;

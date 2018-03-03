@@ -10,11 +10,19 @@ namespace ExcelReader
     abstract class FieldBase
     {
         
-        public FieldBase()
+        public FieldBase(DataRow row, Scan scan)
         {
-
+            Npp = (short)row["npp"];
+            ResName = (string)row["resName"];
+            XlsName = (string)row["xlsName"];
+            IsPrint = (bool)row["isPrint"];
+            Attr = (attrName)row["attr"];
+            IsActive = (bool)row["isActive"];
+            Type = Type.GetType(String.Format("System.{0}", (string)row["DataType"] ));
+            DataSize = (short)row["dataSize"];
+            Scan = scan;
         }
-        // fields in database
+
         public short Npp { set; get; }
         public string ResName { set; get; }
         public Scan Scan;
@@ -50,6 +58,7 @@ namespace ExcelReader
                 return Scan.XlsRow;
             }
         }
+
         public virtual DataRow ResRow {
             get
             {
@@ -67,20 +76,6 @@ namespace ExcelReader
         public bool Exist { set; get; }
 
         public abstract object Value { get; }
-
-        public void initFields(short npp, string resName, string xlsName, bool isPrint,
-            attrName attr, bool isActive, DataRow xlsRow, DataRow resRow,
-            string typeVal, int dataSize
-        )
-        {
-            Npp = npp;
-            ResName = resName;
-            XlsName = xlsName;
-            IsPrint = isPrint;
-            Attr = attr;
-            IsActive = isActive;
-            Type = Type.GetType(typeVal);
-        }
 
         public abstract string InitValue();
     }

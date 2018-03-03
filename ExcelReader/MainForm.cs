@@ -29,12 +29,20 @@ namespace ExcelReader
         private Scan scan;
         private string fileName;
         private ToolStripProgressBar progressBar;
+        private DataSet resDataSet = new DataSet();
+        private BindingSource bsXlsTable = null;
+        private BindingSource bsResTable = null;
 
         public MainForm()
         {
             InitializeComponent();
-            //            showCalcGrid();
 
+            //double dec;
+            //string num = "-6,75";
+            //if (!Double.TryParse(num.Replace('.',','), out dec)) dec = 0;
+            ////dec = Convert.ToDouble(num);
+            //MessageBox.Show(dec.ToString());
+            
             tbHeadClass.setProperty(olvDataTree,textTmplName);
             tbStrClass.setProperty(dgvTemlpStr, bNTmplStr);
 
@@ -260,14 +268,30 @@ namespace ExcelReader
                     //}
                     return false;
                 case Keys.S | Keys.Control:
-                    bindingNavigatorSaveItems1_Click(this);
-                    bindingNavigatorSaveItems2_Click(this);
-                    MessageBox.Show("Изменения в шаблонах сохранены!");
+                    //bindingNavigatorSaveItems1_Click(this);
+                    //bindingNavigatorSaveItems2_Click(this);
+                    //MessageBox.Show("Изменения в шаблонах сохранены!");
 
                     return false;
                 case Keys.F5:
                     if (olvDataTree.Focused)
                         tbHeadClass.setProperty(olvDataTree, textTmplName);
+                    return false;
+                case Keys.Y | Keys.Control:
+                    if (dgvTemlpStr.Focused)
+                    {
+                        if (dgvTemlpStr.CurrentRow.Index < dgvTemlpStr.NewRowIndex) {
+                            //dgvTemlpStr.Rows.Insert(dgvTemlpStr.CurrentRow.Index, dgvTemlpStr.CurrentRow.Clone());
+                            DataRow distRow = tbStrClass.tbString.NewRow();
+                            distRow.ItemArray = (dgvTemlpStr.CurrentRow.DataBoundItem as DataRowView).Row.ItemArray.Clone() as object[];
+                            tbStrClass.tbString.Rows.Add(distRow);
+                            MessageBox.Show("Строка с номером {0} скопирована!", distRow["npp"].ToString());
+                        }
+
+                        return true;
+                    }
+
+                        //tbHeadClass.setProperty(olvDataTree, textTmplName);
                     return false;
 
             }
@@ -287,19 +311,20 @@ namespace ExcelReader
             {
                 // Assign the cursor in the Stream to the Form's Cursor property.  
 
+                string ROW_ID = Scan.ROW_ID;
                 fileName = openFileDialog1.FileName;
                 this.Text = String.Format("{0} -- Convert: {1}", Scan.GetLocalIPAddress(), Path.GetFileName(fileName));
                 file.ReadFile(fileName);
                 DataTable table = file.XlsTable;
                 int columns = table.Columns.Count;
-                DataColumn col = table.Columns.Add("ROW_ID", typeof(Int32));
+                DataColumn col = table.Columns.Add(ROW_ID, typeof(Int32));
                 col.SetOrdinal(0);
                 for (int i = 0; i < table.Rows.Count; i++)
                 {
-                    table.Rows[i]["ROW_ID"] = i;
+                    table.Rows[i][ROW_ID] = i;
                 }
-                col = table.Columns.Add("Check_Result", typeof(String));
-                col.SetOrdinal(1);
+                //col = table.Columns.Add("Check_Result", typeof(String));
+                //col.SetOrdinal(1);
                 dgvTableXls.DataSource = table;
 
                 string[] enabledBtn = {
@@ -398,6 +423,11 @@ namespace ExcelReader
         private void matching_Click(object sender, EventArgs e) 
         {
 
+            bsXlsTable = null;
+            bsResTable = null;
+            ckTmplFields.Enabled = true;
+            ckResult.Enabled = true;
+
             if (file.XlsTable == null) {
                 MessageBox.Show("Сперва загрузите теблицу!");
                 return;
@@ -406,19 +436,9 @@ namespace ExcelReader
 
             dgvTemlpStr.Sort(dgvTemlpStr.Columns[getGridIndex("npp")],ListSortDirection.Ascending);
 
-            for (int i = 0; i < dgvTemlpStr.Rows.Count-1; i++) {
-                scan.AddField(
-                    npp: (short)dgvTemlpStr.Rows[i].Cells[getGridIndex("npp")].Value,
-                    resName: dgvTemlpStr.Rows[i].Cells[getGridIndex("resName")].Value.ToString(),
-                    xlsName: dgvTemlpStr.Rows[i].Cells[getGridIndex("xlsName")].Value.ToString(),
-                    isPrint: (bool)dgvTemlpStr.Rows[i].Cells[getGridIndex("isPrint")].Value,
-                    type: dgvTemlpStr.Rows[i].Cells[getGridIndex("dataType")].Value.ToString(),
-                    size: (dgvTemlpStr.Rows[i].Cells[getGridIndex("dataSize")].Value == DBNull.Value)
-                        ? (short)0
-                        : (short)dgvTemlpStr.Rows[i].Cells[getGridIndex("dataSize")].Value,
-                    attr:  (attrName)dgvTemlpStr.Rows[i].Cells[getGridIndex("attr")].Value,
-                    isActive:  (bool)dgvTemlpStr.Rows[i].Cells[getGridIndex("IsActive")].Value
-                    );
+            foreach (DataRow row in tbStrClass.tbString.Rows)
+            {
+                scan.AddField(row);
             }
 
             textBox1.Text = scan.Matching(file.XlsTable);
@@ -441,9 +461,9 @@ namespace ExcelReader
                 }
             );
 
-            dataGridView4.Columns.Clear();
-            dataGridView4.DataSource = scan.ResTable;
-            dataGridView4.Show();
+            dgvRes.Columns.Clear();
+            dgvRes.DataSource = scan.ResTable;
+            dgvRes.Show();
 
             if (!tabControl1.TabPages.Contains(tabPage1))
             {
@@ -464,9 +484,9 @@ namespace ExcelReader
             //scan.initResultFromXls(file.XlsTable);
 
             scan.Processing();
-            dataGridView4.AutoGenerateColumns = false;
-            dataGridView4.Columns.Clear();
-            dataGridView4.AutoGenerateColumns = true;
+            dgvRes.AutoGenerateColumns = false;
+            dgvRes.Columns.Clear();
+            dgvRes.AutoGenerateColumns = true;
             showStripMessage("");
 
             activatStripMenu(
@@ -603,7 +623,7 @@ namespace ExcelReader
         public void initProgressBar(int maximum)
         {
             progressBar.Minimum = 1;
-            progressBar.Maximum = maximum;
+            progressBar.Maximum = Math.Max(maximum,1);
             progressBar.Value = 1;
             progressBar.Step = 1;
             progressBar.Visible = true;
@@ -853,5 +873,72 @@ namespace ExcelReader
 
         }
 
+        private void fillByToolStripButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void check_fieldAllFilter(object sender, EventArgs e)
+        {
+            if (ckTmplFields.Checked)
+            {
+                string filter = scan.GetXlsFields();
+                int len = filter.Length;
+                if (len > 0) filter = filter.Remove(len-1,1);
+                textColumnFilter.Text = filter;
+                dgvTableXls_changeColumns(filter);
+                textColumnFilter.ReadOnly = true;
+            }
+
+            else
+            {
+                textColumnFilter.Text = "";
+                textColumnFilter.ReadOnly = false;
+            }
+
+        }
+
+        private void btResult_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckResult.Checked)
+            {
+                FieldBase field = scan.Find(x => (x.Attr == attrName.System) && (x.XlsName == Scan.ROW_ID) && x.IsActive && x.IsPrint);
+                if (field == null)
+                {
+                    ckResult.Checked = false;
+                    MessageBox.Show("Can't find ROW_ID field!");
+                    return;
+                }
+                if (bsResTable == null)
+                {
+                    DataTable xlsTable = file.XlsTable;
+                    DataTable resTable = scan.ResTable;
+
+                    resDataSet.Tables.Add(xlsTable);
+                    resDataSet.Tables.Add(resTable);
+
+                    resTable.Locale = new System.Globalization.CultureInfo(xlsTable.Locale.Name);
+                    resDataSet.Relations.Add(
+                        "RelationId",
+                        resTable.Columns[field.ResName],
+                        xlsTable.Columns[Scan.ROW_ID]);
+
+                    bsResTable = new BindingSource();
+                    bsResTable.DataSource = resDataSet;
+                    bsResTable.DataMember = "ResTable";
+
+                    bsXlsTable = new BindingSource();
+                    bsXlsTable.DataSource = bsResTable;
+                    bsXlsTable.DataMember = "RelationId";
+
+                    dgvRes.DataSource = bsResTable;
+                }
+                dgvTableXls.DataSource = bsXlsTable;
+            }
+            else
+            {
+                dgvTableXls.DataSource = file.XlsTable;
+            }
+        }
     }
 }

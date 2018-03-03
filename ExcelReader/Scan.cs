@@ -23,6 +23,8 @@ namespace ExcelReader
             FillConvertList();
         }
 
+        public static string ROW_ID = "$ROW_ID";
+
         const string ErrorFied = "Errors";
 
         private void FillConvertList()
@@ -91,6 +93,7 @@ namespace ExcelReader
 
         private const string errNull = "null";
         private const string errConver = "err. convert";
+        private const string errNegative = "err. negative";
 
         public bool AllFound { get; private set; }
 
@@ -101,13 +104,20 @@ namespace ExcelReader
         public DataRow ResRow { private set; get; }
         private List<ValidFunc> ConvertList;
 
-        public void AddField(short npp, string resName,string xlsName,bool isPrint,
-                            string type, short size,
-                            attrName attr=0, bool isActive = true) {
+        //public void AddField(DataRow row,
+        //    short npp, string resName,string xlsName,bool isPrint,
+        //                    string type, short size, bool isPos,
+        //                    attrName attr=0,bool isActive = true)
+
+        public void AddField(DataRow row)
+        {
+            attrName attr = (attrName)row["attr"];
+            bool isPrint = (bool)row["isPrint"];
+
             if (this.Count == 0) printAllFields = false;
-            if ((resName == "*") && (attr == attrName.Const))
+            if ((row["resName"].ToString() == "*") && (attr == attrName.Const))
             {
-                if ((xlsName == "*") && isPrint)
+                if ((row["xlsName"].ToString() == "*") && isPrint)
                 {
                     printAllFields = true;
                 }
@@ -119,38 +129,29 @@ namespace ExcelReader
             switch (attr)
             {
                 case attrName.Answer:
-                    newField = new FieldAnswer();
+                    newField = new FieldAnswer(row, this);
                     break;
                 case attrName.Const:
-                    newField = new FieldConst();
+                    newField = new FieldConst(row, this);
                     break;
                 case attrName.Expr:
-                    newField = new FieldExpr();
+                    newField = new FieldExpr(row, this);
                     break;
                 case attrName.Func:
-                    newField = new FieldFunc();
+                    newField = new FieldFunc(row, this);
                     ((FieldFunc)newField).onInitProgressBar += this.onInitProgressBar;
                     ((FieldFunc)newField).onStepProgressBar += this.onStepProgressBar;
                     ((FieldFunc)newField).onHideProgressBar += this.onHideProgressBar;
                     break;
                 case attrName.System:
-                    newField = new FieldSystem();
+                    newField = new FieldSystem(row, this);
                     break;
                 default:
-                    newField = new FieldXls();
+                    newField = new FieldXls(row, this);
                     break;
             }
             if (newField != null)
             {
-                newField.Scan = this;
-                newField.Npp = npp;
-                newField.ResName = resName;
-                newField.XlsName = xlsName;
-                newField.IsPrint = isPrint;
-                newField.Attr = attr;
-                newField.IsActive = isActive;
-                newField.Type = Type.GetType(String.Format("System.{0}",type));
-                newField.DataSize = size;
                 this.Add(newField);
             }
         }
@@ -180,27 +181,41 @@ namespace ExcelReader
                 { Value = 0m, Error = String.Empty };
 
             object value = tabValue.Value;
-            if (value.GetType().Equals(typeof(String)))
-            {
-                value = ((string)value).Replace(',','.');
-            }
             if (value == DBNull.Value)
             {
-                result.Error = errNull;
+                if (Properties.Settings.Default.ShowNullDoubleError) result.Error = errNull;
+                return result;
             }
-            else
+
+
+            double outValue;
+            switch (value.GetType().Name)
             {
-                try
-                {
-                    result.Value =  Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                }
-                catch (Exception ex)
-                {
-                    if (ex is FormatException)
-                        // FormatException
+                case "String":
+                    if (!Double.TryParse((string)value, out outValue))
+                    {
                         result.Error = errConver;
-                }
+                        return result;
+                    }
+                    break;
+                case "Double":
+                    outValue = (double)value;
+                    break;
+                default:
+                    result.Error = errConver;
+                    return result;
             }
+
+            if (tabValue.Size > 0)
+                outValue = Math.Round(outValue, tabValue.Size);
+            if (tabValue.isPos)
+            {
+                if (outValue < 0)
+                    result.Error = errNegative;
+                outValue = Math.Max(outValue, 0);
+            }
+            result.Value = outValue;
+
             return result;
         }
 
@@ -294,9 +309,12 @@ namespace ExcelReader
 
         public void InitXlsFields()
         {
-            var resField = FindAll(x => x.IsActive && (x.Attr == attrName.Field) ).OrderBy(x => x.Npp);
+            var resField = FindAll(x => x.IsActive 
+                    && ((x.Attr == attrName.Field)  || ((x.Attr == attrName.System) && (x as FieldSystem).isField))
+                    ).OrderBy(x => x.Npp);
 
             ResTable = new DataTable();
+            ResTable.TableName = "ResTable";
             ResTable.Locale = CultureInfo.InvariantCulture;
             foreach (FieldBase field in resField)
             {
@@ -311,6 +329,10 @@ namespace ExcelReader
                 else if (field.Attr == attrName.Const)
                 {
                     ResTable.Columns.Add(field.ResName, typeof(string));
+                }
+                else if (field.Attr == attrName.System)
+                {
+                    ResTable.Columns.Add(field.ResName, field.Type);
                 }
             }
         }
@@ -561,9 +583,9 @@ namespace ExcelReader
                 ResTable.Columns.Add(ErrorFied,typeof(String)).SetOrdinal(0);
             }
 
-
             onInitProgressBar?.Invoke(xlsTable.Rows.Count);
-            var fields = this.FindAll(x => (x.Attr == attrName.Field) && x.IsActive);
+            var fields = this.FindAll(x => ((x.Attr == attrName.Field) 
+                | ( (x.Attr == attrName.System) && (x as FieldSystem).isField )) && x.IsActive);
             foreach (DataRow curRow in xlsTable.Rows)
             {
                 XlsRow = curRow;
@@ -577,8 +599,6 @@ namespace ExcelReader
                 }
             }
             onHideProgressBar?.Invoke();
-
-
         }
 
         string setValidator(FieldBase field, string inTypeStr)
@@ -692,6 +712,17 @@ namespace ExcelReader
             public dataType InType { set; get; }
             public dataType OutType { set; get; }
             public Func<ValidData, ValidValue> Validator { set; get; }
+        }
+
+
+        public string GetXlsFields()
+        {
+            string result = "";
+            var resField = FindAll(x => x.IsActive
+                    && ((x.Attr == attrName.Field) || ((x.Attr == attrName.System) && (x as FieldSystem).isField))
+                    ).OrderBy(x => x.Npp);
+            foreach (FieldBase field in resField) result += String.Format("{0};", field.XlsName);
+            return result;
         }
 
     }

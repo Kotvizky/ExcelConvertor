@@ -8,15 +8,13 @@ using System.Data;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.IO;
-
+using System.Globalization;
 
 
 namespace ExcelReader
 {
     class ExcelFile
     {
-
-        const string dateFormat = @"dd.MM.yyyy";
 
         public delegate string SheetChoice(object[] sheetList);
 
@@ -97,6 +95,7 @@ namespace ExcelReader
                     XlsTable.TableName = sheetName;
                     OleDbDataAdapter da = new OleDbDataAdapter(cmd);
                     da.Fill(XlsTable);
+                    XlsTable.TableName = "XlsTable";
                 }
                 cmd = null;
                 conn.Close();
@@ -148,12 +147,16 @@ namespace ExcelReader
 
             string[,] data = new string[resultTable.Rows.Count, resultTable.Columns.Count];
 
+            CultureInfo curCI = new CultureInfo(CultureInfo.CurrentCulture.Name);
+            curCI.NumberFormat.NumberDecimalSeparator = Properties.Settings.Default.NumberDecimalSeparator;
+            System.Threading.Thread.CurrentThread.CurrentCulture = curCI;
+
             for (int r = 0; r < resultTable.Rows.Count; r++)
             {
                 for (int c = 0; c < resultTable.Columns.Count; c++)
                 {
-                    if (resultTable.Rows[r][c].GetType() == Type.GetType("System.DateTime"))
-                        data[r, c] = ((DateTime)resultTable.Rows[r][c]).ToString(dateFormat);
+                    if (resultTable.Rows[r][c].GetType().Name == "DateTime")
+                        data[r, c] = ((DateTime)resultTable.Rows[r][c]).ToString(Properties.Settings.Default.ShortDatePattern);
                     else data[r, c] = resultTable.Rows[r][c].ToString();
                 }
             }
@@ -162,6 +165,7 @@ namespace ExcelReader
                                     xlsAdress(startCol-1 + data.GetLength(1), startRow - 1 + data.GetLength(0) + 1));
             oRng.Value2 = data;
             oRng.EntireColumn.AutoFit();
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo(CultureInfo.CurrentCulture.Name);
         }
 
         private string xlsAdress(int col, int row)

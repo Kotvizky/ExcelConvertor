@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,10 @@ namespace ExcelReader
     class FieldConst : FieldBase
     {
         object value;
+
+        public FieldConst(DataRow row, Scan scan) : base(row, scan)
+        {
+        }
 
         public override object Value
         {

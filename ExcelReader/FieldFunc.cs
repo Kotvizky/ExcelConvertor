@@ -10,6 +10,10 @@ namespace ExcelReader
     class FieldFunc : FieldBase
     {
 
+        public FieldFunc(DataRow row, Scan scan) : base(row, scan)
+        {
+        }
+
         public event Scan.initProgressBar onInitProgressBar;
 
         public event Scan.hideProgressBar onHideProgressBar;
@@ -245,7 +249,6 @@ namespace ExcelReader
             { GroupNames.inPar,     "inPar"},
             { GroupNames.outPar,    "outPar"}
         };
-
 
     }
 }

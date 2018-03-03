@@ -33,13 +33,15 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.ckResult = new System.Windows.Forms.CheckBox();
+            this.ckTmplFields = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textColumnFilter = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.dgvTableXls = new System.Windows.Forms.DataGridView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.dataGridView4 = new System.Windows.Forms.DataGridView();
+            this.dgvRes = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.splitter2 = new System.Windows.Forms.Splitter();
@@ -60,6 +62,7 @@
             this.dataTypeDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataSizeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isPosDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.authorDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -106,7 +109,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvTableXls)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRes)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -144,6 +147,8 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.ckResult);
+            this.splitContainer2.Panel1.Controls.Add(this.ckTmplFields);
             this.splitContainer2.Panel1.Controls.Add(this.label1);
             this.splitContainer2.Panel1.Controls.Add(this.textColumnFilter);
             this.splitContainer2.Panel1.Controls.Add(this.splitter1);
@@ -153,9 +158,35 @@
             // 
             this.splitContainer2.Panel2.AutoScroll = true;
             this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer2.Size = new System.Drawing.Size(516, 568);
-            this.splitContainer2.SplitterDistance = 257;
+            this.splitContainer2.Size = new System.Drawing.Size(522, 578);
+            this.splitContainer2.SplitterDistance = 261;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // btResult
+            // 
+            this.ckResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ckResult.AutoSize = true;
+            this.ckResult.Enabled = false;
+            this.ckResult.Location = new System.Drawing.Point(436, 231);
+            this.ckResult.Name = "btResult";
+            this.ckResult.Size = new System.Drawing.Size(85, 17);
+            this.ckResult.TabIndex = 11;
+            this.ckResult.Text = "Res. reletion";
+            this.ckResult.UseVisualStyleBackColor = true;
+            this.ckResult.CheckedChanged += new System.EventHandler(this.btResult_CheckedChanged);
+            // 
+            // ckTmplFields
+            // 
+            this.ckTmplFields.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ckTmplFields.AutoSize = true;
+            this.ckTmplFields.Enabled = false;
+            this.ckTmplFields.Location = new System.Drawing.Point(360, 231);
+            this.ckTmplFields.Name = "ckTmplFields";
+            this.ckTmplFields.Size = new System.Drawing.Size(72, 17);
+            this.ckTmplFields.TabIndex = 10;
+            this.ckTmplFields.Text = "tmpl fields";
+            this.ckTmplFields.UseVisualStyleBackColor = true;
+            this.ckTmplFields.CheckedChanged += new System.EventHandler(this.check_fieldAllFilter);
             // 
             // label1
             // 
@@ -171,9 +202,9 @@
             // 
             this.textColumnFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textColumnFilter.Location = new System.Drawing.Point(73, 232);
+            this.textColumnFilter.Location = new System.Drawing.Point(71, 231);
             this.textColumnFilter.Name = "textColumnFilter";
-            this.textColumnFilter.Size = new System.Drawing.Size(440, 20);
+            this.textColumnFilter.Size = new System.Drawing.Size(269, 20);
             this.textColumnFilter.TabIndex = 6;
             this.textColumnFilter.TextChanged += new System.EventHandler(this.textColumnFilter_TextChanged);
             // 
@@ -181,9 +212,9 @@
             // 
             this.splitter1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 254);
+            this.splitter1.Location = new System.Drawing.Point(0, 258);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(516, 3);
+            this.splitter1.Size = new System.Drawing.Size(522, 3);
             this.splitter1.TabIndex = 4;
             this.splitter1.TabStop = false;
             // 
@@ -197,7 +228,7 @@
             this.dgvTableXls.Location = new System.Drawing.Point(0, 0);
             this.dgvTableXls.Name = "dgvTableXls";
             this.dgvTableXls.ShowCellErrors = false;
-            this.dgvTableXls.Size = new System.Drawing.Size(516, 228);
+            this.dgvTableXls.Size = new System.Drawing.Size(522, 220);
             this.dgvTableXls.TabIndex = 3;
             this.dgvTableXls.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTableXls_CellContentClick);
             this.dgvTableXls.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseDoubleClick);
@@ -213,29 +244,29 @@
             this.tabControl1.Location = new System.Drawing.Point(3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(514, 302);
+            this.tabControl1.Size = new System.Drawing.Size(520, 308);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.dataGridView4);
+            this.tabPage1.Controls.Add(this.dgvRes);
             this.tabPage1.Location = new System.Drawing.Point(4, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(506, 276);
+            this.tabPage1.Size = new System.Drawing.Size(512, 282);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Result";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // dataGridView4
+            // dgvRes
             // 
-            this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView4.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView4.Name = "dataGridView4";
-            this.dataGridView4.Size = new System.Drawing.Size(500, 270);
-            this.dataGridView4.TabIndex = 1;
-            this.dataGridView4.Visible = false;
+            this.dgvRes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvRes.Location = new System.Drawing.Point(3, 3);
+            this.dgvRes.Name = "dgvRes";
+            this.dgvRes.Size = new System.Drawing.Size(506, 276);
+            this.dgvRes.TabIndex = 1;
+            this.dgvRes.Visible = false;
             // 
             // tabPage2
             // 
@@ -243,7 +274,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(506, 276);
+            this.tabPage2.Size = new System.Drawing.Size(512, 282);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Matching";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -256,7 +287,7 @@
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(529, 273);
+            this.textBox1.Size = new System.Drawing.Size(535, 279);
             this.textBox1.TabIndex = 0;
             // 
             // splitter2
@@ -264,9 +295,9 @@
             this.splitter2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.splitter2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitter2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter2.Location = new System.Drawing.Point(295, 0);
+            this.splitter2.Location = new System.Drawing.Point(297, 0);
             this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(3, 568);
+            this.splitter2.Size = new System.Drawing.Size(3, 578);
             this.splitter2.TabIndex = 0;
             this.splitter2.TabStop = false;
             // 
@@ -287,8 +318,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(823, 570);
-            this.splitContainer1.SplitterDistance = 300;
+            this.splitContainer1.Size = new System.Drawing.Size(831, 580);
+            this.splitContainer1.SplitterDistance = 302;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 3;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
@@ -312,7 +343,7 @@
             // 
             this.splitContainer3.Panel2.AutoScroll = true;
             this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer3.Size = new System.Drawing.Size(295, 568);
+            this.splitContainer3.Size = new System.Drawing.Size(297, 578);
             this.splitContainer3.SplitterDistance = 200;
             this.splitContainer3.TabIndex = 1;
             // 
@@ -325,7 +356,7 @@
             this.olvDataTree.Name = "olvDataTree";
             this.olvDataTree.RootKeyValueString = "";
             this.olvDataTree.ShowGroups = false;
-            this.olvDataTree.Size = new System.Drawing.Size(295, 197);
+            this.olvDataTree.Size = new System.Drawing.Size(297, 197);
             this.olvDataTree.TabIndex = 3;
             this.olvDataTree.UseCompatibleStateImageBehavior = false;
             this.olvDataTree.View = System.Windows.Forms.View.Details;
@@ -338,7 +369,7 @@
             this.splitter3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.splitter3.Location = new System.Drawing.Point(0, 197);
             this.splitter3.Name = "splitter3";
-            this.splitter3.Size = new System.Drawing.Size(295, 3);
+            this.splitter3.Size = new System.Drawing.Size(297, 3);
             this.splitter3.TabIndex = 0;
             this.splitter3.TabStop = false;
             // 
@@ -361,7 +392,7 @@
             // 
             this.splitContainer4.Panel2.Controls.Add(this.dgvTemlpStr);
             this.splitContainer4.Panel2.Controls.Add(this.bNTmplStr);
-            this.splitContainer4.Size = new System.Drawing.Size(295, 364);
+            this.splitContainer4.Size = new System.Drawing.Size(297, 374);
             this.splitContainer4.SplitterDistance = 40;
             this.splitContainer4.TabIndex = 2;
             // 
@@ -373,14 +404,13 @@
             this.textTmplName.Location = new System.Drawing.Point(0, 0);
             this.textTmplName.Multiline = true;
             this.textTmplName.Name = "textTmplName";
-            this.textTmplName.Size = new System.Drawing.Size(295, 40);
+            this.textTmplName.Size = new System.Drawing.Size(297, 40);
             this.textTmplName.TabIndex = 1;
             this.textTmplName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // dgvTemlpStr
             // 
             this.dgvTemlpStr.AutoGenerateColumns = false;
-            this.dgvTemlpStr.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dgvTemlpStr.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             this.dgvTemlpStr.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvTemlpStr.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -392,6 +422,7 @@
             this.dataTypeDataGrid3,
             this.dataSizeDataGrid3,
             this.strFormatData3,
+            this.isPosDataGrid3,
             this.isActiveDataGrid3,
             this.commDataGrid3,
             this.authorDataGrid3,
@@ -412,7 +443,7 @@
             this.dgvTemlpStr.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvTemlpStr.Location = new System.Drawing.Point(0, 25);
             this.dgvTemlpStr.Name = "dgvTemlpStr";
-            this.dgvTemlpStr.Size = new System.Drawing.Size(295, 295);
+            this.dgvTemlpStr.Size = new System.Drawing.Size(297, 305);
             this.dgvTemlpStr.TabIndex = 0;
             this.dgvTemlpStr.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTemlpStr_CellContentClick);
             this.dgvTemlpStr.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTemlpStr_CellMouseEnter);
@@ -500,6 +531,12 @@
             this.strFormatData3.HeaderText = "strFormat";
             this.strFormatData3.Name = "strFormatData3";
             this.strFormatData3.Width = 75;
+            // 
+            // isPosDataGrid3
+            // 
+            this.isPosDataGrid3.DataPropertyName = "isPos";
+            this.isPosDataGrid3.HeaderText = "isPos";
+            this.isPosDataGrid3.Name = "isPosDataGrid3";
             // 
             // isActiveDataGrid3
             // 
@@ -600,7 +637,7 @@
             this.bNTmplStr.MovePreviousItem = this.bindingNavigatorMovePreviousItem1;
             this.bNTmplStr.Name = "bNTmplStr";
             this.bNTmplStr.PositionItem = this.bindingNavigatorPositionItem1;
-            this.bNTmplStr.Size = new System.Drawing.Size(295, 25);
+            this.bNTmplStr.Size = new System.Drawing.Size(297, 25);
             this.bNTmplStr.TabIndex = 1;
             this.bNTmplStr.Text = "bindingNavigator2";
             // 
@@ -709,7 +746,7 @@
             this.ButtonStore});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(847, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(855, 25);
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -762,10 +799,10 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar2,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 608);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 618);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.statusStrip1.Size = new System.Drawing.Size(847, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(855, 22);
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -816,7 +853,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(847, 630);
+            this.ClientSize = new System.Drawing.Size(855, 640);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.splitContainer1);
@@ -832,7 +869,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvTableXls)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRes)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -905,7 +942,7 @@
         private System.Windows.Forms.ToolStripButton ButtonOpen;
         private System.Windows.Forms.ToolStripButton ButtonMatching;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.DataGridView dataGridView4;
+        private System.Windows.Forms.DataGridView dgvRes;
         private System.Windows.Forms.ToolStripButton ButtonStore;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
@@ -919,6 +956,9 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textColumnFilter;
+        private BrightIdeasSoftware.DataTreeListView olvDataTree;
+        private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.TextBox textTmplName;
         private System.Windows.Forms.DataGridViewTextBoxColumn nppDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn resNameDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn xlsNameDataGrid3;
@@ -927,6 +967,7 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn dataTypeDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataSizeDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn strFormatData3;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn isPosDataGrid3;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isActiveDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn commDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn authorDataGrid3;
@@ -935,9 +976,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dateModifyDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn idHeadDataGrid3;
         private System.Windows.Forms.DataGridViewTextBoxColumn idStrDataGrid3;
-        private BrightIdeasSoftware.DataTreeListView olvDataTree;
-        private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.TextBox textTmplName;
+        private System.Windows.Forms.CheckBox ckTmplFields;
+        private System.Windows.Forms.CheckBox ckResult;
     }
 }
 

@@ -49,7 +49,7 @@ namespace ExcelReader
 
         static string commStr =
             @"select idStr,idHead,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
-                strFormat,isActive,comm,author,dateCreate,operator,dateModify
+                strFormat,isPos,isActive,comm,author,dateCreate,operator,dateModify
             from i_tmpl_str
             where idHead = @idHead";
 
