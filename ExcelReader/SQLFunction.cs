@@ -93,7 +93,8 @@ namespace ExcelReader
                         new DataColumn("Row_Id",Type.GetType("System.Int32")),
                         new DataColumn("BusId",Type.GetType("System.String")),
                         new DataColumn("Account",Type.GetType("System.String")),
-                        new DataColumn("ContractNum",Type.GetType("System.String"))
+                        new DataColumn("ContractNum",Type.GetType("System.String")),
+                        new DataColumn("Data",Type.GetType("System.DateTime"))
                     });
                     break;
             }

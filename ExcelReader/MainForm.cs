@@ -169,6 +169,8 @@ namespace ExcelReader
 
             static BindingNavigator Bng;
 
+            public static DataView dvString;
+
             static DataGridView Dgv;
 
             public static DataTable tbString = new DataTable();
@@ -179,13 +181,11 @@ namespace ExcelReader
                 Dgv = dgv;
                 Dgv.AutoGenerateColumns = false;
                 Dgv.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                BindingSource bs = new BindingSource() { DataSource = tbString};
+                dvString = new DataView(tbString);
+                BindingSource bs = new BindingSource() { DataSource = tbString };
                 tbStrClass.Bng.BindingSource = bs;
                 Dgv.DataSource = bs;
                 SQLFunction.intTbStrParam();
-                //if (tbString.Columns.Count > 0)
-                //    Dgv.Sort(Dgv.Columns["nppDataGrid3"],ListSortDirection.Ascending);
-                //Dgv.Columns["nppDataGrid3"].HeaderCell.SortGlyphDirection = SortOrder.Ascending;
             }
 
             static void autoSizeColumn()
@@ -242,6 +242,18 @@ namespace ExcelReader
         private void olvDataTree_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             tbStrClass.getTbStrData(tbHeadClass.Index);
+            string[] enabledBtn;
+            if (file.XlsTable != null)
+            {
+                enabledBtn = new string[]{
+                        "ButtonOpen",
+                        "ButtonMatching",
+                        //"BottomProcessing",
+                        //"ButtonStore"
+                    };
+            }
+            else enabledBtn = new string[] { "ButtonOpen" };
+            activatStripMenu(enabledBtn);
         }
 
         protected override bool ProcessCmdKey(ref Message message, Keys keys)
@@ -321,22 +333,29 @@ namespace ExcelReader
                 col.SetOrdinal(0);
                 for (int i = 0; i < table.Rows.Count; i++)
                 {
-                    table.Rows[i][ROW_ID] = i;
+                    table.Rows[i][ROW_ID] = i + 1;
                 }
+                col.ReadOnly = true;
                 //col = table.Columns.Add("Check_Result", typeof(String));
                 //col.SetOrdinal(1);
                 dgvTableXls.DataSource = table;
+                string[] enabledBtn;
+                if (tbStrClass.tbString.Rows.Count > 0)
+                {
+                    enabledBtn = new string[]{
+                        "ButtonOpen",
+                        "ButtonMatching",
+                        //"BottomProcessing",
+                        //"ButtonStore"
+                    };
+                }
+                else enabledBtn = new string[] { "ButtonOpen" };
 
-                string[] enabledBtn = {
-                    "ButtonOpen",
-                    "ButtonMatching",
-                    //"BottomProcessing",
-                    //"ButtonStore"
-                };
                 activatStripMenu(enabledBtn);
                 tabControl1.TabPages.Remove(tabPage1);
                 textBox1.Text = String.Empty;
                 MessageBox.Show(String.Format("Файл \"{0}\" загружен", Path.GetFileName(fileName)));
+                resDataSet.Clear();
             }
         }
 
@@ -462,7 +481,8 @@ namespace ExcelReader
             );
 
             dgvRes.Columns.Clear();
-            dgvRes.DataSource = scan.ResTable;
+            //dgvRes.DataSource = scan.ResTable;
+            SetBsResTable();
             dgvRes.Show();
 
             if (!tabControl1.TabPages.Contains(tabPage1))
@@ -470,6 +490,45 @@ namespace ExcelReader
                 tabControl1.TabPages.Insert(0, tabPage1);
                 tabControl1.SelectedIndex = 0;
             }
+            ClearXlsBinding();
+        }
+
+        void SetBsResTable()
+        {
+            DataTable resTable = scan.ResTable;
+            DataTable xlsTable = file.XlsTable;
+            if (resDataSet.Tables.Contains(resTable.TableName))
+            {
+                if (resDataSet.Relations.Contains("RelationId"))
+                {
+                    resDataSet.Relations.Remove("RelationId");
+                    resDataSet.Tables[xlsTable.TableName].Constraints.Remove("RelationId");
+                    //resDataSet.Tables[resTable.TableName].Constraints.Remove("RelationId");
+                }
+                //ConstraintCollection collection = resDataSet.Tables[resTable.TableName].Constraints;
+                //for (int i = collection.Count - 1; i >= 0; --i)
+                //{
+                //    if (collection[i] is System.Data.ForeignKeyConstraint )
+                //    {
+                //        collection.Remove(collection[i]);
+                //    }
+                //}
+
+                //DataSet DS = resDataSet;
+                //for (int i = DS.Relations.Count - 1; i >= 0; i--)
+                //    DS.Relations.Remove(DS.Relations[i]);
+
+                //resDataSet.Tables[resTable.TableName].Constraints.Clear();
+                resDataSet.Tables.Remove(resTable.TableName);
+            }
+
+
+            resDataSet.Tables.Add(resTable);
+            bsResTable = new BindingSource();
+            bsResTable.DataSource = resDataSet;
+            bsResTable.DataMember = "ResTable";
+            dgvTableXls.DataSource = bsXlsTable;
+            dgvRes.DataSource = bsResTable;
         }
 
         private void processing_Click(object sender, EventArgs e)
@@ -489,6 +548,7 @@ namespace ExcelReader
             dgvRes.AutoGenerateColumns = true;
             showStripMessage("");
 
+            ClearXlsBinding();
             activatStripMenu(
                 new string[]  {
                 "ButtonOpen",
@@ -779,7 +839,7 @@ namespace ExcelReader
         {
             //MessageBox.Show(textColumnFilter.Text);
             if (dgvTableXls.DataSource == null) return;
-            dgvTableXls_changeColumns(textColumnFilter.Text);
+            dgvTableXls_changeColumns(txtColumnFilter.Text);
         }
 
         private void dgvTableXls_changeColumns(string filter)
@@ -885,20 +945,33 @@ namespace ExcelReader
                 string filter = scan.GetXlsFields();
                 int len = filter.Length;
                 if (len > 0) filter = filter.Remove(len-1,1);
-                textColumnFilter.Text = filter;
+                txtColumnFilter.Text = filter;
                 dgvTableXls_changeColumns(filter);
-                textColumnFilter.ReadOnly = true;
+                txtColumnFilter.ReadOnly = true;
             }
 
             else
             {
-                textColumnFilter.Text = "";
-                textColumnFilter.ReadOnly = false;
+                txtColumnFilter.Text = "";
+                txtColumnFilter.ReadOnly = false;
             }
 
         }
 
-        private void btResult_CheckedChanged(object sender, EventArgs e)
+        void ClearXlsBinding()
+        {
+            ckResult.Checked = false;
+            ChahgeXlsBinding();
+            if (resDataSet.Relations.Contains("RelationId"))
+            {
+                //resDataSet.Relations.Remove("RelationId");
+                //resDataSet.Tables.Remove(file.XlsTable);
+                bsXlsTable = null;
+                bsResTable = null;
+            }
+        }
+
+        void ChahgeXlsBinding()
         {
             if (ckResult.Checked)
             {
@@ -909,35 +982,80 @@ namespace ExcelReader
                     MessageBox.Show("Can't find ROW_ID field!");
                     return;
                 }
-                if (bsResTable == null)
+                if (bsXlsTable == null)
                 {
                     DataTable xlsTable = file.XlsTable;
                     DataTable resTable = scan.ResTable;
 
-                    resDataSet.Tables.Add(xlsTable);
-                    resDataSet.Tables.Add(resTable);
 
                     resTable.Locale = new System.Globalization.CultureInfo(xlsTable.Locale.Name);
-                    resDataSet.Relations.Add(
-                        "RelationId",
-                        resTable.Columns[field.ResName],
-                        xlsTable.Columns[Scan.ROW_ID]);
 
-                    bsResTable = new BindingSource();
-                    bsResTable.DataSource = resDataSet;
-                    bsResTable.DataMember = "ResTable";
+                    if (!resDataSet.Relations.Contains("RelationId"))
+                    {
+                        if (resDataSet.Tables.Contains(xlsTable.TableName))
+                        {
+                            resDataSet.Tables.Remove(xlsTable.TableName);
+                        }
+                        resDataSet.Tables.Add(xlsTable);
+                        if (resDataSet.Tables.Contains(resTable.TableName))
+                        {
+                            resDataSet.Tables.Remove(resTable.TableName);
+                        }
+                        resDataSet.Tables.Add(resTable);
+                        resDataSet.Relations.Add(
+                            "RelationId",
+                            resTable.Columns[field.ResName],
+                            xlsTable.Columns[Scan.ROW_ID]);
+                    }
 
                     bsXlsTable = new BindingSource();
                     bsXlsTable.DataSource = bsResTable;
                     bsXlsTable.DataMember = "RelationId";
-
-                    dgvRes.DataSource = bsResTable;
                 }
                 dgvTableXls.DataSource = bsXlsTable;
             }
             else
             {
                 dgvTableXls.DataSource = file.XlsTable;
+            }
+        }
+
+        private void btResult_CheckedChanged(object sender, EventArgs e)
+        {
+            ChahgeXlsBinding();
+        }
+
+        private void txtRowsFilter_TextChanged(object sender, EventArgs e)
+        {
+            (dgvTemlpStr.DataSource as BindingSource).Filter =
+                String.Format("[xlsName] like '%{0}%' or [resName] like '%{0}%' or comm like '%{0}%'", txtRowsFilter.Text);
+        }
+
+        private void btResFilter_Click(object sender, EventArgs e)
+        {
+            if (dgvRes.DataSource == null) return;
+            try
+            {
+                (dgvRes.DataSource as BindingSource).Filter = txtResFilter.Text;
+                txtResApply.Text = txtResFilter.Text;
+            }
+            catch (Exception ex)
+            {
+                if (ex is EvaluateException || ex is EvaluateException)
+                {
+                    (dgvRes.DataSource as BindingSource).Filter = txtResApply.Text;
+                    MessageBox.Show(ex.Message);
+                }
+                else throw;
+            }
+        }
+
+        private void txtResFilter_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //if(e.KeyChar = 13 )
+            if (e.KeyChar == '\r')
+            {
+                btResFilter_Click(sender, null);
             }
         }
     }

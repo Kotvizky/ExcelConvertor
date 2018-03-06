@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.ckResult = new System.Windows.Forms.CheckBox();
             this.ckTmplFields = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textColumnFilter = new System.Windows.Forms.TextBox();
+            this.txtColumnFilter = new System.Windows.Forms.TextBox();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.dgvTableXls = new System.Windows.Forms.DataGridView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -51,6 +51,9 @@
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.textTmplName = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtRowsFilter = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.dgvTemlpStr = new System.Windows.Forms.DataGridView();
             this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -102,6 +105,12 @@
             this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
             this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.highlightTextRenderer1 = new BrightIdeasSoftware.HighlightTextRenderer();
+            this.txtResApply = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btResFilter = new System.Windows.Forms.Button();
+            this.txtResFilter = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -124,6 +133,7 @@
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpStr)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
@@ -136,6 +146,7 @@
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer2
@@ -150,25 +161,26 @@
             this.splitContainer2.Panel1.Controls.Add(this.ckResult);
             this.splitContainer2.Panel1.Controls.Add(this.ckTmplFields);
             this.splitContainer2.Panel1.Controls.Add(this.label1);
-            this.splitContainer2.Panel1.Controls.Add(this.textColumnFilter);
+            this.splitContainer2.Panel1.Controls.Add(this.txtColumnFilter);
             this.splitContainer2.Panel1.Controls.Add(this.splitter1);
             this.splitContainer2.Panel1.Controls.Add(this.dgvTableXls);
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.AutoScroll = true;
+            this.splitContainer2.Panel2.Controls.Add(this.panel2);
             this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
             this.splitContainer2.Size = new System.Drawing.Size(522, 578);
             this.splitContainer2.SplitterDistance = 261;
             this.splitContainer2.TabIndex = 0;
             // 
-            // btResult
+            // ckResult
             // 
             this.ckResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ckResult.AutoSize = true;
             this.ckResult.Enabled = false;
             this.ckResult.Location = new System.Drawing.Point(436, 231);
-            this.ckResult.Name = "btResult";
+            this.ckResult.Name = "ckResult";
             this.ckResult.Size = new System.Drawing.Size(85, 17);
             this.ckResult.TabIndex = 11;
             this.ckResult.Text = "Res. reletion";
@@ -198,15 +210,15 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "Column filter";
             // 
-            // textColumnFilter
+            // txtColumnFilter
             // 
-            this.textColumnFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtColumnFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textColumnFilter.Location = new System.Drawing.Point(71, 231);
-            this.textColumnFilter.Name = "textColumnFilter";
-            this.textColumnFilter.Size = new System.Drawing.Size(269, 20);
-            this.textColumnFilter.TabIndex = 6;
-            this.textColumnFilter.TextChanged += new System.EventHandler(this.textColumnFilter_TextChanged);
+            this.txtColumnFilter.Location = new System.Drawing.Point(71, 231);
+            this.txtColumnFilter.Name = "txtColumnFilter";
+            this.txtColumnFilter.Size = new System.Drawing.Size(269, 20);
+            this.txtColumnFilter.TabIndex = 6;
+            this.txtColumnFilter.TextChanged += new System.EventHandler(this.textColumnFilter_TextChanged);
             // 
             // splitter1
             // 
@@ -244,7 +256,7 @@
             this.tabControl1.Location = new System.Drawing.Point(3, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(520, 308);
+            this.tabControl1.Size = new System.Drawing.Size(519, 259);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPage1
@@ -253,7 +265,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(512, 282);
+            this.tabPage1.Size = new System.Drawing.Size(511, 233);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Result";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -264,7 +276,7 @@
             this.dgvRes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvRes.Location = new System.Drawing.Point(3, 3);
             this.dgvRes.Name = "dgvRes";
-            this.dgvRes.Size = new System.Drawing.Size(506, 276);
+            this.dgvRes.Size = new System.Drawing.Size(505, 227);
             this.dgvRes.TabIndex = 1;
             this.dgvRes.Visible = false;
             // 
@@ -390,6 +402,7 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.panel1);
             this.splitContainer4.Panel2.Controls.Add(this.dgvTemlpStr);
             this.splitContainer4.Panel2.Controls.Add(this.bNTmplStr);
             this.splitContainer4.Size = new System.Drawing.Size(297, 374);
@@ -407,6 +420,37 @@
             this.textTmplName.Size = new System.Drawing.Size(297, 40);
             this.textTmplName.TabIndex = 1;
             this.textTmplName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.txtRowsFilter);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 303);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(297, 27);
+            this.panel1.TabIndex = 2;
+            // 
+            // txtRowsFilter
+            // 
+            this.txtRowsFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtRowsFilter.Location = new System.Drawing.Point(74, 4);
+            this.txtRowsFilter.Name = "txtRowsFilter";
+            this.txtRowsFilter.Size = new System.Drawing.Size(213, 20);
+            this.txtRowsFilter.TabIndex = 9;
+            this.txtRowsFilter.TextChanged += new System.EventHandler(this.txtRowsFilter_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 7);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Rows filter";
             // 
             // dgvTemlpStr
             // 
@@ -432,14 +476,14 @@
             this.idHeadDataGrid3,
             this.idStrDataGrid3});
             this.dgvTemlpStr.DataSource = this.fKimpHeadimpStrBindingSource;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvTemlpStr.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvTemlpStr.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvTemlpStr.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvTemlpStr.Location = new System.Drawing.Point(0, 25);
             this.dgvTemlpStr.Name = "dgvTemlpStr";
@@ -471,8 +515,8 @@
             // xlsNameDataGrid3
             // 
             this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle7;
             this.xlsNameDataGrid3.HeaderText = "xlsName";
             this.xlsNameDataGrid3.MaxInputLength = 1000;
             this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
@@ -849,6 +893,56 @@
             // 
             this.attrValueTableAdapter.ClearBeforeFill = true;
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.txtResFilter);
+            this.panel2.Controls.Add(this.btResFilter);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.txtResApply);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(0, 264);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(522, 49);
+            this.panel2.TabIndex = 3;
+            // 
+            // txtResApply
+            // 
+            this.txtResApply.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtResApply.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtResApply.Location = new System.Drawing.Point(144, 3);
+            this.txtResApply.Name = "txtResApply";
+            this.txtResApply.ReadOnly = true;
+            this.txtResApply.Size = new System.Drawing.Size(371, 20);
+            this.txtResApply.TabIndex = 0;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(138, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "select * from ResTab where";
+            // 
+            // btResFilter
+            // 
+            this.btResFilter.Location = new System.Drawing.Point(18, 24);
+            this.btResFilter.Name = "btResFilter";
+            this.btResFilter.Size = new System.Drawing.Size(31, 21);
+            this.btResFilter.TabIndex = 2;
+            this.btResFilter.Text = "/\\";
+            this.btResFilter.UseVisualStyleBackColor = true;
+            this.btResFilter.Click += new System.EventHandler(this.btResFilter_Click);
+            // 
+            // txtResFilter
+            // 
+            this.txtResFilter.Location = new System.Drawing.Point(58, 25);
+            this.txtResFilter.Name = "txtResFilter";
+            this.txtResFilter.Size = new System.Drawing.Size(457, 20);
+            this.txtResFilter.TabIndex = 3;
+            this.txtResFilter.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtResFilter_KeyPress);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -887,6 +981,8 @@
             this.splitContainer4.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpStr)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
@@ -902,6 +998,8 @@
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -955,7 +1053,7 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textColumnFilter;
+        private System.Windows.Forms.TextBox txtColumnFilter;
         private BrightIdeasSoftware.DataTreeListView olvDataTree;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private System.Windows.Forms.TextBox textTmplName;
@@ -978,6 +1076,15 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn idStrDataGrid3;
         private System.Windows.Forms.CheckBox ckTmplFields;
         private System.Windows.Forms.CheckBox ckResult;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtRowsFilter;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.TextBox txtResFilter;
+        private System.Windows.Forms.Button btResFilter;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtResApply;
+        private BrightIdeasSoftware.HighlightTextRenderer highlightTextRenderer1;
     }
 }
 
