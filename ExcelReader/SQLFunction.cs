@@ -44,12 +44,17 @@ namespace ExcelReader
         };
 
         static string sqlCommHead =
-            @"select idHead, idParent, name, comm, isGroup
+            @"select idHead, idParent,
+              case 
+                when isGroup = 1 then name 
+                else name + ' {'+ cast(idHead as varChar(100))+'}'
+                end name
+                , comm, isGroup
               from i_tmpl_head";
 
         static string commStr =
             @"select idStr,idHead,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
-                strFormat,isPos,isActive,comm,author,dateCreate,operator,dateModify
+                strFormat,isPos,isActive,comm,author--,dateCreate,operator,dateModify
             from i_tmpl_str
             where idHead = @idHead";
 
@@ -94,7 +99,10 @@ namespace ExcelReader
                         new DataColumn("BusId",Type.GetType("System.String")),
                         new DataColumn("Account",Type.GetType("System.String")),
                         new DataColumn("ContractNum",Type.GetType("System.String")),
-                        new DataColumn("Data",Type.GetType("System.DateTime"))
+                        new DataColumn("Date",Type.GetType("System.DateTime")),
+                        new DataColumn("INN",Type.GetType("System.String")),
+                        new DataColumn("CurrCode",Type.GetType("System.String")),
+                        new DataColumn("Days",Type.GetType("System.Double"))
                     });
                     break;
             }
@@ -151,6 +159,7 @@ namespace ExcelReader
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    throw;
                 }
                 finally
                 {
@@ -203,6 +212,7 @@ namespace ExcelReader
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter();
             dataAdapter.SelectCommand = new SqlCommand(query, conn);
+            dataAdapter.SelectCommand.CommandTimeout = conn.ConnectionTimeout;
             if (conn.State == ConnectionState.Closed) conn.Open();
             DataTable table = new DataTable();
             dataAdapter.Fill(table);

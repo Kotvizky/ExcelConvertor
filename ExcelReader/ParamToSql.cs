@@ -31,6 +31,13 @@ namespace ExcelReader
         public override void InitField()
         {
             OwnField.SqlRow[OutName] = Value;
+            if (Value.GetType() == typeof(DateTime))
+            {
+                if ((DateTime)Value == new DateTime(0001,1,1))
+                {
+                    OwnField.SqlRow[OutName] = DBNull.Value;
+                }
+            }
         }
     }
 }

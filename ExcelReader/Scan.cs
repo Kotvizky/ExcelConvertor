@@ -228,6 +228,7 @@ namespace ExcelReader
             object value = tabValue.Value;
             if (value == DBNull.Value)
             {
+                //result.Value = new DateTime(1800, 1, 1);
                 result.Error = errNull;
             }
             else
@@ -276,7 +277,7 @@ namespace ExcelReader
         {
             foreach(FieldFunc field in FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
             {
-                if (field.initSQLTable())
+                if (field.initSQLResult())
                 {
                     field.InitSqlTable();
                     for (int i = 0; i < ResTable.Rows.Count; i++)
@@ -542,17 +543,29 @@ namespace ExcelReader
                     fieldFunc.ParamsOut
                 });
 
+                string[] groupName = new string[] { "ParamsField", "ParamsIn", "ParamsOut" };
 
-                foreach (ParamGroup paramGroup in paramGpoups)
+                //foreach (ParamGroup paramGroup in paramGpoups)
+                for (int i = 0; i < paramGpoups.Count; i++)
                 {
-                    message += String.Format("\r\n\r\n{0}  Ready - {1} < ====== {2} \r\n---\r\n", 
-                        paramGroup.GroupName, paramGroup.AllFound,paramGroup.msgError);
+                    ParamGroup paramGroup = (ParamGroup)paramGpoups[i];
 
-                    if (!paramGroup.AllFound) AllFound = false;
+                    if (paramGroup == null) {
+                        message += String.Format("\r\n\r\n{0}  Not Ready ",
+                            groupName[i]);
+                            AllFound = false;
+                    }
+                    else
+                    { 
+                        message += String.Format("\r\n\r\n{0}  Ready - {1} < ====== {2} \r\n---\r\n", 
+                            paramGroup.GroupName, paramGroup.AllFound,paramGroup.msgError);
 
-                    foreach (ParamBase param in paramGroup)
-                    {
-                        message += String.Format("\r\n{0}", param.Print());
+                        if (!paramGroup.AllFound) AllFound = false;
+
+                        foreach (ParamBase param in paramGroup)
+                        {
+                            message += String.Format("\r\n{0}", param.Print());
+                        }
                     }
 
                 }

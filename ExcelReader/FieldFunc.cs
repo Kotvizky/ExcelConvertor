@@ -82,7 +82,7 @@ namespace ExcelReader
         public DataRow ResCurrentRow { protected set; get; }
         public DataRow SqlCurrentRow { protected set; get; }
 
-        public bool initSQLTable()
+        public bool initSQLResult()
         {
             InSqlTable = SQLFunction.GetResultTable(SQLTableName);
             return (InSqlTable != null);
@@ -99,6 +99,10 @@ namespace ExcelReader
 
             string[] nameSplit = xlsName.Split('(');
             DataTable impStructure = SQLFunction.getFuncDescription(FunctionName);
+            if (impStructure.Rows.Count == 0)
+            {
+                return;
+            }
             SQLTableName = impStructure.Rows[0][SqlParam[GroupNames.inTable]].ToString(); // impStructure[1][index].Trim();
 
             if (impStructure.Columns.Contains(SqlParam[GroupNames.tabFields]))
@@ -145,7 +149,7 @@ namespace ExcelReader
             }
             else
             {
-                FunctionName = XlsName.Split('(')[0].Trim();
+                FunctionName = XlsName.Split(new char[] { '(',' ','\n','\r' })[0].Trim();
             }
         }
 
@@ -207,6 +211,10 @@ namespace ExcelReader
                 {
                     value = param.ToString();
                 }
+                else if (param.Value.GetType().Equals(typeof(DateTime)))
+                {
+                    value = String.Format("'{0:yyyyMMdd}'",(DateTime)param.Value);
+                }
 
                 values += String.Format(",{0}", value);
             }
@@ -219,10 +227,35 @@ namespace ExcelReader
             ExecServerFunc();
             onInitProgressBar?.Invoke(ResSqlTable.Rows.Count);
 
+            DataRowCollection rows = Scan.ResTable.Rows;
+
+            FieldBase clear = this.Scan.Find(x => ( x.Attr == attrName.System) && (x.ResName == "CLEAR_ROWS") && x.IsActive);
+
+            if (clear != null)
+            {
+                Scan.ResTable.Rows.Clear();
+
+            }
+
             foreach (DataRow row in ResSqlTable.Rows)
             {
                 SqlCurrentRow = row;
-                ResCurrentRow = Scan.ResTable.Rows[(int)SqlCurrentRow["ROW_ID"]];
+                int rowId = (int)SqlCurrentRow["ROW_ID"];
+                if (rows.Count > rowId )
+                {
+                    ResCurrentRow = rows[rowId];
+                }
+                else
+                {
+                    DataRow newRow = Scan.ResTable.NewRow();
+                    if (Scan.ResTable.Columns.Contains("ROW_ID"))
+                    {
+                        newRow["ROW_ID"] = rowId + 1;
+                    }
+                    ResCurrentRow = newRow;
+                    rows.Add(newRow);
+
+                }
                 foreach(ParamBase param in ParamsOut)
                 {
                     param.InitField();

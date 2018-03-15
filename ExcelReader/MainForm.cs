@@ -328,6 +328,11 @@ namespace ExcelReader
                 this.Text = String.Format("{0} -- Convert: {1}", Scan.GetLocalIPAddress(), Path.GetFileName(fileName));
                 file.ReadFile(fileName);
                 DataTable table = file.XlsTable;
+                if (table == null)
+                {
+                    MessageBox.Show("Таблица не найдена!");
+                    return;
+                }
                 int columns = table.Columns.Count;
                 DataColumn col = table.Columns.Add(ROW_ID, typeof(Int32));
                 col.SetOrdinal(0);
