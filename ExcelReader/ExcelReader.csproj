@@ -83,6 +83,12 @@
     <Compile Include="FieldExpr.cs" />
     <Compile Include="FieldFunc.cs" />
     <Compile Include="FieldSystem.cs" />
+    <Compile Include="FormFunc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFunc.Designer.cs">
+      <DependentUpon>FormFunc.cs</DependentUpon>
+    </Compile>
     <Compile Include="ParamAnswer.cs" />
     <Compile Include="ParamGroup.cs" />
     <Compile Include="ParamBase.cs" />
@@ -91,11 +97,11 @@
     <Compile Include="Scan.cs" />
     <Compile Include="ExcelFile.cs" />
     <Compile Include="FieldXls.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,8 +110,11 @@
     <EmbeddedResource Include="DialogSheets.resx">
       <DependentUpon>DialogSheets.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="FormFunc.resx">
+      <DependentUpon>FormFunc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -50,7 +50,8 @@ namespace ExcelReader
                 else name + ' {'+ cast(idHead as varChar(100))+'}'
                 end name
                 , comm, isGroup
-              from i_tmpl_head";
+              from i_tmpl_head
+                order by name";
 
         static string commStr =
             @"select idStr,idHead,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
@@ -102,7 +103,8 @@ namespace ExcelReader
                         new DataColumn("Date",Type.GetType("System.DateTime")),
                         new DataColumn("INN",Type.GetType("System.String")),
                         new DataColumn("CurrCode",Type.GetType("System.String")),
-                        new DataColumn("Days",Type.GetType("System.Double"))
+                        new DataColumn("Days",Type.GetType("System.Double")),
+                        new DataColumn("FIO",Type.GetType("System.String"))
                     });
                     break;
             }

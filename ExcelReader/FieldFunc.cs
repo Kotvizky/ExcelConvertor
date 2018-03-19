@@ -10,6 +10,11 @@ namespace ExcelReader
     class FieldFunc : FieldBase
     {
 
+        static public string getFuncName (string name)
+        {
+            return name.Split(new char[] { '(', ' ', '\n', '\r' })[0].Trim(); 
+        }
+
         public FieldFunc(DataRow row, Scan scan) : base(row, scan)
         {
         }
@@ -149,7 +154,7 @@ namespace ExcelReader
             }
             else
             {
-                FunctionName = XlsName.Split(new char[] { '(',' ','\n','\r' })[0].Trim();
+                FunctionName = getFuncName(XlsName); 
             }
         }
 
@@ -214,6 +219,11 @@ namespace ExcelReader
                 else if (param.Value.GetType().Equals(typeof(DateTime)))
                 {
                     value = String.Format("'{0:yyyyMMdd}'",(DateTime)param.Value);
+                }
+                else if (param.Value.GetType().Equals(typeof(String)))
+                {
+                    if (value[0] != '\'') value = "'" + value;
+                    if (value[value.Length -1 ] != '\'') value += "'";
                 }
 
                 values += String.Format(",{0}", value);

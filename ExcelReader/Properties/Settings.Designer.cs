@@ -60,5 +60,17 @@ namespace ExcelReader.Properties {
                 return ((bool)(this["ShowNullDoubleError"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("IKotvytskyi")]
+        public string admins {
+            get {
+                return ((string)(this["admins"]));
+            }
+            set {
+                this["admins"] = value;
+            }
+        }
     }
 }

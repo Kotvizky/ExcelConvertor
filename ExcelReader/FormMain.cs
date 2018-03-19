@@ -32,17 +32,24 @@ namespace ExcelReader
         private DataSet resDataSet = new DataSet();
         private BindingSource bsXlsTable = null;
         private BindingSource bsResTable = null;
+        bool isAdmin = false;
 
         public MainForm()
         {
             InitializeComponent();
+
+            string admins = Properties.Settings.Default.admins;
+            string[] arrayAdmin = admins.Split(',');
+            int pos = Array.IndexOf(arrayAdmin,Environment.UserName);
+            isAdmin = (pos > -1);
+            bindingNavigatorSaveItems2.Enabled = isAdmin;
 
             //double dec;
             //string num = "-6,75";
             //if (!Double.TryParse(num.Replace('.',','), out dec)) dec = 0;
             ////dec = Convert.ToDouble(num);
             //MessageBox.Show(dec.ToString());
-            
+
             tbHeadClass.setProperty(olvDataTree,textTmplName);
             tbStrClass.setProperty(dgvTemlpStr, bNTmplStr);
 
@@ -469,7 +476,7 @@ namespace ExcelReader
 
             if (!scan.AllFound)
             {
-                MessageBox.Show("Не все поля их шаблона найдены!\n Смотрите подробный отчет");
+                MessageBox.Show("Не все поля из шаблона найдены!\n Смотрите подробный отчет");
                 tabControl1.TabPages.Remove(tabPage1);
                 return;
             }
@@ -751,11 +758,11 @@ namespace ExcelReader
 
         private void dgvTemlpStr_MouseClick(object sender, MouseEventArgs e)
         {
-
         }
 
         private void dgvTemlpStr_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
+            
         }
 
         private void dataGridView1_DefaultValuesNeeded(object sender,
@@ -1061,6 +1068,46 @@ namespace ExcelReader
             if (e.KeyChar == '\r')
             {
                 btResFilter_Click(sender, null);
+            }
+        }
+
+        private void dgvTemlpStr_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+        }
+
+        private void dgvTemlpStr_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void dgvTemlpStr_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!isAdmin) return;
+
+            if (ModifierKeys.HasFlag(Keys.Control))
+            {
+
+                DataGridView dgv = (DataGridView)sender;
+                if ((attrName)dgv.Rows[e.RowIndex].Cells["attrDataGrid3"].Value == attrName.Func)
+                {
+                    string funcText = dgv.Rows[e.RowIndex].Cells["xlsNameDataGrid3"].Value.ToString();
+                    string name = FieldFunc.getFuncName(funcText);
+                    if (name.Length > 0 )
+                    {
+                        DataTable table = SQLFunction.getFuncDescription(name);
+                        if (table.Rows.Count > 0 )
+                        {
+                            FormFunc form = new FormFunc(table, funcText);
+                            form.ShowDialog();
+                            form.StartPosition = FormStartPosition.CenterParent;
+                            if (form.func != String.Empty)
+                            {
+                                dgv.Rows[e.RowIndex].Cells["xlsNameDataGrid3"].Value = form.func;
+                            }
+                            form.Dispose();
+                        }
+                    }
+
+                }
             }
         }
     }
