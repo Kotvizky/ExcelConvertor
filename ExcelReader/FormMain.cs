@@ -40,7 +40,7 @@ namespace ExcelReader
 
             string admins = Properties.Settings.Default.admins;
             string[] arrayAdmin = admins.Split(',');
-            int pos = Array.IndexOf(arrayAdmin,Environment.UserName);
+            int pos = Array.IndexOf(arrayAdmin,Environment.UserName.ToLower());
             isAdmin = (pos > -1);
             bindingNavigatorSaveItems2.Enabled = isAdmin;
 
@@ -172,7 +172,7 @@ namespace ExcelReader
 
         static class tbStrClass {
 
-            static int idHead;
+            static public int idHead { get; private set; }
 
             static BindingNavigator Bng;
 
@@ -1093,8 +1093,8 @@ namespace ExcelReader
                     string name = FieldFunc.getFuncName(funcText);
                     if (name.Length > 0 )
                     {
-                        DataTable table = SQLFunction.getFuncDescription(name);
-                        if (table.Rows.Count > 0 )
+                        DataTable table = SQLFunction.getFuncDescription(name, tbStrClass.idHead);
+                        if (table.Rows.Count > 0)
                         {
                             FormFunc form = new FormFunc(table, funcText);
                             form.ShowDialog();
@@ -1105,6 +1105,8 @@ namespace ExcelReader
                             }
                             form.Dispose();
                         }
+                        else
+                            MessageBox.Show(String.Format("Can't found function '{0}', template '{1}'", name, tbStrClass.idHead));
                     }
 
                 }

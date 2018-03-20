@@ -304,10 +304,12 @@ namespace ExcelReader
             return res;
         }
 
-        static public DataTable getFuncDescription(string parameter)
+        static public DataTable getFuncDescription(string parameter, int tmpl)
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter();
-            dataAdapter.SelectCommand = new SqlCommand("select * from [dbo].[impFunc] where fnName = @name", conn);
+            string sqlCmd = "select * from [dbo].[impFunc] where fnName = @name";
+            if (tmpl > 0) sqlCmd = String.Format("{0} and tmpl like '%;{1};%'", sqlCmd, tmpl);
+            dataAdapter.SelectCommand = new SqlCommand(sqlCmd, conn);
             dataAdapter.SelectCommand.Parameters.Add("@name", SqlDbType.VarChar);
             dataAdapter.SelectCommand.Parameters[0].SqlValue = parameter;
 
@@ -316,6 +318,11 @@ namespace ExcelReader
             DataTable table = new DataTable();
             dataAdapter.Fill(table);
             return table;
+        }
+
+        static public DataTable getFuncDescription(string parameter)
+        {
+            return getFuncDescription(parameter, -1);
         }
 
         struct DicSQLParam

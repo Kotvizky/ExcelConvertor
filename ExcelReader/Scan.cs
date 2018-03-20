@@ -192,6 +192,7 @@ namespace ExcelReader
             switch (value.GetType().Name)
             {
                 case "String":
+                    value = ((string)value).Replace('.', ',');
                     if (!Double.TryParse((string)value, out outValue))
                     {
                         result.Error = errConver;

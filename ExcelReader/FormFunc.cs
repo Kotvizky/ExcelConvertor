@@ -19,7 +19,7 @@ namespace ExcelReader
         public FormFunc(DataTable table, string func)
         {
             InitializeComponent();
-            if (table.Rows.Count >0 )
+            if (table.Rows.Count > 0)
             {
                 DataRow row = table.Rows[0];
                 tFunc.Text = row["fnName"].ToString();
@@ -64,6 +64,51 @@ namespace ExcelReader
         private void button2_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        //protected override bool ProcessCmdKey(ref Message message, Keys keys)
+        //{
+        //    switch (keys)
+        //    {
+        //        case Keys.C | Keys.Alt:
+        //            Copy();
+        //            return false;
+        //        case Keys.V | Keys.Alt:
+        //            Paste();
+        //            return false;
+        //    }
+        //    return false;
+        //}
+
+
+        private void Copy()
+        {
+            Clipboard.SetText(
+                String.Format("{0}\n{1}\n{2}",
+                ttabFields.Text, tInPar.Text, tOutPar.Text)
+            );
+        }
+
+        private void Paste()
+        {
+            string[] param = Clipboard.GetText().Split('\n');
+            if (param.Count() == 3)
+            {
+                ttabFields.Text = param[0];
+                tInPar.Text = param[1];
+                tOutPar.Text = param[2];
+            }
+
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Copy();
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Paste();
         }
     }
 }
