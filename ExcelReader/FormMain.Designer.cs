@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.ckResult = new System.Windows.Forms.CheckBox();
             this.ckTmplFields = new System.Windows.Forms.CheckBox();
@@ -60,8 +60,22 @@
             this.txtRowsFilter = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.dgvTemlpStr = new System.Windows.Forms.DataGridView();
+            this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.collectDataSet = new ExcelReader.CollectDataSet();
+            this.dataTypeDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.dataSizeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isPosDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.authorDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idHeadDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idStrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fKimpHeadimpStrBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.itmplheadBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
@@ -94,20 +108,6 @@
             this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
             this.highlightTextRenderer1 = new BrightIdeasSoftware.HighlightTextRenderer();
-            this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.dataTypeDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.dataSizeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.strFormatData3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isPosDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.authorDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idHeadDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idStrDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -180,7 +180,7 @@
             this.ckResult.Name = "ckResult";
             this.ckResult.Size = new System.Drawing.Size(85, 17);
             this.ckResult.TabIndex = 11;
-            this.ckResult.Text = "Res. reletion";
+            this.ckResult.Text = "Res. relation";
             this.ckResult.UseVisualStyleBackColor = true;
             this.ckResult.CheckedChanged += new System.EventHandler(this.btResult_CheckedChanged);
             // 
@@ -545,6 +545,52 @@
             this.dgvTemlpStr.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvTemlpStr_DataError);
             this.dgvTemlpStr.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvTemlpStr_RowsAdded);
             // 
+            // nppDataGrid3
+            // 
+            this.nppDataGrid3.DataPropertyName = "npp";
+            this.nppDataGrid3.FillWeight = 40F;
+            this.nppDataGrid3.HeaderText = "npp";
+            this.nppDataGrid3.Name = "nppDataGrid3";
+            this.nppDataGrid3.Width = 50;
+            // 
+            // resNameDataGrid3
+            // 
+            this.resNameDataGrid3.DataPropertyName = "resName";
+            this.resNameDataGrid3.HeaderText = "resName";
+            this.resNameDataGrid3.Name = "resNameDataGrid3";
+            this.resNameDataGrid3.Width = 74;
+            // 
+            // xlsNameDataGrid3
+            // 
+            this.xlsNameDataGrid3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
+            this.xlsNameDataGrid3.HeaderText = "xlsName";
+            this.xlsNameDataGrid3.MaxInputLength = 1000;
+            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
+            this.xlsNameDataGrid3.Width = 5;
+            // 
+            // isPrintDataGrid3
+            // 
+            this.isPrintDataGrid3.DataPropertyName = "isPrint";
+            this.isPrintDataGrid3.HeaderText = "isPrint";
+            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
+            this.isPrintDataGrid3.Width = 41;
+            // 
+            // attrDataGrid3
+            // 
+            this.attrDataGrid3.DataPropertyName = "attr";
+            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
+            this.attrDataGrid3.DisplayMember = "name";
+            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.attrDataGrid3.HeaderText = "attr";
+            this.attrDataGrid3.Name = "attrDataGrid3";
+            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.attrDataGrid3.ValueMember = "id";
+            this.attrDataGrid3.Width = 47;
+            // 
             // attrValueBindingSource
             // 
             this.attrValueBindingSource.DataMember = "attrValue";
@@ -554,6 +600,73 @@
             // 
             this.collectDataSet.DataSetName = "CollectDataSet";
             this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // dataTypeDataGrid3
+            // 
+            this.dataTypeDataGrid3.DataPropertyName = "dataType";
+            this.dataTypeDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.dataTypeDataGrid3.HeaderText = "dataType";
+            this.dataTypeDataGrid3.Name = "dataTypeDataGrid3";
+            this.dataTypeDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataTypeDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataTypeDataGrid3.Width = 77;
+            // 
+            // dataSizeDataGrid3
+            // 
+            this.dataSizeDataGrid3.DataPropertyName = "dataSize";
+            this.dataSizeDataGrid3.HeaderText = "dataSize";
+            this.dataSizeDataGrid3.Name = "dataSizeDataGrid3";
+            this.dataSizeDataGrid3.Width = 73;
+            // 
+            // strFormatData3
+            // 
+            this.strFormatData3.DataPropertyName = "strFormat";
+            this.strFormatData3.HeaderText = "strFormat";
+            this.strFormatData3.Name = "strFormatData3";
+            this.strFormatData3.Width = 75;
+            // 
+            // isPosDataGrid3
+            // 
+            this.isPosDataGrid3.DataPropertyName = "isPos";
+            this.isPosDataGrid3.HeaderText = "isPos";
+            this.isPosDataGrid3.Name = "isPosDataGrid3";
+            // 
+            // isActiveDataGrid3
+            // 
+            this.isActiveDataGrid3.DataPropertyName = "isActive";
+            this.isActiveDataGrid3.HeaderText = "isActive";
+            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
+            this.isActiveDataGrid3.Width = 50;
+            // 
+            // commDataGrid3
+            // 
+            this.commDataGrid3.DataPropertyName = "comm";
+            this.commDataGrid3.HeaderText = "comm";
+            this.commDataGrid3.Name = "commDataGrid3";
+            this.commDataGrid3.Width = 60;
+            // 
+            // authorDataGrid3
+            // 
+            this.authorDataGrid3.DataPropertyName = "author";
+            this.authorDataGrid3.HeaderText = "author";
+            this.authorDataGrid3.Name = "authorDataGrid3";
+            this.authorDataGrid3.Width = 62;
+            // 
+            // idHeadDataGrid3
+            // 
+            this.idHeadDataGrid3.DataPropertyName = "idHead";
+            this.idHeadDataGrid3.HeaderText = "idHead";
+            this.idHeadDataGrid3.Name = "idHeadDataGrid3";
+            this.idHeadDataGrid3.Visible = false;
+            this.idHeadDataGrid3.Width = 66;
+            // 
+            // idStrDataGrid3
+            // 
+            this.idStrDataGrid3.DataPropertyName = "idStr";
+            this.idStrDataGrid3.HeaderText = "idStr";
+            this.idStrDataGrid3.Name = "idStrDataGrid3";
+            this.idStrDataGrid3.ReadOnly = true;
+            this.idStrDataGrid3.Width = 53;
             // 
             // fKimpHeadimpStrBindingSource
             // 
@@ -807,119 +920,6 @@
             // attrValueTableAdapter
             // 
             this.attrValueTableAdapter.ClearBeforeFill = true;
-            // 
-            // nppDataGrid3
-            // 
-            this.nppDataGrid3.DataPropertyName = "npp";
-            this.nppDataGrid3.FillWeight = 40F;
-            this.nppDataGrid3.HeaderText = "npp";
-            this.nppDataGrid3.Name = "nppDataGrid3";
-            this.nppDataGrid3.Width = 50;
-            // 
-            // resNameDataGrid3
-            // 
-            this.resNameDataGrid3.DataPropertyName = "resName";
-            this.resNameDataGrid3.HeaderText = "resName";
-            this.resNameDataGrid3.Name = "resNameDataGrid3";
-            this.resNameDataGrid3.Width = 74;
-            // 
-            // xlsNameDataGrid3
-            // 
-            this.xlsNameDataGrid3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
-            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
-            this.xlsNameDataGrid3.HeaderText = "xlsName";
-            this.xlsNameDataGrid3.MaxInputLength = 1000;
-            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
-            this.xlsNameDataGrid3.Width = 5;
-            // 
-            // isPrintDataGrid3
-            // 
-            this.isPrintDataGrid3.DataPropertyName = "isPrint";
-            this.isPrintDataGrid3.HeaderText = "isPrint";
-            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
-            this.isPrintDataGrid3.Width = 41;
-            // 
-            // attrDataGrid3
-            // 
-            this.attrDataGrid3.DataPropertyName = "attr";
-            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
-            this.attrDataGrid3.DisplayMember = "name";
-            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
-            this.attrDataGrid3.HeaderText = "attr";
-            this.attrDataGrid3.Name = "attrDataGrid3";
-            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.attrDataGrid3.ValueMember = "id";
-            this.attrDataGrid3.Width = 47;
-            // 
-            // dataTypeDataGrid3
-            // 
-            this.dataTypeDataGrid3.DataPropertyName = "dataType";
-            this.dataTypeDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
-            this.dataTypeDataGrid3.HeaderText = "dataType";
-            this.dataTypeDataGrid3.Name = "dataTypeDataGrid3";
-            this.dataTypeDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataTypeDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataTypeDataGrid3.Width = 77;
-            // 
-            // dataSizeDataGrid3
-            // 
-            this.dataSizeDataGrid3.DataPropertyName = "dataSize";
-            this.dataSizeDataGrid3.HeaderText = "dataSize";
-            this.dataSizeDataGrid3.Name = "dataSizeDataGrid3";
-            this.dataSizeDataGrid3.Width = 73;
-            // 
-            // strFormatData3
-            // 
-            this.strFormatData3.DataPropertyName = "strFormat";
-            this.strFormatData3.HeaderText = "strFormat";
-            this.strFormatData3.Name = "strFormatData3";
-            this.strFormatData3.Width = 75;
-            // 
-            // isPosDataGrid3
-            // 
-            this.isPosDataGrid3.DataPropertyName = "isPos";
-            this.isPosDataGrid3.HeaderText = "isPos";
-            this.isPosDataGrid3.Name = "isPosDataGrid3";
-            // 
-            // isActiveDataGrid3
-            // 
-            this.isActiveDataGrid3.DataPropertyName = "isActive";
-            this.isActiveDataGrid3.HeaderText = "isActive";
-            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
-            this.isActiveDataGrid3.Width = 50;
-            // 
-            // commDataGrid3
-            // 
-            this.commDataGrid3.DataPropertyName = "comm";
-            this.commDataGrid3.HeaderText = "comm";
-            this.commDataGrid3.Name = "commDataGrid3";
-            this.commDataGrid3.Width = 60;
-            // 
-            // authorDataGrid3
-            // 
-            this.authorDataGrid3.DataPropertyName = "author";
-            this.authorDataGrid3.HeaderText = "author";
-            this.authorDataGrid3.Name = "authorDataGrid3";
-            this.authorDataGrid3.Width = 62;
-            // 
-            // idHeadDataGrid3
-            // 
-            this.idHeadDataGrid3.DataPropertyName = "idHead";
-            this.idHeadDataGrid3.HeaderText = "idHead";
-            this.idHeadDataGrid3.Name = "idHeadDataGrid3";
-            this.idHeadDataGrid3.Visible = false;
-            this.idHeadDataGrid3.Width = 66;
-            // 
-            // idStrDataGrid3
-            // 
-            this.idStrDataGrid3.DataPropertyName = "idStr";
-            this.idStrDataGrid3.HeaderText = "idStr";
-            this.idStrDataGrid3.Name = "idStrDataGrid3";
-            this.idStrDataGrid3.ReadOnly = true;
-            this.idStrDataGrid3.Width = 53;
             // 
             // MainForm
             // 

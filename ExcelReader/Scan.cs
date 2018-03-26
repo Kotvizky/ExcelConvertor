@@ -24,6 +24,8 @@ namespace ExcelReader
         }
 
         public static string ROW_ID = "$ROW_ID";
+        public static string SHEMA = "SHEMA";
+
 
         const string ErrorFied = "Errors";
 
@@ -145,6 +147,9 @@ namespace ExcelReader
                     break;
                 case attrName.System:
                     newField = new FieldSystem(row, this);
+                    break;
+                case attrName.Myltiply:
+                    newField = new FieldMultiply(row, this);
                     break;
                 default:
                     newField = new FieldXls(row, this);
@@ -312,7 +317,7 @@ namespace ExcelReader
         public void InitXlsFields()
         {
             var resField = FindAll(x => x.IsActive 
-                    && ((x.Attr == attrName.Field)  || ((x.Attr == attrName.System) && (x as FieldSystem).isField))
+                    && ((x.Attr == attrName.Field) | (x.Attr == attrName.Myltiply) | ((x.Attr == attrName.System) && (x as FieldSystem).isField))
                     ).OrderBy(x => x.Npp);
 
             ResTable = new DataTable();
@@ -335,6 +340,12 @@ namespace ExcelReader
                 else if (field.Attr == attrName.System)
                 {
                     ResTable.Columns.Add(field.ResName, field.Type);
+                }
+                else if (field.Attr == attrName.Myltiply)
+                {
+                    FieldMultiply mField = (field as FieldMultiply);
+                    ResTable.Columns.Add(mField.NameVal1, mField.Type);
+                    ResTable.Columns.Add(mField.NameVal2, mField.Type2);
                 }
             }
         }
@@ -481,7 +492,33 @@ namespace ExcelReader
             AllFound = true;
             DataColumnCollection columns = xlsTable.Columns;
 
-            string message = "Поля \r\n -----";
+            var fieldMultiply = FindAll(x => (x.Attr == attrName.Myltiply) & x.IsActive);
+
+            string message = "Повторы \r\n -----";
+
+            foreach (FieldMultiply field in fieldMultiply)
+            {
+                string error = field.initFilds();
+                if (error == String.Empty)
+                {
+                    Func<ValidData, ValidValue> valFunc = null;
+
+                    setValidator(out valFunc , field.Type.Name, "String");
+                    field.Validator = valFunc;
+
+                    setValidator(out valFunc, field.Type2.Name, "String");
+                    field.Validator1 = valFunc;
+
+                    field.SetTableFields(table.Columns);
+                    message += String.Format("\r\n {0} -- {1} fields", field.FullName, field.ResTableFields.Length);
+                }
+                else
+                {
+                    message += String.Format("\r\n(!) {0} -- {1} fields", field.FullName, field.ResTableFields.Length);
+                }
+            }
+
+            message = "Поля \r\n -----";
             foreach (FieldXls field in this.FindAll(x => (x.Attr == attrName.Field) & x.IsActive))
             {
                 if (columns.Contains(field.XlsName))
@@ -577,7 +614,7 @@ namespace ExcelReader
             foreach (FieldAnswer field in this.FindAll(x => ((x.Attr == attrName.Answer) && x.IsActive))) {
                 if (field.Param == null)
                 {
-                    message += String.Format("\r\nParameter for field {0} not found" , field.ResRow);
+                    message += String.Format("\r\nParameter for field {0} not found" , field.ResName);
                     AllFound = false;
                 }
                 else
@@ -600,20 +637,45 @@ namespace ExcelReader
             onInitProgressBar?.Invoke(xlsTable.Rows.Count);
             var fields = this.FindAll(x => ((x.Attr == attrName.Field) 
                 | ( (x.Attr == attrName.System) && (x as FieldSystem).isField )) && x.IsActive);
+            var mField = (FieldMultiply)this.Find(x => (x.Attr == attrName.Myltiply) && x.IsActive);
             foreach (DataRow curRow in xlsTable.Rows)
             {
-                XlsRow = curRow;
-                ResRow = ResTable.NewRow();
-                ResTable.Rows.Add(ResRow);
-                foreach (FieldBase field in fields)
+                if (mField == null)
                 {
-                    string error = field.InitValue();
-                    ResRow[ErrorFied] = ResRow[ErrorFied] + error;
-                    onStepProgressBar?.Invoke();
+                    XlsRow = curRow;
+                    AddValuesToXlsRow(fields);
                 }
+                else
+                {
+                    XlsRow = curRow;
+                    foreach (string fieldName in mField.ResTableFields)
+                    {
+                        if (XlsRow[fieldName] != DBNull.Value)
+                        {
+                            AddValuesToXlsRow(fields);
+                            string error = mField.InitMultValue(fieldName);
+                            ResRow[ErrorFied] = ResRow[ErrorFied] + error;
+                        }
+                    }
+
+                }
+                onStepProgressBar?.Invoke();
             }
             onHideProgressBar?.Invoke();
         }
+
+        private void AddValuesToXlsRow(List<FieldBase> fields)
+        {
+            ResRow = ResTable.NewRow();
+            ResTable.Rows.Add(ResRow);
+            foreach (FieldBase field in fields) //TODO добавить алгоритм разворота строк
+            {
+                string error = field.InitValue();
+                ResRow[ErrorFied] = ResRow[ErrorFied] + error;
+            }
+        }
+
+
 
         string setValidator(FieldBase field, string inTypeStr)
         {
@@ -643,6 +705,38 @@ namespace ExcelReader
             }
             return result;
         }
+
+
+        string setValidator(out Func<ValidData, ValidValue> fieldFunc, string typeName, string inTypeStr)
+        {
+            string result = String.Empty;
+            bool convert = true;
+            fieldFunc = null;
+            try
+            {
+                dataType inType = (dataType)Enum.Parse(typeof(dataType), inTypeStr);
+                dataType outType = (dataType)Enum.Parse(typeof(dataType), typeName);
+                var func = ConvertList.Find(x => (x.InType == inType) && (x.OutType == outType));
+                if (func != null)
+                {
+                    fieldFunc = func.Validator;
+                }
+                else
+                {
+                    convert = false;
+                }
+            }
+            catch (ArgumentException)
+            {
+                convert = false;
+            }
+            if (!convert)
+            {
+                result = String.Format("{0} {1}->{2}", errConver, inTypeStr, typeName);
+            }
+            return result;
+        }
+
 
         public void WriteResult(DataTable XlsTable)
         {  
@@ -733,7 +827,7 @@ namespace ExcelReader
         {
             string result = "";
             var resField = FindAll(x => x.IsActive
-                    && ((x.Attr == attrName.Field) || ((x.Attr == attrName.System) && (x as FieldSystem).isField))
+                    && ((x.Attr == attrName.Field) | (x.Attr == attrName.Myltiply) | ((x.Attr == attrName.System) && (x as FieldSystem).isField))
                     ).OrderBy(x => x.Npp);
             foreach (FieldBase field in resField) result += String.Format("{0};", field.XlsName);
             return result;

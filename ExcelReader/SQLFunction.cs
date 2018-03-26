@@ -104,7 +104,8 @@ namespace ExcelReader
                         new DataColumn("INN",Type.GetType("System.String")),
                         new DataColumn("CurrCode",Type.GetType("System.String")),
                         new DataColumn("Days",Type.GetType("System.Double")),
-                        new DataColumn("FIO",Type.GetType("System.String"))
+                        new DataColumn("FIO",Type.GetType("System.String")),
+                        new DataColumn("Suma",Type.GetType("System.Double"))
                     });
                     break;
             }

@@ -10,9 +10,20 @@ namespace ExcelReader
     class FieldFunc : FieldBase
     {
 
+        public const string tabName = "inVal";
+
         static public string getFuncName (string name)
         {
             return name.Split(new char[] { '(', ' ', '\n', '\r' })[0].Trim(); 
+        }
+
+        static public DataTable getShema()
+        {
+            DataTable impStructure = new DataTable();
+            foreach (string fieldName in Enum.GetNames(typeof(GroupNames))) {
+                impStructure.Columns.Add(fieldName, Type.GetType("System.String"));
+            }
+            return impStructure;
         }
 
         public FieldFunc(DataRow row, Scan scan) : base(row, scan)
@@ -103,7 +114,42 @@ namespace ExcelReader
             }
 
             string[] nameSplit = xlsName.Split('(');
-            DataTable impStructure = SQLFunction.getFuncDescription(FunctionName);
+
+            var fieldSystem = Scan.FindAll(x => (x.Attr == attrName.System));
+
+            FieldSystem field = null; 
+
+            if (fieldSystem != null)
+            {
+                field = (FieldSystem)fieldSystem.Find(x => ((FieldSystem)x).isShema & (((FieldSystem)x).funcName == FunctionName));
+            }
+
+            DataTable impStructure = null;
+            if (field != null)
+            {
+
+                string[] shema = field.XlsName.Split('(');
+                impStructure = getShema();
+
+                for (int i = 0; i < Enum.GetNames(typeof(GroupNames)).Length; i++)
+                {
+                    string fieldName = ((GroupNames)i).ToString();
+                    if (i == 0) {
+                        DataRow row = impStructure.Rows.Add();
+                        row[fieldName] = tabName;
+                    }
+                    else
+                    {
+                        impStructure.Rows[0][fieldName] = shema[i].Split(')')[0];
+                    }
+                }
+
+            }
+            else
+            {
+                impStructure = SQLFunction.getFuncDescription(FunctionName);
+            }
+    
             if (impStructure.Rows.Count == 0)
             {
                 return;
@@ -116,7 +162,7 @@ namespace ExcelReader
                     impStructure.Rows[0][SqlParam[GroupNames.tabFields]].ToString(),
                     nameSplit[1].Trim(),
                     GroupNames.tabFields,
-                    Scan.FindAll(x => ((x.Attr == attrName.Field) || (x.Attr == attrName.Const)) && x.IsActive),
+                    Scan.FindAll(x => ((x.Attr == attrName.Field) || (x.Attr == attrName.Const) || (x.Attr == attrName.Myltiply)) && x.IsActive),
                     this
                     );
             }
@@ -234,6 +280,8 @@ namespace ExcelReader
 
         public void FillResult()
         {
+            string activeField = "$Active_row";
+
             ExecServerFunc();
             onInitProgressBar?.Invoke(ResSqlTable.Rows.Count);
 
@@ -241,11 +289,12 @@ namespace ExcelReader
 
             FieldBase clear = this.Scan.Find(x => ( x.Attr == attrName.System) && (x.ResName == "CLEAR_ROWS") && x.IsActive);
 
+
             if (clear != null)
             {
-                Scan.ResTable.Rows.Clear();
-
+                Scan.ResTable.Columns.Add(activeField, typeof(Boolean));
             }
+
 
             foreach (DataRow row in ResSqlTable.Rows)
             {
@@ -266,11 +315,20 @@ namespace ExcelReader
                     rows.Add(newRow);
 
                 }
-                foreach(ParamBase param in ParamsOut)
+                if (clear != null)
+                    ResCurrentRow[activeField] = true;
+                foreach (ParamBase param in ParamsOut)
                 {
                     param.InitField();
                 }
                 onStepProgressBar?.Invoke();
+            }
+            if (clear != null)
+            {
+                var rowsDelete = Scan.ResTable.Select(String.Format("{0} is null", activeField));
+                foreach (var rowDel in rowsDelete)
+                    rowDel.Delete();
+//                Scan.ResTable.Columns.Remove(activeField);
             }
             onHideProgressBar?.Invoke();
 

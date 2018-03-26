@@ -37,10 +37,10 @@ namespace ExcelReader
         public bool isPos;
     }
 
-    enum attrName : byte { Field = 0, Func, Answer, Const, Expr, System };
+    enum attrName : byte { Field = 0, Func, Answer, Const, Expr, System, Myltiply };
     enum funcParameter : byte { Table = 1, In, Out }
     enum spetialFields { Ip, RowId }
-    enum GroupNames { inTable, tabFields, inPar, outPar }
+    enum GroupNames: byte { inTable, tabFields, inPar, outPar }
     enum serviseFields { IP, ROW_ID }
     enum dataType { String, DateTime, Double }
 

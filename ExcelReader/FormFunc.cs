@@ -15,10 +15,13 @@ namespace ExcelReader
     {
 
         public string func = String.Empty;
+        public string shema = String.Empty;
+        bool funcInRow = false;
 
-        public FormFunc(DataTable table, string func)
+        public FormFunc(DataTable table, string func, bool inRow)
         {
             InitializeComponent();
+            funcInRow = inRow;
             if (table.Rows.Count > 0)
             {
                 DataRow row = table.Rows[0];
@@ -50,14 +53,23 @@ namespace ExcelReader
 
             if (result == DialogResult.Yes)
             {
-                string query = String.Format(
-                        "update impFunc set tabFields = '{0}', inPar = '{1}', outPar = '{2}' where fnName = '{3}'",
-                        ttabFields.Text, tInPar.Text, tOutPar.Text, tFunc.Text);
-                SQLFunction.ExecuteNonQuery(query);
+                if (funcInRow)
+                {
+                    shema = String.Format("{0} \r\n({1})\r\n({2})\r\n({3})", tFunc.Text,
+                        ttabFields.Text, tInPar.Text, tOutPar.Text);
+                }
+                else
+                {
+                    string query = String.Format(
+                            "update impFunc set tabFields = '{0}', inPar = '{1}', outPar = '{2}' where fnName = '{3}'",
+                            ttabFields.Text, tInPar.Text, tOutPar.Text, tFunc.Text);
+                    SQLFunction.ExecuteNonQuery(query);
+                }
             }
 
             func = String.Format("{0} \r\n({1})\r\n({2})\r\n({3})", tFunc.Text,
                 tStrTabFields.Text, tStrInPar.Text, tStrOutPar.Text);
+
             Close();
         }
 

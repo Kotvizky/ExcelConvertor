@@ -30,9 +30,13 @@ namespace ExcelReader
 
                 string resName = paramArray[i];
                 if (paramGroup == GroupNames.outPar)
-//                    resName = String.Format("{0}.{1}",ownField.FunctionName,resName);
                     resName = String.Format("{0}.{1}", ownField.ResName, resName);
-                FieldBase field = fields.Find(x => x.ResName == resName);
+                FieldBase field = fields.Find(x => (x.ResName == resName) & (x.Attr != attrName.Myltiply));
+                if (field == null)
+                {
+                    var multyFiels = fields.FindAll(x => x.Attr == attrName.Myltiply);
+                    field = multyFiels.Find( x => (x as FieldMultiply).NameVal1 == resName | (x as FieldMultiply).NameVal2 == resName);
+                }
                 bool isSystem = !paramArray[i].Any(Char.IsLower);
                 if ((field == null) && !isSystem)
                 {

@@ -514,7 +514,8 @@ namespace ExcelReader
                 if (resDataSet.Relations.Contains("RelationId"))
                 {
                     resDataSet.Relations.Remove("RelationId");
-                    resDataSet.Tables[xlsTable.TableName].Constraints.Remove("RelationId");
+                    if (resDataSet.Tables[xlsTable.TableName].Constraints.Contains("RelationId"))
+                        resDataSet.Tables[xlsTable.TableName].Constraints.Remove("RelationId");
                     //resDataSet.Tables[resTable.TableName].Constraints.Remove("RelationId");
                 }
                 //ConstraintCollection collection = resDataSet.Tables[resTable.TableName].Constraints;
@@ -1014,10 +1015,17 @@ namespace ExcelReader
                             resDataSet.Tables.Remove(resTable.TableName);
                         }
                         resDataSet.Tables.Add(resTable);
-                        resDataSet.Relations.Add(
-                            "RelationId",
-                            resTable.Columns[field.ResName],
-                            xlsTable.Columns[Scan.ROW_ID]);
+                        try
+                        {
+                            resDataSet.Relations.Add(
+                                "RelationId",
+                                resTable.Columns[field.ResName],
+                                xlsTable.Columns[Scan.ROW_ID]);
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message);
+                        }
                     }
 
                     bsXlsTable = new BindingSource();
@@ -1090,18 +1098,51 @@ namespace ExcelReader
                 if ((attrName)dgv.Rows[e.RowIndex].Cells["attrDataGrid3"].Value == attrName.Func)
                 {
                     string funcText = dgv.Rows[e.RowIndex].Cells["xlsNameDataGrid3"].Value.ToString();
+                    bool funcInRow = false;
                     string name = FieldFunc.getFuncName(funcText);
                     if (name.Length > 0 )
                     {
-                        DataTable table = SQLFunction.getFuncDescription(name, tbStrClass.idHead);
+                        string expr = String.Format(
+                            "resName like 'SHEMA%' and isActive = 1 and attr = 5 and xlsName like '%{0}%'",
+//                            "resName like 'SHEMA%' and isActive = 1 ", // and xlsName like '%{0}%'",
+                            name);
+                        DataRow[] rows = tbStrClass.tbString.Select(expr);
+                        DataTable table = null;
+                        if (rows.Length > 0)
+                        {
+                            table = FieldFunc.getShema();
+                            table.Columns.Add("fnName", Type.GetType("System.String"));
+
+                            string[] param = rows[0]["xlsName"].ToString().Split('(');
+                            DataRow row = table.NewRow();
+
+                            row["fnName"] = name;
+                            if (param.Length > 0) row[GroupNames.tabFields.ToString()] = param[1].Split(')')[0];
+                            if (param.Length > 1) row[GroupNames.inPar.ToString()] = param[2].Split(')')[0];
+                            if (param.Length > 2) row[GroupNames.outPar.ToString()] = param[3].Split(')')[0];
+
+                            table.Rows.Add(row);
+                            funcInRow = true;
+
+                        }
+                        else
+                        {
+                            table = SQLFunction.getFuncDescription(name, tbStrClass.idHead);
+                        }
+
+
                         if (table.Rows.Count > 0)
                         {
-                            FormFunc form = new FormFunc(table, funcText);
+                            FormFunc form = new FormFunc(table, funcText, funcInRow);
                             form.ShowDialog();
                             form.StartPosition = FormStartPosition.CenterParent;
                             if (form.func != String.Empty)
                             {
                                 dgv.Rows[e.RowIndex].Cells["xlsNameDataGrid3"].Value = form.func;
+                            }
+                            if (form.shema != String.Empty)
+                            {
+                                rows[0]["xlsName"] = form.shema;
                             }
                             form.Dispose();
                         }
