@@ -88,29 +88,53 @@ namespace ExcelReader
 
         public static DataTable GetResultTable(string tableName)
         {
-            DataTable result = null;
-            switch (tableName)
+            DataTable tShema = SQLFunction.getShema(tableName);
+            DataTable tTypes = SQLFunction.getSQLTypes();
+            DataRow[] rType;
+            DataTable tInVal = new DataTable();
+            foreach (DataRow row in tShema.Rows)
             {
-                case "inVal":
-                    result = new DataTable();
-                    result.Columns.AddRange(
-                     new DataColumn[] {
-                        new DataColumn("Ip",Type.GetType("System.Byte[]")),
-                        new DataColumn("Row_Id",Type.GetType("System.Int32")),
-                        new DataColumn("BusId",Type.GetType("System.String")),
-                        new DataColumn("Account",Type.GetType("System.String")),
-                        new DataColumn("ContractNum",Type.GetType("System.String")),
-                        new DataColumn("Date",Type.GetType("System.DateTime")),
-                        new DataColumn("INN",Type.GetType("System.String")),
-                        new DataColumn("CurrCode",Type.GetType("System.String")),
-                        new DataColumn("Days",Type.GetType("System.Double")),
-                        new DataColumn("FIO",Type.GetType("System.String")),
-                        new DataColumn("Suma",Type.GetType("System.Double"))
-                    });
-                    break;
+                string sqlType = row["Data_Type"].ToString();
+                string sqlName = row["Column_Name"].ToString();
+
+                rType = tTypes.Select(String.Format("sqlType = '{0}'", sqlName));
+                if (rType.Length == 0)
+                {
+                    rType = tTypes.Select(String.Format("sqlType = '{0}'", sqlType));
+                }
+                tInVal.Columns.Add(row["Column_Name"].ToString(), Type.GetType(String.Format("System.{0}", rType[0]["csType"])));
             }
-            return result;
+            return tInVal;
         }
+
+        //public static DataTable GetResultTable(string tableName)
+        //{
+        //    DataTable result = null;
+        //    switch (tableName)
+        //    {
+        //        case "inVal":
+        //            result = new DataTable();
+        //            result.Columns.AddRange(
+        //             new DataColumn[] {
+        //                new DataColumn("Ip",Type.GetType("System.Byte[]")),
+        //                new DataColumn("Row_Id",Type.GetType("System.Int32")),
+        //                new DataColumn("BusId",Type.GetType("System.String")),
+        //                new DataColumn("Account",Type.GetType("System.String")),
+        //                new DataColumn("ContractNum",Type.GetType("System.String")),
+        //                new DataColumn("Date",Type.GetType("System.DateTime")),
+        //                new DataColumn("INN",Type.GetType("System.String")),
+        //                new DataColumn("CurrCode",Type.GetType("System.String")),
+        //                new DataColumn("Days",Type.GetType("System.Double")),
+        //                new DataColumn("FIO",Type.GetType("System.String")),
+        //                new DataColumn("Suma",Type.GetType("System.Double")),
+        //                new DataColumn("Date1",Type.GetType("System.DateTime")),
+        //                new DataColumn("Suma1",Type.GetType("System.Double")),
+        //                new DataColumn("Suma2",Type.GetType("System.Double"))
+        //            });
+        //            break;
+        //    }
+        //    return result;
+        //}
 
         public static void InitCommand(string sqlCommand, string[] param, string sqlDelete = "")
         {
@@ -324,6 +348,28 @@ namespace ExcelReader
         static public DataTable getFuncDescription(string parameter)
         {
             return getFuncDescription(parameter, -1);
+        }
+
+        static public DataTable getShema(string tableName)
+        {
+            connOpen();
+            string[] restrictions = new string[4];
+            restrictions[2] = tableName;
+            DataTable table = conn.GetSchema("Columns", restrictions);
+            conn.Close();
+            return table;
+        }
+
+        static public DataTable getSQLTypes()
+        {
+            connOpen();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter();
+            string sqlCmd = "select sqlType, csType from match ";
+            dataAdapter.SelectCommand = new SqlCommand(sqlCmd, conn);
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+            conn.Close();
+            return table;
         }
 
         struct DicSQLParam

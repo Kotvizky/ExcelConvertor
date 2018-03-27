@@ -17,14 +17,28 @@ namespace ExcelReader
             : base(paramName, outName, ownField)
         {
             Field = field;
-            XlsExist = Field.Exist;
+            if (field.GetType() == typeof(FieldMultiply))
+            {
+                XlsExist = true;
+            }
+            else
+            {
+                XlsExist = Field.Exist;
+            }
         }
 
         public override object Value
         {
             get
             {
-                return Field.Value;
+                if (Field.GetType() == typeof(FieldMultiply))
+                {
+                    return (Field as FieldMultiply).multiValue(ParamName);
+                }
+                else
+                {
+                    return Field.Value;
+                }
             }
         }
 

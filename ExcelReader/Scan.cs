@@ -634,18 +634,13 @@ namespace ExcelReader
                 ResTable.Columns.Add(ErrorFied,typeof(String)).SetOrdinal(0);
             }
 
-            onInitProgressBar?.Invoke(xlsTable.Rows.Count);
             var fields = this.FindAll(x => ((x.Attr == attrName.Field) 
                 | ( (x.Attr == attrName.System) && (x as FieldSystem).isField )) && x.IsActive);
-            var mField = (FieldMultiply)this.Find(x => (x.Attr == attrName.Myltiply) && x.IsActive);
-            foreach (DataRow curRow in xlsTable.Rows)
+            List<FieldBase> mFields = FindAll(x => (x.Attr == attrName.Myltiply) && x.IsActive);
+            foreach (FieldMultiply mField in mFields)
             {
-                if (mField == null)
-                {
-                    XlsRow = curRow;
-                    AddValuesToXlsRow(fields);
-                }
-                else
+                onInitProgressBar?.Invoke(xlsTable.Rows.Count);
+                foreach (DataRow curRow in xlsTable.Rows)
                 {
                     XlsRow = curRow;
                     foreach (string fieldName in mField.ResTableFields)
@@ -657,9 +652,18 @@ namespace ExcelReader
                             ResRow[ErrorFied] = ResRow[ErrorFied] + error;
                         }
                     }
-
+                    onStepProgressBar?.Invoke();
                 }
-                onStepProgressBar?.Invoke();
+            }
+            if (mFields.Count == 0)
+            {
+                onInitProgressBar?.Invoke(xlsTable.Rows.Count);
+                foreach (DataRow curRow in xlsTable.Rows)
+                {
+                    XlsRow = curRow;
+                    AddValuesToXlsRow(fields);
+                    onStepProgressBar?.Invoke();
+                }
             }
             onHideProgressBar?.Invoke();
         }

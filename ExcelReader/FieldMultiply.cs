@@ -79,6 +79,11 @@ namespace ExcelReader
             }
         }
 
+        public object multiValue(string FieldName)
+        {
+            return ResRow[FieldName];
+        }
+
 
         public string InitMultValue(string fieldName)
         {
@@ -118,6 +123,11 @@ namespace ExcelReader
 
 
         public override string InitValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator FieldMultiply(List<FieldBase> v)
         {
             throw new NotImplementedException();
         }

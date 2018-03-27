@@ -328,7 +328,7 @@ namespace ExcelReader
                 var rowsDelete = Scan.ResTable.Select(String.Format("{0} is null", activeField));
                 foreach (var rowDel in rowsDelete)
                     rowDel.Delete();
-//                Scan.ResTable.Columns.Remove(activeField);
+                Scan.ResTable.Columns.Remove(activeField);
             }
             onHideProgressBar?.Invoke();
 
