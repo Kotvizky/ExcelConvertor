@@ -274,13 +274,13 @@ namespace ExcelReader
 
                 values += String.Format(",{0}", value);
             }
-            ResSqlTable = SQLFunction.executeSQL(
+            ResSqlTable = SQLFunction.ExecuteSQL(
                 String.Format("select * from {0}({1}) order by row_id", FunctionName, values.Remove(0, 1)));
         }
 
         public void FillResult()
         {
-            string activeField = "$Active_row";
+            string activeField = Scan.ACTIVE_FIELD;
 
             ExecServerFunc();
             onInitProgressBar?.Invoke(ResSqlTable.Rows.Count);
@@ -289,15 +289,25 @@ namespace ExcelReader
 
             FieldBase clear = this.Scan.Find(x => ( x.Attr == attrName.System) && (x.ResName == "CLEAR_ROWS") && x.IsActive);
 
+            DataColumnCollection resColumns = Scan.ResTable.Columns;
 
+            resColumns.Add(activeField, typeof(Boolean));
             if (clear != null)
             {
-                Scan.ResTable.Columns.Add(activeField, typeof(Boolean));
+                //Scan.ResTable.Columns.Add(activeField, typeof(Boolean));
+                resColumns[activeField].DefaultValue = false;
             }
+            else
+            {
+                resColumns[activeField].DefaultValue = true;
+            }
+
+
 
 
             foreach (DataRow row in ResSqlTable.Rows)
             {
+                //row[activeField] = true;
                 SqlCurrentRow = row;
                 int rowId = (int)SqlCurrentRow["ROW_ID"];
                 if (rows.Count > rowId )
@@ -315,8 +325,9 @@ namespace ExcelReader
                     rows.Add(newRow);
 
                 }
-                if (clear != null)
-                    ResCurrentRow[activeField] = true;
+                //if (clear != null)
+                //    ResCurrentRow[activeField] = true;
+                ResCurrentRow[activeField] = true;
                 foreach (ParamBase param in ParamsOut)
                 {
                     param.InitField();
@@ -328,7 +339,7 @@ namespace ExcelReader
                 var rowsDelete = Scan.ResTable.Select(String.Format("{0} is null", activeField));
                 foreach (var rowDel in rowsDelete)
                     rowDel.Delete();
-                Scan.ResTable.Columns.Remove(activeField);
+                //Scan.ResTable.Columns.Remove(activeField);
             }
             onHideProgressBar?.Invoke();
 

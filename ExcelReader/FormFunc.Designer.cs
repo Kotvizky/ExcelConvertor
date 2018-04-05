@@ -107,6 +107,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.tStrTabFields);
             this.groupBox1.Controls.Add(this.ttabFields);
             this.groupBox1.Location = new System.Drawing.Point(12, 56);
@@ -137,6 +139,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.tStrInPar);
             this.groupBox2.Controls.Add(this.tInPar);
             this.groupBox2.Location = new System.Drawing.Point(10, 133);
@@ -157,6 +161,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.tStrOutPar);
             this.groupBox3.Controls.Add(this.tOutPar);
             this.groupBox3.Location = new System.Drawing.Point(12, 223);

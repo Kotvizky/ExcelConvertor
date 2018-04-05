@@ -48,6 +48,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
@@ -95,6 +99,8 @@
     <Compile Include="ParamBase.cs" />
     <Compile Include="ParamSys.cs" />
     <Compile Include="ParamToSql.cs" />
+    <Compile Include="ProcList.cs" />
+    <Compile Include="ProcSql.cs" />
     <Compile Include="Scan.cs" />
     <Compile Include="ExcelFile.cs" />
     <Compile Include="FieldXls.cs" />
@@ -139,6 +145,7 @@
     <None Include="CollectDataSet.xss">
       <DependentUpon>CollectDataSet.xsd</DependentUpon>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

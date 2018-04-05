@@ -16,7 +16,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Globalization;
 using BrightIdeasSoftware;
-
+using Newtonsoft.Json;
 
 namespace ExcelReader
 {
@@ -33,6 +33,7 @@ namespace ExcelReader
         private BindingSource bsXlsTable = null;
         private BindingSource bsResTable = null;
         bool isAdmin = false;
+        ProcList procList = null;
 
         public MainForm()
         {
@@ -70,6 +71,7 @@ namespace ExcelReader
             {
                 dataTypeDataGrid3.Items.Add(dataType.ToString());
             }
+
             //dataTypeDataGrid3.Items.AddRange(elements.ToArray());
         }
 
@@ -110,6 +112,7 @@ namespace ExcelReader
                 initOlvHeadTable();
                 getData();
                 olvDataTree.DataSource = tbHeadClass.tbHead;
+                olvDataTree.Columns.RemoveByKey("isGroup");
                 autosizeColumns();
             }
 
@@ -153,7 +156,6 @@ namespace ExcelReader
 
                     if (colWidthAfterAutoResizeByHeader > colWidthAfterAutoResizeByContent)
                         col.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-
                     //first column
                     if (col.Index == 0)
                         //we have to manually take care of tree structure, checkbox and image
@@ -167,7 +169,6 @@ namespace ExcelReader
                             col.Width = colWidthAfterAutoResizeByContent;
                 }
             }
-
         }
 
         static class tbStrClass {
@@ -367,7 +368,13 @@ namespace ExcelReader
                 tabControl1.TabPages.Remove(tabPage1);
                 textBox1.Text = String.Empty;
                 MessageBox.Show(String.Format("Файл \"{0}\" загружен", Path.GetFileName(fileName)));
+                this.dgvRes.SelectionChanged -= new System.EventHandler(this.dgvRes_SelectionChanged);
                 resDataSet.Clear();
+                if (procList != null)
+                {
+                    procList.deleteButton();
+                }
+
             }
         }
 
@@ -392,10 +399,10 @@ namespace ExcelReader
             this.attrValueTableAdapter.Fill(this.collectDataSet.attrValue);
             //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_str". 
             //При необходимости она может быть перемещена или удалена.
-            this.i_tmpl_strTableAdapter.Fill(this.collectDataSet.i_tmpl_str);
+            //this.i_tmpl_strTableAdapter.Fill(this.collectDataSet.i_tmpl_str);
             //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_head". 
             //При необходимости она может быть перемещена или удалена.
-            this.i_tmpl_headTableAdapter.Fill(this.collectDataSet.i_tmpl_head);
+            //this.i_tmpl_headTableAdapter.Fill(this.collectDataSet.i_tmpl_head);
         }
 
         private void bindingNavigatorSaveItems1_Click(object sender, EventArgs e = null)
@@ -453,7 +460,7 @@ namespace ExcelReader
 
         private void matching_Click(object sender, EventArgs e) 
         {
-
+            this.dgvRes.SelectionChanged -= new System.EventHandler(this.dgvRes_SelectionChanged);
             bsXlsTable = null;
             bsResTable = null;
             ckTmplFields.Enabled = true;
@@ -503,6 +510,11 @@ namespace ExcelReader
                 tabControl1.SelectedIndex = 0;
             }
             ClearXlsBinding();
+            this.dgvRes.SelectionChanged += new System.EventHandler(this.dgvRes_SelectionChanged);
+            if (procList != null)
+            {
+                procList.deleteButton();
+            }
         }
 
         void SetBsResTable()
@@ -547,6 +559,7 @@ namespace ExcelReader
         private void processing_Click(object sender, EventArgs e)
         {
             // String IP = Scan.GetLocalIPAddress();
+            this.dgvRes.SelectionChanged -= new System.EventHandler(this.dgvRes_SelectionChanged);
             if (!tabControl1.TabPages.Contains(tabPage1))
             {
                 tabControl1.TabPages.Insert(0, tabPage1);
@@ -570,8 +583,9 @@ namespace ExcelReader
                 "ButtonStore"
                 }
             );
-
-
+            this.dgvRes.SelectionChanged += new System.EventHandler(this.dgvRes_SelectionChanged);
+            procList = new ProcList(scan.idHead, tsResultTable.Items,scan.ResTable);
+            procList.insertButton();
             MessageBox.Show("ok");
         }
 
@@ -1153,5 +1167,130 @@ namespace ExcelReader
                 }
             }
         }
+
+        private void dgvTemlpStr_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            DataGridView dvg = (sender as DataGridView);
+            if (( e.RowIndex < 0 ) || (dvg.Rows[e.RowIndex].Cells["attrDataGrid3"].Value == null) )return;
+
+            string cellValue = dvg.Rows[e.RowIndex].Cells["attrDataGrid3"].Value.ToString();
+
+            switch (cellValue)
+            {
+                case "0":
+                    e.CellStyle.BackColor = Color.PeachPuff;
+                    break;
+                case "2":
+                    e.CellStyle.BackColor = Color.Khaki;
+                    break;
+                case "3":
+                    e.CellStyle.BackColor = Color.LightBlue;
+                    break;
+                case "5":
+                    e.CellStyle.BackColor = Color.LightSlateGray;
+                    break;
+            }
+        }
+
+        private void dgvRes_SelectionChanged(object sender, EventArgs e)
+        {
+            DataGridView dgv = (sender as DataGridView);
+
+            if (dgv.SelectedCells.Count < 2) return;
+
+            double summTotal = 0;
+            Int32 count = 0;
+
+            foreach (DataGridViewCell cell in dgv.SelectedCells)
+            {
+                double outValue = 0;
+
+                if (Double.TryParse(cell.Value.ToString(), out outValue))
+                {
+                    summTotal += outValue;
+                    count++;
+                }
+            }
+            summTotal = Math.Round(summTotal, 4);
+
+            tsTextSumm.Text =  String.Format("{0:### ### ###.00}/{1}",summTotal,count);
+
+            //int sum = 0;
+            //for (int i = 0; i < dataGridView1.Rows.Count; ++i)
+            //{
+            //    sum += Convert.ToInt32(dataGridView1.Rows[i].Cells[1].Value);
+            //}
+            //label1.text = sum.ToString();
+        }
+
+        private void dgvRes_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            DataGridView dvg = (sender as DataGridView);
+            if ((e.RowIndex < 0) | !dvg.Columns.Contains(Scan.ACTIVE_FIELD)) return;
+            bool cellValue = false;
+            if (dvg.Rows[e.RowIndex].Cells[Scan.ACTIVE_FIELD].Value != null)
+            {
+                cellValue = (bool)dvg.Rows[e.RowIndex].Cells[Scan.ACTIVE_FIELD].Value;
+            }
+            if (!cellValue)
+            {
+                e.CellStyle.BackColor = Color.PaleVioletRed;
+            }
+        }
+
+        private void dgvTemlpStr_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridView dgv = (sender as DataGridView);
+            if (e.RowIndex > 0 & dgv.Columns[e.ColumnIndex].Name == "attrDataGrid3")
+                dgv.InvalidateRow(e.RowIndex);
+        }
+
+        private void dgvRes_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridView dgv = (sender as DataGridView);
+            if (e.RowIndex > 0 & dgv.Columns[e.ColumnIndex].Name == Scan.ACTIVE_FIELD)
+                dgv.InvalidateRow(e.RowIndex);
+        }
+
+        void changeActiveRow(short option)
+        {
+            bool value = Convert.ToBoolean(option);
+            if (txtResFilter.Text.Length > 0)
+            {
+                DataRow[] rows = scan.ResTable.Select(txtResFilter.Text);
+                foreach (DataRow row in rows)
+                {
+                    if (option == 3) value = !Convert.ToBoolean(row[Scan.ACTIVE_FIELD]);
+                    row[Scan.ACTIVE_FIELD] = value;
+                }
+            }
+            else
+            {
+                foreach (DataRow row in scan.ResTable.Rows)
+                {
+                    if (option == 3) value = !Convert.ToBoolean(row[Scan.ACTIVE_FIELD]);
+                    row[Scan.ACTIVE_FIELD] = value;
+                }
+            }
+            dgvRes.Refresh();
+        }
+
+        private void tsbActPlus_Click(object sender, EventArgs e)
+        {
+            changeActiveRow(1);
+        }
+
+        private void tsbActMinus_Click(object sender, EventArgs e)
+        {
+            changeActiveRow(0);
+        }
+
+        private void tsbActChange_Click(object sender, EventArgs e)
+        {
+            changeActiveRow(3);
+        }
+
+
     }
 }
+	

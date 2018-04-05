@@ -25,7 +25,9 @@ namespace ExcelReader
 
         public static string ROW_ID = "$ROW_ID";
         public static string SHEMA = "SHEMA";
+        public static string ACTIVE_FIELD = "$Active_row";
 
+        public int idHead { private set; get; }
 
         const string ErrorFied = "Errors";
 
@@ -116,6 +118,8 @@ namespace ExcelReader
             attrName attr = (attrName)row["attr"];
             bool isPrint = (bool)row["isPrint"];
 
+            idHead = (int)row["idHead"];
+
             if (this.Count == 0) printAllFields = false;
             if ((row["resName"].ToString() == "*") && (attr == attrName.Const))
             {
@@ -160,7 +164,6 @@ namespace ExcelReader
                 this.Add(newField);
             }
         }
-
 
         #region Validation functions
 
@@ -252,7 +255,6 @@ namespace ExcelReader
         }
 
         #endregion
-
 
         #region Initialization Result table
 
@@ -381,6 +383,10 @@ namespace ExcelReader
                     continue;
                 }
             }
+            if (columns.Contains(ACTIVE_FIELD))
+            {
+                columns[ACTIVE_FIELD].SetOrdinal(columns.Count-1);
+            }
         }
 
         private void delFiledsFromRes()
@@ -433,7 +439,6 @@ namespace ExcelReader
         }
         #endregion
 
-
         public void SetValues(DataRow row) { //TODO remove set method "SetValues"
             foreach (FieldXls field in this.FindAll(x => (x.IsActive & (x.Attr == 0) & x.Exist))) {
                 /// !!! field.Value = row[field.XlsName].ToString();
@@ -464,7 +469,6 @@ namespace ExcelReader
             string preperedString = XlsName.Split(new Char[] { ' ', ')' })[0];
             return preperedString.Split(new Char[] { ' ', ',', '(' });
         }
-
 
         //private string GetSQLValue(FieldFunc field)
         //{
@@ -562,7 +566,7 @@ namespace ExcelReader
                     }
                     else
                     {
-                        message += String.Format("\r\n{0} -> {1} (convert error {2})\r\n", field.ResName, field.Validator.Method.Name, reportInit);
+                        message += String.Format("\r\n{0} -> {1} ((!!!)convert error {2})\r\n", field.ResName, field.Validator.Method.Name, reportInit);
                         AllFound = false;
                     }
                 }
@@ -609,7 +613,7 @@ namespace ExcelReader
                 }
             }
 
-            message += "\r\n Ответ сервера \r\n -----";
+            message += "\r\n\r\n Ответ сервера \r\n -----";
 
             foreach (FieldAnswer field in this.FindAll(x => ((x.Attr == attrName.Answer) && x.IsActive))) {
                 if (field.Param == null)
@@ -679,8 +683,6 @@ namespace ExcelReader
             }
         }
 
-
-
         string setValidator(FieldBase field, string inTypeStr)
         {
             string result = String.Empty;
@@ -709,7 +711,6 @@ namespace ExcelReader
             }
             return result;
         }
-
 
         string setValidator(out Func<ValidData, ValidValue> fieldFunc, string typeName, string inTypeStr)
         {
@@ -740,7 +741,6 @@ namespace ExcelReader
             }
             return result;
         }
-
 
         public void WriteResult(DataTable XlsTable)
         {  
@@ -825,7 +825,6 @@ namespace ExcelReader
             public dataType OutType { set; get; }
             public Func<ValidData, ValidValue> Validator { set; get; }
         }
-
 
         public string GetXlsFields()
         {

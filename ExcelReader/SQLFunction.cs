@@ -50,14 +50,16 @@ namespace ExcelReader
                 else name + ' {'+ cast(idHead as varChar(100))+'}'
                 end name
                 , comm, isGroup
-              from i_tmpl_head
-                order by name";
+              from thd
+                order by [order], name";
 
         static string commStr =
-            @"select idStr,idHead,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
-                strFormat,isPos,isActive,comm,author--,dateCreate,operator,dateModify
-            from i_tmpl_str
+            @"select idHead,idStr,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
+                isPos,isActive,comm
+            from tst
             where idHead = @idHead";
+
+        //  strFormat,author,dateCreate,operator,dateModify
 
         static SqlDataAdapter tbStrAdapter = new SqlDataAdapter(commStr,  conn );
 
@@ -235,7 +237,7 @@ namespace ExcelReader
             conn.Close();
         }
 
-        static public DataTable executeSQL(string query)
+        static public DataTable ExecuteSQL(string query)
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter();
             dataAdapter.SelectCommand = new SqlCommand(query, conn);
@@ -350,6 +352,18 @@ namespace ExcelReader
             return getFuncDescription(parameter, -1);
         }
 
+        static public DataTable getProcDescription(int tmpl)
+        {
+            SqlDataAdapter dataAdapter = new SqlDataAdapter();
+            string sqlCmd = "select * from impProc where idHead = @id";
+            dataAdapter.SelectCommand = new SqlCommand(sqlCmd, conn);
+            dataAdapter.SelectCommand.Parameters.Add("@id", SqlDbType.Int);
+            dataAdapter.SelectCommand.Parameters[0].Value = tmpl;
+            DataTable table = new DataTable();
+            dataAdapter.Fill(table);
+            return table;
+        }
+
         static public DataTable getShema(string tableName)
         {
             connOpen();
@@ -370,6 +384,45 @@ namespace ExcelReader
             dataAdapter.Fill(table);
             conn.Close();
             return table;
+        }
+
+        public static string ExecuteProc(string sqlCommand, string outParam, string[] inParam = null)
+        {
+            try
+            {
+                if (conn.State == ConnectionState.Closed) conn.Open();
+            }
+            catch (SqlException e)
+            {
+                conn.Close();
+            }
+            string result = String.Empty;
+            command = new SqlCommand(sqlCommand, conn);
+            command.CommandType = CommandType.StoredProcedure;
+            if (inParam != null)
+            {
+                command.Parameters.AddWithValue(inParam[0], inParam[1]);
+            }
+            SqlParameter returnParameter = null;
+            if (outParam != String.Empty)
+            {
+                returnParameter = new SqlParameter()
+                {
+                    ParameterName = outParam,
+                    SqlDbType = SqlDbType.NVarChar,
+                    Size = 250,
+                    Direction = ParameterDirection.InputOutput,
+                    Value = ""
+                };
+                command.Parameters.Add(returnParameter);
+            }
+            command.ExecuteNonQuery();
+            conn.Close();
+            if (returnParameter != null)
+            {
+                result = returnParameter.Value.ToString();
+            }
+            return result;
         }
 
         struct DicSQLParam
