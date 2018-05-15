@@ -63,7 +63,7 @@ namespace ExcelReader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ikotvytskyi")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ikotvytskyi,yvashchenko")]
         public string admins {
             get {
                 return ((string)(this["admins"]));

@@ -751,6 +751,10 @@ namespace ExcelReader {
             
             private global::System.Data.DataColumn columnisPos;
             
+            private global::System.Data.DataColumn columnxlsFormat;
+            
+            private global::System.Data.DataColumn columnxlsColName;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public i_tmpl_strDataTable() {
@@ -922,6 +926,22 @@ namespace ExcelReader {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn xlsFormatColumn {
+                get {
+                    return this.columnxlsFormat;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn xlsColNameColumn {
+                get {
+                    return this.columnxlsColName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -973,7 +993,9 @@ namespace ExcelReader {
                         short npp, 
                         string dataType, 
                         short dataSize, 
-                        bool isPos) {
+                        bool isPos, 
+                        string xlsFormat, 
+                        string xlsColName) {
                 i_tmpl_strRow rowi_tmpl_strRow = ((i_tmpl_strRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -992,7 +1014,9 @@ namespace ExcelReader {
                         npp,
                         dataType,
                         dataSize,
-                        isPos};
+                        isPos,
+                        xlsFormat,
+                        xlsColName};
                 if ((parenti_tmpl_headRowByFK_impHead_impStr != null)) {
                     columnValuesArray[1] = parenti_tmpl_headRowByFK_impHead_impStr[0];
                 }
@@ -1045,6 +1069,8 @@ namespace ExcelReader {
                 this.columndataType = base.Columns["dataType"];
                 this.columndataSize = base.Columns["dataSize"];
                 this.columnisPos = base.Columns["isPos"];
+                this.columnxlsFormat = base.Columns["xlsFormat"];
+                this.columnxlsColName = base.Columns["xlsColName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1087,6 +1113,10 @@ namespace ExcelReader {
                 base.Columns.Add(this.columndataSize);
                 this.columnisPos = new global::System.Data.DataColumn("isPos", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnisPos);
+                this.columnxlsFormat = new global::System.Data.DataColumn("xlsFormat", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnxlsFormat);
+                this.columnxlsColName = new global::System.Data.DataColumn("xlsColName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnxlsColName);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnidStr}, true));
                 this.columnidStr.AutoIncrement = true;
@@ -1098,15 +1128,23 @@ namespace ExcelReader {
                 this.columnidHead.AllowDBNull = false;
                 this.columnresName.AllowDBNull = false;
                 this.columnresName.MaxLength = 250;
+                this.columnxlsName.AllowDBNull = false;
                 this.columnxlsName.MaxLength = 500;
+                this.columnisPrint.AllowDBNull = false;
+                this.columnattr.AllowDBNull = false;
+                this.columnstrFormat.AllowDBNull = false;
                 this.columnstrFormat.MaxLength = 25;
+                this.columnisActive.AllowDBNull = false;
                 this.columncomm.MaxLength = 500;
                 this.columnauthor.MaxLength = 85;
                 this.columnoperator.MaxLength = 85;
                 this.columnnpp.AllowDBNull = false;
                 this.columndataType.AllowDBNull = false;
                 this.columndataType.MaxLength = 50;
+                this.columndataSize.AllowDBNull = false;
                 this.columnisPos.AllowDBNull = false;
+                this.columnxlsFormat.MaxLength = 150;
+                this.columnxlsColName.MaxLength = 150;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1745,12 +1783,7 @@ namespace ExcelReader {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string xlsName {
                 get {
-                    try {
-                        return ((string)(this[this.tablei_tmpl_str.xlsNameColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'xlsName\' в таблице \'i_tmpl_str\' равно DBNull.", e);
-                    }
+                    return ((string)(this[this.tablei_tmpl_str.xlsNameColumn]));
                 }
                 set {
                     this[this.tablei_tmpl_str.xlsNameColumn] = value;
@@ -1761,12 +1794,7 @@ namespace ExcelReader {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool isPrint {
                 get {
-                    try {
-                        return ((bool)(this[this.tablei_tmpl_str.isPrintColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'isPrint\' в таблице \'i_tmpl_str\' равно DBNull.", e);
-                    }
+                    return ((bool)(this[this.tablei_tmpl_str.isPrintColumn]));
                 }
                 set {
                     this[this.tablei_tmpl_str.isPrintColumn] = value;
@@ -1777,12 +1805,7 @@ namespace ExcelReader {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public byte attr {
                 get {
-                    try {
-                        return ((byte)(this[this.tablei_tmpl_str.attrColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'attr\' в таблице \'i_tmpl_str\' равно DBNull.", e);
-                    }
+                    return ((byte)(this[this.tablei_tmpl_str.attrColumn]));
                 }
                 set {
                     this[this.tablei_tmpl_str.attrColumn] = value;
@@ -1793,12 +1816,7 @@ namespace ExcelReader {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string strFormat {
                 get {
-                    try {
-                        return ((string)(this[this.tablei_tmpl_str.strFormatColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'strFormat\' в таблице \'i_tmpl_str\' равно DBNull.", e);
-                    }
+                    return ((string)(this[this.tablei_tmpl_str.strFormatColumn]));
                 }
                 set {
                     this[this.tablei_tmpl_str.strFormatColumn] = value;
@@ -1809,12 +1827,7 @@ namespace ExcelReader {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool isActive {
                 get {
-                    try {
-                        return ((bool)(this[this.tablei_tmpl_str.isActiveColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'isActive\' в таблице \'i_tmpl_str\' равно DBNull.", e);
-                    }
+                    return ((bool)(this[this.tablei_tmpl_str.isActiveColumn]));
                 }
                 set {
                     this[this.tablei_tmpl_str.isActiveColumn] = value;
@@ -1927,12 +1940,7 @@ namespace ExcelReader {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public short dataSize {
                 get {
-                    try {
-                        return ((short)(this[this.tablei_tmpl_str.dataSizeColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'dataSize\' в таблице \'i_tmpl_str\' равно DBNull.", e);
-                    }
+                    return ((short)(this[this.tablei_tmpl_str.dataSizeColumn]));
                 }
                 set {
                     this[this.tablei_tmpl_str.dataSizeColumn] = value;
@@ -1947,6 +1955,38 @@ namespace ExcelReader {
                 }
                 set {
                     this[this.tablei_tmpl_str.isPosColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string xlsFormat {
+                get {
+                    try {
+                        return ((string)(this[this.tablei_tmpl_str.xlsFormatColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'xlsFormat\' в таблице \'i_tmpl_str\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablei_tmpl_str.xlsFormatColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string xlsColName {
+                get {
+                    try {
+                        return ((string)(this[this.tablei_tmpl_str.xlsColNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'xlsColName\' в таблице \'i_tmpl_str\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablei_tmpl_str.xlsColNameColumn] = value;
                 }
             }
             
@@ -1970,66 +2010,6 @@ namespace ExcelReader {
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["FK_impStr_attrValue"]);
                 }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsxlsNameNull() {
-                return this.IsNull(this.tablei_tmpl_str.xlsNameColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetxlsNameNull() {
-                this[this.tablei_tmpl_str.xlsNameColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsisPrintNull() {
-                return this.IsNull(this.tablei_tmpl_str.isPrintColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetisPrintNull() {
-                this[this.tablei_tmpl_str.isPrintColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsattrNull() {
-                return this.IsNull(this.tablei_tmpl_str.attrColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetattrNull() {
-                this[this.tablei_tmpl_str.attrColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsstrFormatNull() {
-                return this.IsNull(this.tablei_tmpl_str.strFormatColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetstrFormatNull() {
-                this[this.tablei_tmpl_str.strFormatColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsisActiveNull() {
-                return this.IsNull(this.tablei_tmpl_str.isActiveColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetisActiveNull() {
-                this[this.tablei_tmpl_str.isActiveColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2094,14 +2074,26 @@ namespace ExcelReader {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsdataSizeNull() {
-                return this.IsNull(this.tablei_tmpl_str.dataSizeColumn);
+            public bool IsxlsFormatNull() {
+                return this.IsNull(this.tablei_tmpl_str.xlsFormatColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetdataSizeNull() {
-                this[this.tablei_tmpl_str.dataSizeColumn] = global::System.Convert.DBNull;
+            public void SetxlsFormatNull() {
+                this[this.tablei_tmpl_str.xlsFormatColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsxlsColNameNull() {
+                return this.IsNull(this.tablei_tmpl_str.xlsColNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetxlsColNameNull() {
+                this[this.tablei_tmpl_str.xlsColNameColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -2407,7 +2399,7 @@ namespace ExcelReader.CollectDataSetTableAdapters {
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [i_tmpl_head] WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [thd] WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_idHead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idHead", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -2423,8 +2415,8 @@ namespace ExcelReader.CollectDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [i_tmpl_head] ([name], [comm], [author], [dateCreate], [operator], [dateModify]) VALUES (@name, @comm, @author, @dateCreate, @operator, @dateModify);
-SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_head WHERE (idHead = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [thd] ([name], [comm], [author], [dateCreate], [operator], [dateModify]) VALUES (@name, @comm, @author, @dateCreate, @operator, @dateModify);
+SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM thd WHERE (idHead = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@comm", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "comm", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -2434,8 +2426,8 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [i_tmpl_head] SET [name] = @name, [comm] = @comm, [author] = @author, [dateCreate] = @dateCreate, [operator] = @operator, [dateModify] = @dateModify WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)));
-SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_head WHERE (idHead = @idHead)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [thd] SET [name] = @name, [comm] = @comm, [author] = @author, [dateCreate] = @dateCreate, [operator] = @operator, [dateModify] = @dateModify WHERE (([idHead] = @Original_idHead) AND ([name] = @Original_name) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)));
+SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM thd WHERE (idHead = @idHead)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@comm", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "comm", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -2471,8 +2463,7 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_h" +
-                "ead";
+            this._commandCollection[0].CommandText = "SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM thd";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -2668,28 +2659,24 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
             tableMapping.ColumnMappings.Add("dataType", "dataType");
             tableMapping.ColumnMappings.Add("dataSize", "dataSize");
             tableMapping.ColumnMappings.Add("isPos", "isPos");
+            tableMapping.ColumnMappings.Add("xlsFormat", "xlsFormat");
+            tableMapping.ColumnMappings.Add("xlsColName", "xlsColName");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [i_tmpl_str] WHERE (([idStr] = @Original_idStr) AND ([idHead] = @Original_idHead) AND ([npp] = @Original_npp) AND ([resName] = @Original_resName) AND ((@IsNull_xlsName = 1 AND [xlsName] IS NULL) OR ([xlsName] = @Original_xlsName)) AND ((@IsNull_isPrint = 1 AND [isPrint] IS NULL) OR ([isPrint] = @Original_isPrint)) AND ((@IsNull_attr = 1 AND [attr] IS NULL) OR ([attr] = @Original_attr)) AND ([dataType] = @Original_dataType) AND ((@IsNull_dataSize = 1 AND [dataSize] IS NULL) OR ([dataSize] = @Original_dataSize)) AND ((@IsNull_strFormat = 1 AND [strFormat] IS NULL) OR ([strFormat] = @Original_strFormat)) AND ([isPos] = @Original_isPos) AND ((@IsNull_isActive = 1 AND [isActive] IS NULL) OR ([isActive] = @Original_isActive)) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [tst] WHERE (([idStr] = @Original_idStr) AND ([idHead] = @Original_idHead) AND ([npp] = @Original_npp) AND ([resName] = @Original_resName) AND ([xlsName] = @Original_xlsName) AND ([isPrint] = @Original_isPrint) AND ([attr] = @Original_attr) AND ([dataType] = @Original_dataType) AND ([dataSize] = @Original_dataSize) AND ([strFormat] = @Original_strFormat) AND ([isPos] = @Original_isPos) AND ([isActive] = @Original_isActive) AND ((@IsNull_comm = 1 AND [comm] IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)) AND ((@IsNull_xlsFormat = 1 AND [xlsFormat] IS NULL) OR ([xlsFormat] = @Original_xlsFormat)) AND ((@IsNull_xlsColName = 1 AND [xlsColName] IS NULL) OR ([xlsColName] = @Original_xlsColName)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_idStr", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idStr", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_idHead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idHead", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_npp", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "npp", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_resName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "resName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_xlsName", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsName", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_xlsName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_isPrint", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isPrint", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_isPrint", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isPrint", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_attr", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "attr", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_attr", global::System.Data.SqlDbType.TinyInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "attr", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dataType", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_dataSize", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataSize", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dataSize", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataSize", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_strFormat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "strFormat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_strFormat", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "strFormat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_isPos", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isPos", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_isActive", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isActive", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_isActive", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isActive", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_comm", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "comm", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_comm", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "comm", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -2701,10 +2688,14 @@ SELECT idHead, name, comm, author, dateCreate, operator, dateModify FROM i_tmpl_
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_operator", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "operator", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_dateModify", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_xlsFormat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsFormat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_xlsFormat", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsFormat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_xlsColName", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsColName", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_xlsColName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsColName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [i_tmpl_str] ([idHead], [npp], [resName], [xlsName], [isPrint], [attr], [dataType], [dataSize], [strFormat], [isPos], [isActive], [comm], [author], [dateCreate], [operator], [dateModify]) VALUES (@idHead, @npp, @resName, @xlsName, @isPrint, @attr, @dataType, @dataSize, @strFormat, @isPos, @isActive, @comm, @author, @dateCreate, @operator, @dateModify);
-SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, strFormat, isPos, isActive, comm, author, dateCreate, operator, dateModify FROM i_tmpl_str WHERE (idStr = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [tst] ([idHead], [npp], [resName], [xlsName], [isPrint], [attr], [dataType], [dataSize], [strFormat], [isPos], [isActive], [comm], [author], [dateCreate], [operator], [dateModify], [xlsFormat], [xlsColName]) VALUES (@idHead, @npp, @resName, @xlsName, @isPrint, @attr, @dataType, @dataSize, @strFormat, @isPos, @isActive, @comm, @author, @dateCreate, @operator, @dateModify, @xlsFormat, @xlsColName);
+SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, strFormat, isPos, isActive, comm, author, dateCreate, operator, dateModify, xlsFormat, xlsColName FROM tst WHERE (idStr = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@idHead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idHead", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@npp", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "npp", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -2722,30 +2713,31 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, 
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateCreate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateCreate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@operator", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "operator", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@xlsFormat", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsFormat", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@xlsColName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsColName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [i_tmpl_str] SET [idHead] = @idHead, [npp] = @npp, [resName] = @resName, [" +
-                "xlsName] = @xlsName, [isPrint] = @isPrint, [attr] = @attr, [dataType] = @dataTyp" +
-                "e, [dataSize] = @dataSize, [strFormat] = @strFormat, [isPos] = @isPos, [isActive" +
-                "] = @isActive, [comm] = @comm, [author] = @author, [dateCreate] = @dateCreate, [" +
-                "operator] = @operator, [dateModify] = @dateModify WHERE (([idStr] = @Original_id" +
-                "Str) AND ([idHead] = @Original_idHead) AND ([npp] = @Original_npp) AND ([resName" +
-                "] = @Original_resName) AND ((@IsNull_xlsName = 1 AND [xlsName] IS NULL) OR ([xls" +
-                "Name] = @Original_xlsName)) AND ((@IsNull_isPrint = 1 AND [isPrint] IS NULL) OR " +
-                "([isPrint] = @Original_isPrint)) AND ((@IsNull_attr = 1 AND [attr] IS NULL) OR (" +
-                "[attr] = @Original_attr)) AND ([dataType] = @Original_dataType) AND ((@IsNull_da" +
-                "taSize = 1 AND [dataSize] IS NULL) OR ([dataSize] = @Original_dataSize)) AND ((@" +
-                "IsNull_strFormat = 1 AND [strFormat] IS NULL) OR ([strFormat] = @Original_strFor" +
-                "mat)) AND ([isPos] = @Original_isPos) AND ((@IsNull_isActive = 1 AND [isActive] " +
-                "IS NULL) OR ([isActive] = @Original_isActive)) AND ((@IsNull_comm = 1 AND [comm]" +
-                " IS NULL) OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS" +
-                " NULL) OR ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateC" +
-                "reate] IS NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator" +
-                " = 1 AND [operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull" +
-                "_dateModify = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModif" +
-                "y)));\r\nSELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dat" +
-                "aSize, strFormat, isPos, isActive, comm, author, dateCreate, operator, dateModif" +
-                "y FROM i_tmpl_str WHERE (idStr = @idStr)";
+            this._adapter.UpdateCommand.CommandText = "UPDATE [tst] SET [idHead] = @idHead, [npp] = @npp, [resName] = @resName, [xlsName" +
+                "] = @xlsName, [isPrint] = @isPrint, [attr] = @attr, [dataType] = @dataType, [dat" +
+                "aSize] = @dataSize, [strFormat] = @strFormat, [isPos] = @isPos, [isActive] = @is" +
+                "Active, [comm] = @comm, [author] = @author, [dateCreate] = @dateCreate, [operato" +
+                "r] = @operator, [dateModify] = @dateModify, [xlsFormat] = @xlsFormat, [xlsColNam" +
+                "e] = @xlsColName WHERE (([idStr] = @Original_idStr) AND ([idHead] = @Original_id" +
+                "Head) AND ([npp] = @Original_npp) AND ([resName] = @Original_resName) AND ([xlsN" +
+                "ame] = @Original_xlsName) AND ([isPrint] = @Original_isPrint) AND ([attr] = @Ori" +
+                "ginal_attr) AND ([dataType] = @Original_dataType) AND ([dataSize] = @Original_da" +
+                "taSize) AND ([strFormat] = @Original_strFormat) AND ([isPos] = @Original_isPos) " +
+                "AND ([isActive] = @Original_isActive) AND ((@IsNull_comm = 1 AND [comm] IS NULL)" +
+                " OR ([comm] = @Original_comm)) AND ((@IsNull_author = 1 AND [author] IS NULL) OR" +
+                " ([author] = @Original_author)) AND ((@IsNull_dateCreate = 1 AND [dateCreate] IS" +
+                " NULL) OR ([dateCreate] = @Original_dateCreate)) AND ((@IsNull_operator = 1 AND " +
+                "[operator] IS NULL) OR ([operator] = @Original_operator)) AND ((@IsNull_dateModi" +
+                "fy = 1 AND [dateModify] IS NULL) OR ([dateModify] = @Original_dateModify)) AND (" +
+                "(@IsNull_xlsFormat = 1 AND [xlsFormat] IS NULL) OR ([xlsFormat] = @Original_xlsF" +
+                "ormat)) AND ((@IsNull_xlsColName = 1 AND [xlsColName] IS NULL) OR ([xlsColName] " +
+                "= @Original_xlsColName)));\r\nSELECT idStr, idHead, npp, resName, xlsName, isPrint" +
+                ", attr, dataType, dataSize, strFormat, isPos, isActive, comm, author, dateCreate" +
+                ", operator, dateModify, xlsFormat, xlsColName FROM tst WHERE (idStr = @idStr)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@idHead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idHead", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@npp", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "npp", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -2763,23 +2755,19 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, 
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateCreate", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateCreate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@operator", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "operator", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@xlsFormat", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsFormat", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@xlsColName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsColName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_idStr", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idStr", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_idHead", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "idHead", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_npp", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "npp", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_resName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "resName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_xlsName", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsName", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_xlsName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_isPrint", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isPrint", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_isPrint", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isPrint", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_attr", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "attr", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_attr", global::System.Data.SqlDbType.TinyInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "attr", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dataType", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_dataSize", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataSize", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dataSize", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dataSize", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_strFormat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "strFormat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_strFormat", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "strFormat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_isPos", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isPos", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_isActive", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isActive", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_isActive", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "isActive", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_comm", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "comm", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_comm", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "comm", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -2791,6 +2779,10 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, 
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_operator", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "operator", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_dateModify", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_dateModify", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "dateModify", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_xlsFormat", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsFormat", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_xlsFormat", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsFormat", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_xlsColName", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsColName", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_xlsColName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "xlsColName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@idStr", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "idStr", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -2808,14 +2800,14 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, 
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT     idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSiz" +
-                "e, strFormat, isPos, isActive, comm, author, dateCreate, operator, dateModify\r\nF" +
-                "ROM         i_tmpl_str";
+                "e, strFormat, isPos, isActive, comm, author, dateCreate, operator, dateModify,xl" +
+                "sFormat,xlsColName\r\nFROM   tst";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
             this._commandCollection[1].CommandText = "SELECT attr, author, comm, dataSize, dataType, dateCreate, dateModify, idHead, id" +
-                "Str, isActive, isPos, isPrint, npp, operator, resName, strFormat, xlsName FROM i" +
-                "_tmpl_str";
+                "Str, isActive, isPos, isPrint, npp, operator, resName, strFormat, xlsName FROM t" +
+                "st";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -2883,548 +2875,6 @@ SELECT idStr, idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, 
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         public virtual int Update(global::System.Data.DataRow[] dataRows) {
             return this.Adapter.Update(dataRows);
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(
-                    int Original_idStr, 
-                    int Original_idHead, 
-                    short Original_npp, 
-                    string Original_resName, 
-                    string Original_xlsName, 
-                    global::System.Nullable<bool> Original_isPrint, 
-                    global::System.Nullable<byte> Original_attr, 
-                    string Original_dataType, 
-                    global::System.Nullable<short> Original_dataSize, 
-                    string Original_strFormat, 
-                    bool Original_isPos, 
-                    global::System.Nullable<bool> Original_isActive, 
-                    string Original_comm, 
-                    string Original_author, 
-                    global::System.Nullable<global::System.DateTime> Original_dateCreate, 
-                    string Original_operator, 
-                    global::System.Nullable<global::System.DateTime> Original_dateModify) {
-            this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_idStr));
-            this.Adapter.DeleteCommand.Parameters[1].Value = ((int)(Original_idHead));
-            this.Adapter.DeleteCommand.Parameters[2].Value = ((short)(Original_npp));
-            if ((Original_resName == null)) {
-                throw new global::System.ArgumentNullException("Original_resName");
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[3].Value = ((string)(Original_resName));
-            }
-            if ((Original_xlsName == null)) {
-                this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[4].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[5].Value = ((string)(Original_xlsName));
-            }
-            if ((Original_isPrint.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[7].Value = ((bool)(Original_isPrint.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[7].Value = global::System.DBNull.Value;
-            }
-            if ((Original_attr.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[9].Value = ((byte)(Original_attr.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[8].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[9].Value = global::System.DBNull.Value;
-            }
-            if ((Original_dataType == null)) {
-                throw new global::System.ArgumentNullException("Original_dataType");
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[10].Value = ((string)(Original_dataType));
-            }
-            if ((Original_dataSize.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[12].Value = ((short)(Original_dataSize.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[11].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[12].Value = global::System.DBNull.Value;
-            }
-            if ((Original_strFormat == null)) {
-                this.Adapter.DeleteCommand.Parameters[13].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[14].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[13].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[14].Value = ((string)(Original_strFormat));
-            }
-            this.Adapter.DeleteCommand.Parameters[15].Value = ((bool)(Original_isPos));
-            if ((Original_isActive.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[16].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[17].Value = ((bool)(Original_isActive.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[16].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[17].Value = global::System.DBNull.Value;
-            }
-            if ((Original_comm == null)) {
-                this.Adapter.DeleteCommand.Parameters[18].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[19].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[18].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[19].Value = ((string)(Original_comm));
-            }
-            if ((Original_author == null)) {
-                this.Adapter.DeleteCommand.Parameters[20].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[21].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[20].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[21].Value = ((string)(Original_author));
-            }
-            if ((Original_dateCreate.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[22].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[23].Value = ((System.DateTime)(Original_dateCreate.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[22].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[23].Value = global::System.DBNull.Value;
-            }
-            if ((Original_operator == null)) {
-                this.Adapter.DeleteCommand.Parameters[24].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[25].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[24].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[25].Value = ((string)(Original_operator));
-            }
-            if ((Original_dateModify.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[26].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[27].Value = ((System.DateTime)(Original_dateModify.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[26].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[27].Value = global::System.DBNull.Value;
-            }
-            global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
-            if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                this.Adapter.DeleteCommand.Connection.Open();
-            }
-            try {
-                int returnValue = this.Adapter.DeleteCommand.ExecuteNonQuery();
-                return returnValue;
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    this.Adapter.DeleteCommand.Connection.Close();
-                }
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(
-                    int idHead, 
-                    short npp, 
-                    string resName, 
-                    string xlsName, 
-                    global::System.Nullable<bool> isPrint, 
-                    global::System.Nullable<byte> attr, 
-                    string dataType, 
-                    global::System.Nullable<short> dataSize, 
-                    string strFormat, 
-                    bool isPos, 
-                    global::System.Nullable<bool> isActive, 
-                    string comm, 
-                    string author, 
-                    global::System.Nullable<global::System.DateTime> dateCreate, 
-                    string _operator, 
-                    global::System.Nullable<global::System.DateTime> dateModify) {
-            this.Adapter.InsertCommand.Parameters[0].Value = ((int)(idHead));
-            this.Adapter.InsertCommand.Parameters[1].Value = ((short)(npp));
-            if ((resName == null)) {
-                throw new global::System.ArgumentNullException("resName");
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(resName));
-            }
-            if ((xlsName == null)) {
-                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(xlsName));
-            }
-            if ((isPrint.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[4].Value = ((bool)(isPrint.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
-            if ((attr.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[5].Value = ((byte)(attr.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            if ((dataType == null)) {
-                throw new global::System.ArgumentNullException("dataType");
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[6].Value = ((string)(dataType));
-            }
-            if ((dataSize.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[7].Value = ((short)(dataSize.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[7].Value = global::System.DBNull.Value;
-            }
-            if ((strFormat == null)) {
-                this.Adapter.InsertCommand.Parameters[8].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[8].Value = ((string)(strFormat));
-            }
-            this.Adapter.InsertCommand.Parameters[9].Value = ((bool)(isPos));
-            if ((isActive.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[10].Value = ((bool)(isActive.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[10].Value = global::System.DBNull.Value;
-            }
-            if ((comm == null)) {
-                this.Adapter.InsertCommand.Parameters[11].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[11].Value = ((string)(comm));
-            }
-            if ((author == null)) {
-                this.Adapter.InsertCommand.Parameters[12].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[12].Value = ((string)(author));
-            }
-            if ((dateCreate.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[13].Value = ((System.DateTime)(dateCreate.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[13].Value = global::System.DBNull.Value;
-            }
-            if ((_operator == null)) {
-                this.Adapter.InsertCommand.Parameters[14].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[14].Value = ((string)(_operator));
-            }
-            if ((dateModify.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[15].Value = ((System.DateTime)(dateModify.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[15].Value = global::System.DBNull.Value;
-            }
-            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
-            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                this.Adapter.InsertCommand.Connection.Open();
-            }
-            try {
-                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
-                return returnValue;
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    this.Adapter.InsertCommand.Connection.Close();
-                }
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(
-                    int idHead, 
-                    short npp, 
-                    string resName, 
-                    string xlsName, 
-                    global::System.Nullable<bool> isPrint, 
-                    global::System.Nullable<byte> attr, 
-                    string dataType, 
-                    global::System.Nullable<short> dataSize, 
-                    string strFormat, 
-                    bool isPos, 
-                    global::System.Nullable<bool> isActive, 
-                    string comm, 
-                    string author, 
-                    global::System.Nullable<global::System.DateTime> dateCreate, 
-                    string _operator, 
-                    global::System.Nullable<global::System.DateTime> dateModify, 
-                    int Original_idStr, 
-                    int Original_idHead, 
-                    short Original_npp, 
-                    string Original_resName, 
-                    string Original_xlsName, 
-                    global::System.Nullable<bool> Original_isPrint, 
-                    global::System.Nullable<byte> Original_attr, 
-                    string Original_dataType, 
-                    global::System.Nullable<short> Original_dataSize, 
-                    string Original_strFormat, 
-                    bool Original_isPos, 
-                    global::System.Nullable<bool> Original_isActive, 
-                    string Original_comm, 
-                    string Original_author, 
-                    global::System.Nullable<global::System.DateTime> Original_dateCreate, 
-                    string Original_operator, 
-                    global::System.Nullable<global::System.DateTime> Original_dateModify, 
-                    int idStr) {
-            this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(idHead));
-            this.Adapter.UpdateCommand.Parameters[1].Value = ((short)(npp));
-            if ((resName == null)) {
-                throw new global::System.ArgumentNullException("resName");
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(resName));
-            }
-            if ((xlsName == null)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(xlsName));
-            }
-            if ((isPrint.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[4].Value = ((bool)(isPrint.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[4].Value = global::System.DBNull.Value;
-            }
-            if ((attr.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((byte)(attr.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = global::System.DBNull.Value;
-            }
-            if ((dataType == null)) {
-                throw new global::System.ArgumentNullException("dataType");
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(dataType));
-            }
-            if ((dataSize.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((short)(dataSize.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
-            }
-            if ((strFormat == null)) {
-                this.Adapter.UpdateCommand.Parameters[8].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((string)(strFormat));
-            }
-            this.Adapter.UpdateCommand.Parameters[9].Value = ((bool)(isPos));
-            if ((isActive.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[10].Value = ((bool)(isActive.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[10].Value = global::System.DBNull.Value;
-            }
-            if ((comm == null)) {
-                this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(comm));
-            }
-            if ((author == null)) {
-                this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((string)(author));
-            }
-            if ((dateCreate.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((System.DateTime)(dateCreate.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
-            }
-            if ((_operator == null)) {
-                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((string)(_operator));
-            }
-            if ((dateModify.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((System.DateTime)(dateModify.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
-            }
-            this.Adapter.UpdateCommand.Parameters[16].Value = ((int)(Original_idStr));
-            this.Adapter.UpdateCommand.Parameters[17].Value = ((int)(Original_idHead));
-            this.Adapter.UpdateCommand.Parameters[18].Value = ((short)(Original_npp));
-            if ((Original_resName == null)) {
-                throw new global::System.ArgumentNullException("Original_resName");
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[19].Value = ((string)(Original_resName));
-            }
-            if ((Original_xlsName == null)) {
-                this.Adapter.UpdateCommand.Parameters[20].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[21].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[20].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[21].Value = ((string)(Original_xlsName));
-            }
-            if ((Original_isPrint.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[22].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[23].Value = ((bool)(Original_isPrint.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[22].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[23].Value = global::System.DBNull.Value;
-            }
-            if ((Original_attr.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[24].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[25].Value = ((byte)(Original_attr.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[24].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[25].Value = global::System.DBNull.Value;
-            }
-            if ((Original_dataType == null)) {
-                throw new global::System.ArgumentNullException("Original_dataType");
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[26].Value = ((string)(Original_dataType));
-            }
-            if ((Original_dataSize.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[27].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[28].Value = ((short)(Original_dataSize.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[27].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[28].Value = global::System.DBNull.Value;
-            }
-            if ((Original_strFormat == null)) {
-                this.Adapter.UpdateCommand.Parameters[29].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[30].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[29].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[30].Value = ((string)(Original_strFormat));
-            }
-            this.Adapter.UpdateCommand.Parameters[31].Value = ((bool)(Original_isPos));
-            if ((Original_isActive.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[32].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[33].Value = ((bool)(Original_isActive.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[32].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[33].Value = global::System.DBNull.Value;
-            }
-            if ((Original_comm == null)) {
-                this.Adapter.UpdateCommand.Parameters[34].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[35].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[34].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[35].Value = ((string)(Original_comm));
-            }
-            if ((Original_author == null)) {
-                this.Adapter.UpdateCommand.Parameters[36].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[37].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[36].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[37].Value = ((string)(Original_author));
-            }
-            if ((Original_dateCreate.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[38].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[39].Value = ((System.DateTime)(Original_dateCreate.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[38].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[39].Value = global::System.DBNull.Value;
-            }
-            if ((Original_operator == null)) {
-                this.Adapter.UpdateCommand.Parameters[40].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[41].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[40].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[41].Value = ((string)(Original_operator));
-            }
-            if ((Original_dateModify.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[42].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[43].Value = ((System.DateTime)(Original_dateModify.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[42].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[43].Value = global::System.DBNull.Value;
-            }
-            this.Adapter.UpdateCommand.Parameters[44].Value = ((int)(idStr));
-            global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
-            if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                this.Adapter.UpdateCommand.Connection.Open();
-            }
-            try {
-                int returnValue = this.Adapter.UpdateCommand.ExecuteNonQuery();
-                return returnValue;
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    this.Adapter.UpdateCommand.Connection.Close();
-                }
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(
-                    int idHead, 
-                    short npp, 
-                    string resName, 
-                    string xlsName, 
-                    global::System.Nullable<bool> isPrint, 
-                    global::System.Nullable<byte> attr, 
-                    string dataType, 
-                    global::System.Nullable<short> dataSize, 
-                    string strFormat, 
-                    bool isPos, 
-                    global::System.Nullable<bool> isActive, 
-                    string comm, 
-                    string author, 
-                    global::System.Nullable<global::System.DateTime> dateCreate, 
-                    string _operator, 
-                    global::System.Nullable<global::System.DateTime> dateModify, 
-                    int Original_idStr, 
-                    int Original_idHead, 
-                    short Original_npp, 
-                    string Original_resName, 
-                    string Original_xlsName, 
-                    global::System.Nullable<bool> Original_isPrint, 
-                    global::System.Nullable<byte> Original_attr, 
-                    string Original_dataType, 
-                    global::System.Nullable<short> Original_dataSize, 
-                    string Original_strFormat, 
-                    bool Original_isPos, 
-                    global::System.Nullable<bool> Original_isActive, 
-                    string Original_comm, 
-                    string Original_author, 
-                    global::System.Nullable<global::System.DateTime> Original_dateCreate, 
-                    string Original_operator, 
-                    global::System.Nullable<global::System.DateTime> Original_dateModify) {
-            return this.Update(idHead, npp, resName, xlsName, isPrint, attr, dataType, dataSize, strFormat, isPos, isActive, comm, author, dateCreate, _operator, dateModify, Original_idStr, Original_idHead, Original_npp, Original_resName, Original_xlsName, Original_isPrint, Original_attr, Original_dataType, Original_dataSize, Original_strFormat, Original_isPos, Original_isActive, Original_comm, Original_author, Original_dateCreate, Original_operator, Original_dateModify, Original_idStr);
         }
     }
     

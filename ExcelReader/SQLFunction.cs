@@ -45,17 +45,20 @@ namespace ExcelReader
 
         static string sqlCommHead =
             @"select idHead, idParent,
+/*
               case 
                 when isGroup = 1 then name 
                 else name + ' {'+ cast(idHead as varChar(100))+'}'
                 end name
-                , comm, isGroup
+*/ 
+name
+                , comm, isGroup, idHead HeadIdTitle
               from thd
                 order by [order], name";
 
         static string commStr =
             @"select idHead,idStr,npp,resName,xlsName,isPrint,attr,dataType,dataSize,
-                isPos,isActive,comm
+                isPos,isActive,xlsFormat,xlsColName,comm
             from tst
             where idHead = @idHead";
 
@@ -63,12 +66,22 @@ namespace ExcelReader
 
         static SqlDataAdapter tbStrAdapter = new SqlDataAdapter(commStr,  conn );
 
+        static SqlDataAdapter tbHeadAdapter = new SqlDataAdapter(sqlCommHead, conn);
+
+
         static SqlCommandBuilder tbStrBuilder;
 
         public static void getTbHeadData(DataTable table) {
-            SqlDataAdapter adapter = new SqlDataAdapter(sqlCommHead,conn);
-            adapter.Fill(table);
+            tbStrBuilder = new SqlCommandBuilder(tbHeadAdapter);
+            tbHeadAdapter.Fill(table);
         }
+
+        public static void updateTbHeadData(DataTable table)
+        {
+            tbHeadAdapter.Update(table);
+        }
+
+
 
         public static void intTbStrParam()
         {

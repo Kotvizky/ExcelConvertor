@@ -20,7 +20,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="admins" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ikotvytskyi</Value>
+      <Value Profile="(Default)">ikotvytskyi,yvashchenko</Value>
     </Setting>
   </Settings>
 </SettingsFile>

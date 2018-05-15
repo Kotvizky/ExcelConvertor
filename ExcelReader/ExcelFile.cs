@@ -116,28 +116,37 @@ namespace ExcelReader
             }
         }
 
-        public void ExportToXls(DataTable resultTable, bool showSource = false)
+        public void ExportToXls(DataTable resultTable, Scan scan, bool showSource = false)
         {
             Excel.Application oXL;
             Excel._Workbook oWB;
             Excel._Worksheet oSheet;
-            object misvalue = System.Reflection.Missing.Value;
+            //object misvalue = System.Reflection.Missing.Value;
             oXL = new Excel.Application();
             oWB = oXL.Workbooks.Add("");
             oSheet = oWB.ActiveSheet;
-            drawTable(oSheet,resultTable, Excel.XlRgbColor.rgbLightGreen);
+            drawTable(oSheet, scan, resultTable, Excel.XlRgbColor.rgbLightGreen);
             if (showSource)
             {
-                drawTable(oSheet, XlsTable, Excel.XlRgbColor.rgbAqua, resultTable.Columns.Count + 2, 1  );
+                drawTable(oSheet, scan, XlsTable, Excel.XlRgbColor.rgbAqua, resultTable.Columns.Count + 2, 1  );
             }
             oXL.Visible = true;
         }
 
-        void drawTable(Excel._Worksheet oSheet, DataTable resultTable, Excel.XlRgbColor xlsColor,
+        void drawTable(Excel._Worksheet oSheet, Scan scan,DataTable resultTable, Excel.XlRgbColor xlsColor,
             int startCol = 1, int startRow = 1 )
         {
             Excel.Range oRng;
             string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+            for (int i = 0; i < title.Count(); i++)
+            {
+                string colName = title[i];
+                var newName = scan.Find(x => x.IsActive && x.ResName == colName);
+                if (newName != null)
+                {
+                    if (newName.xlsColName != "") title[i] = newName.xlsColName;
+                }
+            }
             oRng = oSheet.get_Range(xlsAdress(startCol, startRow), xlsAdress(startCol - 1 + title.Length, startRow));
             oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
             oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
@@ -161,9 +170,28 @@ namespace ExcelReader
                 }
             }
 
-            oRng = oSheet.get_Range(xlsAdress(startCol, startRow +1),
-                                    xlsAdress(startCol-1 + data.GetLength(1), startRow - 1 + data.GetLength(0) + 1));
-            oRng.Value2 = data;
+
+            oRng = oSheet.get_Range(xlsAdress(startCol, startRow + 1),
+                                    xlsAdress(startCol - 1 + data.GetLength(1), startRow - 1 + data.GetLength(0) + 1));
+            oRng.Cells.Value = data;
+
+            for (int i = 0; i < title.Count(); i++)
+            {
+                string colName = title[i];
+                var newName = scan.Find(x => x.IsActive && x.ResName == colName);
+                if (newName != null)
+                {
+                    if (newName.xlsFormat != "")
+                    {
+                        oRng = oSheet.get_Range(xlsAdress(startCol + i, startRow + 1),
+                                                xlsAdress(startCol + i, startRow - 1 + data.GetLength(0) + 1));
+                        oRng.EntireColumn.TextToColumns();
+                        oRng.EntireColumn.NumberFormat = newName.xlsFormat;
+                    }
+                    //                        title[i] = newName.xlsColName;
+                }
+            }
+
             oRng.EntireColumn.AutoFit();
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo(CultureInfo.CurrentCulture.Name);
         }

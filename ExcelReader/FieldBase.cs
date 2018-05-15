@@ -20,6 +20,8 @@ namespace ExcelReader
             IsActive = (bool)row["isActive"];
             Type = Type.GetType(String.Format("System.{0}", (string)row["DataType"] ));
             DataSize = (short)row["dataSize"];
+            xlsColName = row["xlsColName"] == DBNull.Value? "":(string)row["xlsColName"];
+            xlsFormat = row["xlsFormat"] == DBNull.Value ? "" : (string)row["xlsFormat"];
             Scan = scan;
         }
 
@@ -51,6 +53,8 @@ namespace ExcelReader
                 return attr;
             }
         }
+        public string xlsColName { set; get; }
+        public string xlsFormat { set; get; }
 
         public DataRow XlsRow {
             get

@@ -530,13 +530,13 @@ namespace ExcelReader
                     string reportValidation = setValidator(field,columns[field.XlsName].DataType.Name);
                     if (reportValidation != String.Empty)
                     {
-                        message += String.Format("\r\n(+):\t{0} -> {1}, convert error {2}", field.XlsName, field.ResName,reportValidation);
+                        message += String.Format("\r\n(+):\t{0} -> {1}, --!!!-- convert error {2}", field.XlsName, field.ResName,reportValidation);
                         field.Exist = false;
                         AllFound = false;
                     }
                     else
                     {
-                        message += String.Format("\r\n(+):\t{0} -> {1}, {2}", field.XlsName, field.ResName,field.Validator.Method.Name);
+                        message += String.Format("\r\n(+):\t{0} ->  {1}, {2}", field.XlsName, field.ResName,field.Validator.Method.Name);
                         field.Exist = true;
                     }
                 }

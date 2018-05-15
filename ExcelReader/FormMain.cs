@@ -17,6 +17,7 @@ using System.IO;
 using System.Globalization;
 using BrightIdeasSoftware;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic;
 
 namespace ExcelReader
 {
@@ -43,13 +44,8 @@ namespace ExcelReader
             string[] arrayAdmin = admins.Split(',');
             int pos = Array.IndexOf(arrayAdmin,Environment.UserName.ToLower());
             isAdmin = (pos > -1);
+            tbHeadClass.isAdmin = isAdmin;
             bindingNavigatorSaveItems2.Enabled = isAdmin;
-
-            //double dec;
-            //string num = "-6,75";
-            //if (!Double.TryParse(num.Replace('.',','), out dec)) dec = 0;
-            ////dec = Convert.ToDouble(num);
-            //MessageBox.Show(dec.ToString());
 
             tbHeadClass.setProperty(olvDataTree,textTmplName);
             tbStrClass.setProperty(dgvTemlpStr, bNTmplStr);
@@ -72,10 +68,11 @@ namespace ExcelReader
                 dataTypeDataGrid3.Items.Add(dataType.ToString());
             }
 
-            //dataTypeDataGrid3.Items.AddRange(elements.ToArray());
         }
 
         static class tbHeadClass {
+
+            public static bool isAdmin = false;
 
             static TextBox textTmplName;
 
@@ -89,8 +86,10 @@ namespace ExcelReader
                 {
                     DataRow row = ((DataRowView)olvDataTree.SelectedObject).Row;
                     int index = -1;
-                    if (!(bool)(row["isGroup"]))
+                    if (!((bool)(row["isGroup"]) || ( row["idHead"] == DBNull.Value) ))
+                    {
                         index = (int)(row["idHead"]);
+                    }
                     if (index > 0)
                     {
                         textTmplName.Text = String.Format("{0}\r\n{1}", 
@@ -104,6 +103,25 @@ namespace ExcelReader
                 }
             }
 
+            public static int idParents
+            {
+                get
+                {
+                    DataRow row = ((DataRowView)olvDataTree.SelectedObject).Row;
+                    return (int)(row["idParent"]);
+                }
+            }
+
+            public static int SelectedRow
+            {
+                get
+                {
+                    return tbHead.Rows.IndexOf(
+                        (((DataRowView)olvDataTree.SelectedObject).Row)
+                        );
+                }
+            }
+
             public static void setProperty(DataTreeListView _olvDataTree, TextBox _textBox)
             {
                 textTmplName = _textBox;
@@ -112,7 +130,10 @@ namespace ExcelReader
                 initOlvHeadTable();
                 getData();
                 olvDataTree.DataSource = tbHeadClass.tbHead;
-                olvDataTree.Columns.RemoveByKey("isGroup");
+                if (!isAdmin)
+                {
+                    olvDataTree.Columns.RemoveByKey("isGroup");
+                }
                 autosizeColumns();
             }
 
@@ -121,6 +142,14 @@ namespace ExcelReader
                 tbHead.Clear();
                 SQLFunction.getTbHeadData(tbHead);
             }
+
+
+            public static void update()
+            {
+                SQLFunction.updateTbHeadData(tbHead);
+//                getTbStrData(idHead);
+            }
+
 
             static void initOlvHeadTable()
             {
@@ -175,7 +204,7 @@ namespace ExcelReader
 
             static public int idHead { get; private set; }
 
-            static BindingNavigator Bng;
+            static public BindingNavigator Bng { get; private set; }
 
             public static DataView dvString;
 
@@ -216,6 +245,10 @@ namespace ExcelReader
                     enableGrid();
                     SQLFunction.getTbStrData(tbString, idHead);
                     tbString.Columns["idHead"].DefaultValue = idHead;
+                    if (tbString.Columns.Contains("xlsName"))
+                    {
+                        tbString.Columns["xlsName"].DefaultValue = "";
+                    }
                     setTbProperty();
                     //autoSizeColumn();
                     Dgv.Sort(Dgv.Columns["nppDataGrid3"], ListSortDirection.Ascending);
@@ -268,6 +301,7 @@ namespace ExcelReader
         {
             switch (keys)
             {
+
                 case Keys.W | Keys.Alt:
                     changeContainerWidth(splitContainer1);
                     return false;
@@ -288,6 +322,14 @@ namespace ExcelReader
                     //}
                     return false;
                 case Keys.S | Keys.Control:
+                    if (olvDataTree.Focused)
+                    {
+                        tbHeadClass.update();
+
+                        MessageBox.Show("Изменения в структуре шаблонов сохранены!");
+                    }
+
+
                     //bindingNavigatorSaveItems1_Click(this);
                     //bindingNavigatorSaveItems2_Click(this);
                     //MessageBox.Show("Изменения в шаблонах сохранены!");
@@ -297,15 +339,72 @@ namespace ExcelReader
                     if (olvDataTree.Focused)
                         tbHeadClass.setProperty(olvDataTree, textTmplName);
                     return false;
+                case Keys.Insert:
+                    if (dgvTemlpStr.Focused) {
+                        if (tbStrClass.tbString.Rows.Count == 0) {
+                            return false;
+                        }
+                        DataRow row = tbStrClass.tbString.NewRow();
+                        string newRow = "NewRow";
+                        row["resName"] = newRow;
+                        row["xlsName"] = "";
+                        if (dgvTemlpStr.SelectedCells.Count > 0)
+                        {
+                            int rowIndex = dgvTemlpStr.SelectedCells[0].RowIndex;
+                            object value = dgvTemlpStr.Rows[rowIndex].Cells[0].Value;
+                            if (value != DBNull.Value)
+                            {
+                                tbStrClass.tbString.Rows.InsertAt(row, rowIndex);
+                                row["npp"] = Convert.ToInt32(value.ToString());
+                                if (dgvTemlpStr.Rows[rowIndex].Cells["resNameDataGrid3"].Value.ToString() != newRow)
+                                {
+                                    rowIndex++;
+                                }
+                                dgvTemlpStr.CurrentCell = dgvTemlpStr[0, rowIndex];
+                            }
+                        }
+                    }
+                    if (olvDataTree.Focused)
+                    {
+                        //int idParent = 
+                        DataRow row = tbHeadClass.tbHead.NewRow();
+                        row["idParent"] = tbHeadClass.idParents;
+                        row["isGroup"] = 0;
+                        tbHeadClass.tbHead.Rows.InsertAt(row, tbHeadClass.SelectedRow);
+                        //    dgvTemlpStr.Rows[dgvTemlpStr.]
+                    }
+                    return false;
+
+                case Keys.Enter :
+                    bool result = false;
+                    if (dgvTemlpStr.IsCurrentCellInEditMode)
+                    {
+                        dgvTemlpStr.EndEdit();
+                        dgvTemlpStr_KeyDown(dgvTemlpStr, new KeyEventArgs(Keys.Enter));
+                        result = true;
+                    }
+                    return result;
+
+                case Keys.Delete:
+                    if (dgvTemlpStr.Focused)
+                    {
+                        bindingNavigatorDeleteItem1.PerformClick();
+                    }
+                    return false;
                 case Keys.Y | Keys.Control:
                     if (dgvTemlpStr.Focused)
                     {
                         if (dgvTemlpStr.CurrentRow.Index < dgvTemlpStr.NewRowIndex) {
                             //dgvTemlpStr.Rows.Insert(dgvTemlpStr.CurrentRow.Index, dgvTemlpStr.CurrentRow.Clone());
+                            //tbStrClass.tbString.BeginLoadData();
                             DataRow distRow = tbStrClass.tbString.NewRow();
                             distRow.ItemArray = (dgvTemlpStr.CurrentRow.DataBoundItem as DataRowView).Row.ItemArray.Clone() as object[];
-                            tbStrClass.tbString.Rows.Add(distRow);
-                            MessageBox.Show("Строка с номером {0} скопирована!", distRow["npp"].ToString());
+                            int rowIndex = dgvTemlpStr.SelectedCells[0].RowIndex;
+                            tbStrClass.tbString.Rows.InsertAt(distRow,rowIndex);
+                            //tbStrClass.tbString.EndLoadData();
+                            MessageBox.Show(
+                                String.Format("Строка с номером {0} скопирована!", distRow["npp"].ToString())
+                            );
                         }
 
                         return true;
@@ -380,15 +479,19 @@ namespace ExcelReader
 
         private void activatStripMenu(string[] enableBtn)
         {
-            foreach (ToolStripButton btn in toolStrip1.Items)
+            //            foreach (ToolStripButton btn in toolStrip1.Items)
+            foreach (ToolStripItem btn in toolStrip1.Items)
             {
-                if (enableBtn.Contains(btn.Name))
+                if (btn is ToolStripButton)
                 {
-                    btn.Enabled = true;
-                }
-                else
-                {
-                    btn.Enabled = false;
+                    if (enableBtn.Contains(btn.Name))
+                    {
+                        btn.Enabled = true;
+                    }
+                    else
+                    {
+                        btn.Enabled = false;
+                    }
                 }
             }
         }
@@ -451,7 +554,7 @@ namespace ExcelReader
 
             if (result != null)
             {
-                file.ExportToXls(result,scan.printAllFields);
+                file.ExportToXls(result, scan, scan.printAllFields);
             } else
             {
                 MessageBox.Show("Сопоставьте входной файл с шаблона сначала!");
@@ -649,6 +752,11 @@ namespace ExcelReader
 
         private void dgvTemlpStr_DataError(object sender, DataGridViewDataErrorEventArgs anError)
         {
+            if (sender is DataGridView)
+            {
+                DataGridView dgv = (DataGridView)sender;
+                dgv.CurrentCell = dgv.Rows[anError.RowIndex].Cells[anError.ColumnIndex];
+            }
             MessageBox.Show(anError.Exception.Message);
             anError.ThrowException = false;
             anError.Cancel = true;
@@ -1227,12 +1335,13 @@ namespace ExcelReader
         {
             DataGridView dvg = (sender as DataGridView);
             if ((e.RowIndex < 0) | !dvg.Columns.Contains(Scan.ACTIVE_FIELD)) return;
-            bool cellValue = false;
-            if (dvg.Rows[e.RowIndex].Cells[Scan.ACTIVE_FIELD].Value != null)
+            bool cellValueBool = false;
+            object cellValue = dvg.Rows[e.RowIndex].Cells[Scan.ACTIVE_FIELD].Value;
+            if (!((cellValue == DBNull.Value) || (cellValue == null)))
             {
-                cellValue = (bool)dvg.Rows[e.RowIndex].Cells[Scan.ACTIVE_FIELD].Value;
+                cellValueBool = (bool)dvg.Rows[e.RowIndex].Cells[Scan.ACTIVE_FIELD].Value;
             }
-            if (!cellValue)
+            if (!cellValueBool)
             {
                 e.CellStyle.BackColor = Color.PaleVioletRed;
             }
@@ -1290,7 +1399,76 @@ namespace ExcelReader
             changeActiveRow(3);
         }
 
+        private void dgvTemlpStr_KeyDown(object sender, KeyEventArgs e)
+        {
 
+            if (e.KeyCode != Keys.Enter) return;
+            e.SuppressKeyPress = true;
+            DataGridView dataGridView1 = (DataGridView)sender;
+            int iColumn = dataGridView1.CurrentCell.ColumnIndex;
+            int iRow = dataGridView1.CurrentCell.RowIndex;
+            if (iColumn == dataGridView1.ColumnCount - 1)
+            {
+                if (dataGridView1.RowCount > (iRow + 1))
+                {
+                    dataGridView1.CurrentCell = dataGridView1[1, iRow + 1];
+                }
+                else
+                {
+                    //focus next control
+                }
+            }
+            else
+                dataGridView1.CurrentCell = dataGridView1[iColumn + 1, iRow];
+
+        }
+
+        private void dgvTemlpStr_Move(object sender, EventArgs e)
+        {
+        }
+
+        private void dgvTemlpStr_CursorChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void toolStripButton1_Click_5(object sender, EventArgs e)
+        {
+            string admins = Properties.Settings.Default.admins;
+            string[] arrayAdmin = admins.Split(',');
+            int pos = Array.IndexOf(arrayAdmin, Environment.UserName.ToLower());
+            isAdmin = (pos > -1);
+            MessageBox.Show(
+                String.Format("Имена: {0}\n\rПользователь: {1}\n\rIsAdmin:{2}", admins, Environment.UserName.ToLower(),isAdmin)
+                );
+        }
+
+        private void iPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string IP = Scan.GetLocalIPAddress(true);
+            Clipboard.SetText(IP);
+            MessageBox.Show(
+                String.Format("Ip has copied to Clipboard ({0})",IP)
+                );
+        }
+
+        private void tableToSQLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string message = String.Empty;
+            if (file.XlsTable != null)
+            {
+                foreach(DataColumn column in file.XlsTable.Columns)
+                {
+                    if (column.ColumnName != "$ROW_ID")
+                    {
+                        message += String.Format("\n{0} - {1} - [{2}]",column.ColumnName,column.DataType,column.MaxLength);
+                    }
+                }
+            }
+            else {
+                message = "Table doesn't exist";
+            }
+            MessageBox.Show(message);
+        }
     }
 }
 	
