@@ -172,6 +172,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SqlScripts\get.cmd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -225,6 +226,13 @@
       <Project>{18FEDA0C-D147-4286-B39A-01204808106A}</Project>
       <Name>ObjectListView2012</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="SqlScripts\get_fn_sctript.sql" />
+    <Content Include="SqlScripts\get_sp_sctript.sql" />
+    <Content Include="SqlScripts\script_fn.sql" />
+    <Content Include="SqlScripts\script_sp.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
