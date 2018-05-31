@@ -10,9 +10,7 @@ namespace ExcelReader
 {
     static class SQLFunction
     {
-        //static public string SQLServer = "localhost";
-        //        static private SqlConnection conn = new SqlConnection("Server=" + SQLServer + ";Database=db_logist;User Id=logist;Password=8611;Connection Timeout=60;");
-        static private SqlConnection conn =
+        static public SqlConnection conn { get; private set; } =
             new SqlConnection(global::ExcelReader.Properties.Settings.Default.CollectConnectionString);
 
         static public bool connOpen()
@@ -185,12 +183,16 @@ name
             command.Prepare();
         }
 
-        public static void BulkWrite(string tableName, DataRow[] rows)
+        public static void BulkWrite(string tableName, DataRow[] rows,SqlConnection myConn = null)
         {
+            if (myConn == null)
+            {
+                myConn = conn;
+            }
 
-            if (conn.State == ConnectionState.Closed) conn.Open();
+            if (myConn.State == ConnectionState.Closed) myConn.Open();
             using (SqlBulkCopy bulkCopy =
-                        new SqlBulkCopy(conn))
+                        new SqlBulkCopy(myConn))
             {
                 bulkCopy.DestinationTableName = tableName;
                 try
@@ -213,20 +215,30 @@ name
             }
         }
 
-        public static void ExecuteNonQuery(string sqlCommand)
+        public static void ExecuteNonQuery(string sqlCommand, bool closeConn = true, SqlConnection myConnection = null)
         {
+            if (myConnection == null)
+            {
+                myConnection = conn;
+            }
+
             try
             {
-                if (conn.State == ConnectionState.Closed) conn.Open();
+                if (myConnection.State == ConnectionState.Closed) myConnection.Open();
             }
             catch (SqlException e)
             {
-                conn.Close();
+                myConnection.Close();
             }
-            command = new SqlCommand(sqlCommand,conn);
+            command = new SqlCommand(sqlCommand, myConnection);
             command.ExecuteNonQuery();
-            conn.Close();
+            if (closeConn) myConnection.Close();
 
+        }
+
+        public static void conClose()
+        {
+            conn.Close();
         }
 
         public static void preperedInsert(ArrayList param = null)
@@ -258,7 +270,7 @@ name
             if (conn.State == ConnectionState.Closed) conn.Open();
             DataTable table = new DataTable();
             dataAdapter.Fill(table);
-            conn.Close();
+            //conn.Close(); - dataAdapter.Fill closes it automatically
             return table;
         }
 
@@ -399,6 +411,18 @@ name
             return table;
         }
 
+        //static public DataTable getSQLTempTableTypes()
+        //{
+        //    connOpen();
+        //    SqlDataAdapter dataAdapter = new SqlDataAdapter();
+        //    string sqlCmd = "select csType,sqlType from [matchTmpType] ";
+        //    dataAdapter.SelectCommand = new SqlCommand(sqlCmd, conn);
+        //    DataTable table = new DataTable();
+        //    dataAdapter.Fill(table);
+        //    conn.Close();
+        //    return table;
+        //}
+
         public static string ExecuteProc(string sqlCommand, string outParam, string[] inParam = null)
         {
             try
@@ -445,5 +469,13 @@ name
             public int Length;
         }
 
+        public static SqlConnection getNewConnection(string dataSource, string dataBase)
+        {
+            var builder = new SqlConnectionStringBuilder(Properties.Settings.Default.CollectConnectionString);
+            builder.DataSource = dataBase;
+            builder.InitialCatalog = dataSource;
+            SqlConnection newConnectinon = new SqlConnection(builder.ConnectionString);
+            return newConnectinon;
+        }
     }
 }

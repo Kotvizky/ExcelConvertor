@@ -61,15 +61,24 @@ namespace ExcelReader.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ikotvytskyi,yvashchenko")]
         public string admins {
             get {
                 return ((string)(this["admins"]));
             }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10.1.32.56")]
+        public string TmpSqlServer {
+            get {
+                return ((string)(this["TmpSqlServer"]));
+            }
             set {
-                this["admins"] = value;
+                this["TmpSqlServer"] = value;
             }
         }
     }

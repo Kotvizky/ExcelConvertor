@@ -18,6 +18,7 @@ using System.Globalization;
 using BrightIdeasSoftware;
 using Newtonsoft.Json;
 using Microsoft.VisualBasic;
+using System.Web.Script.Serialization;
 
 namespace ExcelReader
 {
@@ -36,9 +37,34 @@ namespace ExcelReader
         bool isAdmin = false;
         ProcList procList = null;
 
+        string textMenuTmpTable;
+        string TempTableServer;
+
         public MainForm()
         {
             InitializeComponent();
+
+            //string json;
+            //try
+            //{
+            //    json = @"{""join"":{""res"":""fn.Row_id_inn"",""xls"":""$Row_id""},
+            //        ""replace"":[ {""xls"":""№_договора"",""res"":""ContractNumSQL""} ]
+            //        }";
+            //    object jsObj = new object();
+            //    var serializer = new JavaScriptSerializer();
+            //    dynamic data = serializer.DeserializeObject(json);
+            //    MessageBox.Show(data.ToString());
+            //}
+            //catch (Exception eJson)
+            //{
+            //    MessageBox.Show(eJson.Message);
+            //}
+
+            //MessageBox.Show()
+
+            textMenuTmpTable = tableToSQLToolStripMenuItem.Text;
+            TempTableServer = Properties.Settings.Default.TmpSqlServer;
+            changeMenuTmpServer();
 
             string admins = Properties.Settings.Default.admins;
             string[] arrayAdmin = admins.Split(',');
@@ -1453,21 +1479,185 @@ namespace ExcelReader
 
         private void tableToSQLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string message = String.Empty;
-            if (file.XlsTable != null)
+            //if (!isAdmin) return;
+            string query = "";
+            if (file.XlsTable != null || true)
             {
-                foreach(DataColumn column in file.XlsTable.Columns)
+                try {
+              //      throw new System.ArgumentException("Parameter cannot be null", "original");
+                    TableToSql tmp = new TableToSql(file.XlsTable,
+                        SQLFunction.getNewConnection("tempDb", TempTableServer));
+                    tmp.createTempTable();
+                    tmp.bulkData();
+                    FormDialogTmp form = new FormDialogTmp(tmp.tableName, TempTableServer);
+                    form.StartPosition = FormStartPosition.CenterParent;
+                    form.ShowDialog();
+                    form.Dispose();
+                    tmp.dropTemplate();
+                }
+                catch (Exception exc)
                 {
-                    if (column.ColumnName != "$ROW_ID")
-                    {
-                        message += String.Format("\n{0} - {1} - [{2}]",column.ColumnName,column.DataType,column.MaxLength);
-                    }
+                    MessageBox.Show(exc.Message);
                 }
             }
             else {
-                message = "Table doesn't exist";
+                query = "Table doesn't exist";
             }
-            MessageBox.Show(message);
+        }
+
+        private void xlsToSQLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            XlsToSql reader = new XlsToSql(textBox1);
+            reader.readList();
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            TimedFilter(this.olvDataTree, ((TextBox)sender).Text,0);
+        }
+
+        public void TimedFilter(ObjectListView olv, string txt, int matchKind)
+        {
+            TextMatchFilter filter = null;
+            if (!String.IsNullOrEmpty(txt))
+            {
+                switch (matchKind)
+                {
+                    case 0:
+                    default:
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1:
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2:
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+
+            // Text highlighting requires at least a default renderer
+            if (olv.DefaultRenderer == null)
+                olv.DefaultRenderer = new HighlightTextRenderer(filter);
+
+            //Stopwatch stopWatch = new Stopwatch();
+            //stopWatch.Start();
+
+            olv.AdditionalFilter = filter;
+            //olv.Invalidate();
+//            stopWatch.Stop();
+
+            IList objects = olv.Objects as IList;
+
+            //if (objects == null)
+            //    this.ToolStripStatus1 = prefixForNextSelectionMessage =
+            //        String.Format("Filtered in {0}ms", stopWatch.ElapsedMilliseconds);
+            //else
+            //    this.ToolStripStatus1 = prefixForNextSelectionMessage =
+            //        String.Format("Filtered {0} items down to {1} items in {2}ms",
+            //                      objects.Count,
+            //                      olv.Items.Count,
+            //                      stopWatch.ElapsedMilliseconds);
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setTmpServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormPrompt.answer formAnswer;
+            formAnswer = FormPrompt.ShowDialog("Server name", "Input SQL server name for temporary table:", 
+                Properties.Settings.Default.TmpSqlServer);
+            if (formAnswer.cancel)
+                return;
+            if (formAnswer.save) {
+                Properties.Settings.Default.TmpSqlServer = formAnswer.message;
+                Properties.Settings.Default.Save();
+            }
+            TempTableServer = formAnswer.message;
+            TempTableServer = formAnswer.message;
+            changeMenuTmpServer();
+        }
+
+        public void changeMenuTmpServer() {
+            tableToSQLToolStripMenuItem.Text = $"{textMenuTmpTable} to {TempTableServer }";
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void cSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataTable result = scan.ResTable;
+            DataTable xlsTable = file.XlsTable;
+            string now = DateTime.Now.ToString("yyyyMMdd");
+            if ((result != null) && (xlsTable != null) )
+            {
+                var field = scan.Find(x => x.Attr == attrName.CsvShemaAdr && x.IsActive);
+                if (field == null )
+                {
+                    MessageBox.Show("Can't find schema (the type's 'адрес-csv' in the template)");
+                    return;
+                }
+                string addrelations = field.XlsName;
+
+                string rNumber = "";
+                var rField = scan.Find(x => (x.ResName == "RNumber") && (x.Attr == attrName.Const));
+                if (rField != null)
+                {
+                    rNumber = rField.XlsName;
+                }
+
+                string tmplNum = tbHeadClass.Index.ToString();
+
+                string fileName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                    + $@"\{now}_{rNumber}_({tmplNum}).csv";
+
+                
+                try
+                {
+                    FileToCsv csvFile = new FileToCsv(result, file.XlsTable, fileName, addrelations);
+                    if ( csvFile.schemaError )
+                    {
+                        MessageBox.Show($"Matching error: \r\n{csvFile.wrongFields}");
+                    }
+                    else
+                    {
+                        MessageBox.Show($"File {fileName} \r\n has been saved!");
+                    }
+                }
+                catch (NotImplementedException impEx)
+                {
+                    MessageBox.Show(impEx.Message);
+                }
+                return;
+            }
+
+            if (xlsTable != null)
+            {
+                string xlsName = this.fileName.Split('\\').Last().Split('.')[0];
+
+                string fileName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                    + $@"\{now}_{xlsName}.csv";
+                DataTable csvTable = xlsTable.Copy();
+                if (csvTable.Columns.Contains("$ROW_ID"))
+                {
+                    csvTable.Columns.Remove("$ROW_ID");
+                }
+                FileToCsv.tableToFile(csvTable, fileName);
+                MessageBox.Show($"File {fileName} \r\n has been saved!");
+                return;
+            }
+            MessageBox.Show("Result table doesn't exist");
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Test!");
         }
     }
 }

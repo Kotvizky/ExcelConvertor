@@ -19,8 +19,11 @@
     <Setting Name="ShowNullDoubleError" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="admins" Type="System.String" Scope="User">
+    <Setting Name="admins" Type="System.String" Scope="Application">
       <Value Profile="(Default)">ikotvytskyi,yvashchenko</Value>
+    </Setting>
+    <Setting Name="TmpSqlServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.1.32.56</Value>
     </Setting>
   </Settings>
 </SettingsFile>

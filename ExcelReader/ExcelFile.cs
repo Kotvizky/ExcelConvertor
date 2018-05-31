@@ -70,12 +70,13 @@ namespace ExcelReader
             string connectionString = GetConnectionString();
             using (OleDbConnection conn = new OleDbConnection(connectionString))
             {
+                XlsTable = null;
                 conn.Open();
                 OleDbCommand cmd = new OleDbCommand();
                 cmd.Connection = conn;
                 // Get all Sheets in Excel File
                 DataTable dtSheet = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                DataRow[] sheetRows = dtSheet.Select("TABLE_NAME like '%$'");
+                DataRow[] sheetRows = dtSheet.Select("TABLE_NAME like '*$''' or TABLE_NAME like '*$' ");
                 if (sheetRows.Length > 0) {
                     string sheetName = sheetRows[0]["TABLE_NAME"].ToString();
                     if (sheetRows.Length > 1) {
@@ -123,7 +124,12 @@ namespace ExcelReader
             Excel._Worksheet oSheet;
             //object misvalue = System.Reflection.Missing.Value;
             oXL = new Excel.Application();
-            oWB = oXL.Workbooks.Add("");
+//-- new code
+            oWB = oXL.Workbooks.Add( @"c:\Users\IKotvytskyi\Documents\my-template.xltx");
+
+// <-- end code
+
+//            oWB = oXL.Workbooks.Add("");
             oSheet = oWB.ActiveSheet;
             drawTable(oSheet, scan, resultTable, Excel.XlRgbColor.rgbLightGreen);
             if (showSource)
