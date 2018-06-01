@@ -124,8 +124,13 @@ namespace ExcelReader
             Excel._Worksheet oSheet;
             //object misvalue = System.Reflection.Missing.Value;
             oXL = new Excel.Application();
-//-- new code
-            oWB = oXL.Workbooks.Add( @"c:\Users\IKotvytskyi\Documents\my-template.xltx");
+            //-- new code
+            string fileName = @"c:\Users\IKotvytskyi\Documents\my-template.xltx";
+
+            if (!File.Exists(fileName))
+                fileName = "";
+             
+            oWB = oXL.Workbooks.Add(fileName);
 
 // <-- end code
 

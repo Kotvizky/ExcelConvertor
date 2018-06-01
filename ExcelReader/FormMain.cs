@@ -167,6 +167,10 @@ namespace ExcelReader
             {
                 tbHead.Clear();
                 SQLFunction.getTbHeadData(tbHead);
+                tbHead.Columns["idHead"].AutoIncrement = true;
+                tbHead.Columns["idHead"].AutoIncrementSeed = -1;
+                tbHead.Columns["idHead"].AutoIncrementStep = -1;
+
             }
 
 
@@ -363,8 +367,10 @@ namespace ExcelReader
                     return false;
                 case Keys.F5:
                     if (olvDataTree.Focused)
-                        tbHeadClass.setProperty(olvDataTree, textTmplName);
-                    return false;
+                        tbHeadClass.update();
+
+                        //tbHeadClass.setProperty(olvDataTree, textTmplName);
+                        return false;
                 case Keys.Insert:
                     if (dgvTemlpStr.Focused) {
                         if (tbStrClass.tbString.Rows.Count == 0) {
@@ -1658,6 +1664,11 @@ namespace ExcelReader
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Test!");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //olvDataTree.RefreshObjects();
         }
     }
 }

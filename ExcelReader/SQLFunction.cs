@@ -71,11 +71,27 @@ name
 
         public static void getTbHeadData(DataTable table) {
             tbStrBuilder = new SqlCommandBuilder(tbHeadAdapter);
+
+            command = new SqlCommand(
+                @"
+                INSERT INTO [thd] (idParent,name, comm,isGroup) VALUES ( @idParent, @name, @comm,@isGroup);
+                SELECT idHead, idParent,name, comm, isGroup, idHead HeadIdTitle FROM thd WHERE (IdHead = SCOPE_IDENTITY())
+                ", conn);
+
+            command.Parameters.Add("@idParent", SqlDbType.Int, 0,"idParent");
+            command.Parameters.Add("@idGroup", SqlDbType.Int, 0, "isGroup");
+            command.Parameters.Add("@name", SqlDbType.NVarChar, 250,"name");
+            command.Parameters.Add("@comm", SqlDbType.NVarChar, 500,"comm");
+
+
+            tbHeadAdapter.InsertCommand = command;
+
             tbHeadAdapter.Fill(table);
         }
 
         public static void updateTbHeadData(DataTable table)
         {
+            //tbHeadAdapter.InsertCommand
             tbHeadAdapter.Update(table);
         }
 

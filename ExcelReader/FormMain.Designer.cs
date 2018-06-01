@@ -61,7 +61,6 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.olvDataTree = new BrightIdeasSoftware.DataTreeListView();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.textTmplName = new System.Windows.Forms.TextBox();
@@ -70,22 +69,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.dgvTemlpStr = new System.Windows.Forms.DataGridView();
             this.nppDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.collectDataSet = new ExcelReader.CollectDataSet();
             this.dataTypeDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataSizeDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.isPosDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xlsFormat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.xlsColName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fKimpHeadimpStrBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.itmplheadBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.bNTmplStr = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem1 = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCountItem1 = new System.Windows.Forms.ToolStripLabel();
@@ -115,13 +105,24 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar2 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.resNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xlsNameDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isPrintDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.attrDataGrid3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.attrValueBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.collectDataSet = new ExcelReader.CollectDataSet();
+            this.isActiveDataGrid3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.commDataGrid3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.i_tmpl_headTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_headTableAdapter();
             this.i_tmpl_strTableAdapter = new ExcelReader.CollectDataSetTableAdapters.i_tmpl_strTableAdapter();
             this.i_tmpl_strBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tableAdapterManager = new ExcelReader.CollectDataSetTableAdapters.TableAdapterManager();
             this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
+            this.olvDataTree = new BrightIdeasSoftware.DataTreeListView();
             this.highlightTextRenderer1 = new BrightIdeasSoftware.HighlightTextRenderer();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -145,24 +146,24 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.olvDataTree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpStr)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fKimpHeadimpStrBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bNTmplStr)).BeginInit();
             this.bNTmplStr.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.olvDataTree)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer2
@@ -534,25 +535,6 @@
             this.textBox2.TabIndex = 4;
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
-            // olvDataTree
-            // 
-            this.olvDataTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.olvDataTree.CellEditUseWholeCell = false;
-            this.olvDataTree.DataSource = null;
-            this.olvDataTree.Location = new System.Drawing.Point(0, 0);
-            this.olvDataTree.Name = "olvDataTree";
-            this.olvDataTree.RootKeyValueString = "";
-            this.olvDataTree.ShowGroups = false;
-            this.olvDataTree.Size = new System.Drawing.Size(297, 160);
-            this.olvDataTree.TabIndex = 3;
-            this.olvDataTree.UseCompatibleStateImageBehavior = false;
-            this.olvDataTree.UseFiltering = true;
-            this.olvDataTree.View = System.Windows.Forms.View.Details;
-            this.olvDataTree.VirtualMode = true;
-            this.olvDataTree.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.olvDataTree_MouseDoubleClick);
-            // 
             // splitter3
             // 
             this.splitter3.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -575,6 +557,7 @@
             // splitContainer4.Panel1
             // 
             this.splitContainer4.Panel1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.splitContainer4.Panel1.Controls.Add(this.button1);
             this.splitContainer4.Panel1.Controls.Add(this.textTmplName);
             this.splitContainer4.Panel1MinSize = 15;
             // 
@@ -686,54 +669,6 @@
             this.nppDataGrid3.Name = "nppDataGrid3";
             this.nppDataGrid3.Width = 50;
             // 
-            // resNameDataGrid3
-            // 
-            this.resNameDataGrid3.DataPropertyName = "resName";
-            this.resNameDataGrid3.HeaderText = "resName";
-            this.resNameDataGrid3.Name = "resNameDataGrid3";
-            this.resNameDataGrid3.Width = 74;
-            // 
-            // xlsNameDataGrid3
-            // 
-            this.xlsNameDataGrid3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
-            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
-            this.xlsNameDataGrid3.HeaderText = "xlsName";
-            this.xlsNameDataGrid3.MaxInputLength = 1000;
-            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
-            this.xlsNameDataGrid3.Width = 5;
-            // 
-            // isPrintDataGrid3
-            // 
-            this.isPrintDataGrid3.DataPropertyName = "isPrint";
-            this.isPrintDataGrid3.HeaderText = "isPrint";
-            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
-            this.isPrintDataGrid3.Width = 41;
-            // 
-            // attrDataGrid3
-            // 
-            this.attrDataGrid3.DataPropertyName = "attr";
-            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
-            this.attrDataGrid3.DisplayMember = "name";
-            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
-            this.attrDataGrid3.HeaderText = "attr";
-            this.attrDataGrid3.Name = "attrDataGrid3";
-            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.attrDataGrid3.ValueMember = "id";
-            this.attrDataGrid3.Width = 47;
-            // 
-            // attrValueBindingSource
-            // 
-            this.attrValueBindingSource.DataMember = "attrValue";
-            this.attrValueBindingSource.DataSource = this.collectDataSet;
-            // 
-            // collectDataSet
-            // 
-            this.collectDataSet.DataSetName = "CollectDataSet";
-            this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
             // dataTypeDataGrid3
             // 
             this.dataTypeDataGrid3.DataPropertyName = "dataType";
@@ -757,20 +692,6 @@
             this.isPosDataGrid3.HeaderText = "isPos";
             this.isPosDataGrid3.Name = "isPosDataGrid3";
             // 
-            // isActiveDataGrid3
-            // 
-            this.isActiveDataGrid3.DataPropertyName = "isActive";
-            this.isActiveDataGrid3.HeaderText = "isActive";
-            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
-            this.isActiveDataGrid3.Width = 50;
-            // 
-            // commDataGrid3
-            // 
-            this.commDataGrid3.DataPropertyName = "comm";
-            this.commDataGrid3.HeaderText = "comm";
-            this.commDataGrid3.Name = "commDataGrid3";
-            this.commDataGrid3.Width = 60;
-            // 
             // xlsFormat
             // 
             this.xlsFormat.DataPropertyName = "xlsFormat";
@@ -793,11 +714,6 @@
             // 
             this.itmplheadBindingSource.DataMember = "i_tmpl_head";
             this.itmplheadBindingSource.DataSource = this.bindingSource1;
-            // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = this.collectDataSet;
-            this.bindingSource1.Position = 0;
             // 
             // bNTmplStr
             // 
@@ -1002,21 +918,21 @@
             // iPToolStripMenuItem
             // 
             this.iPToolStripMenuItem.Name = "iPToolStripMenuItem";
-            this.iPToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.iPToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.iPToolStripMenuItem.Text = "&IP";
             this.iPToolStripMenuItem.Click += new System.EventHandler(this.iPToolStripMenuItem_Click);
             // 
             // tableToSQLToolStripMenuItem
             // 
             this.tableToSQLToolStripMenuItem.Name = "tableToSQLToolStripMenuItem";
-            this.tableToSQLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tableToSQLToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.tableToSQLToolStripMenuItem.Text = "Table to SQL";
             this.tableToSQLToolStripMenuItem.Click += new System.EventHandler(this.tableToSQLToolStripMenuItem_Click);
             // 
             // xlsToSQLToolStripMenuItem
             // 
             this.xlsToSQLToolStripMenuItem.Name = "xlsToSQLToolStripMenuItem";
-            this.xlsToSQLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.xlsToSQLToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.xlsToSQLToolStripMenuItem.Text = "XlsToSQL";
             this.xlsToSQLToolStripMenuItem.Visible = false;
             this.xlsToSQLToolStripMenuItem.Click += new System.EventHandler(this.xlsToSQLToolStripMenuItem_Click);
@@ -1024,14 +940,14 @@
             // setTmpServerToolStripMenuItem
             // 
             this.setTmpServerToolStripMenuItem.Name = "setTmpServerToolStripMenuItem";
-            this.setTmpServerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.setTmpServerToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.setTmpServerToolStripMenuItem.Text = "Set tmp server";
             this.setTmpServerToolStripMenuItem.Click += new System.EventHandler(this.setTmpServerToolStripMenuItem_Click);
             // 
             // cSVToolStripMenuItem
             // 
             this.cSVToolStripMenuItem.Name = "cSVToolStripMenuItem";
-            this.cSVToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cSVToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.cSVToolStripMenuItem.Text = "CSV";
             this.cSVToolStripMenuItem.Click += new System.EventHandler(this.cSVToolStripMenuItem_Click);
             // 
@@ -1072,6 +988,73 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(31, 17);
             this.toolStripStatusLabel1.Text = "Start";
             // 
+            // resNameDataGrid3
+            // 
+            this.resNameDataGrid3.DataPropertyName = "resName";
+            this.resNameDataGrid3.HeaderText = "resName";
+            this.resNameDataGrid3.Name = "resNameDataGrid3";
+            this.resNameDataGrid3.Width = 74;
+            // 
+            // xlsNameDataGrid3
+            // 
+            this.xlsNameDataGrid3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.xlsNameDataGrid3.DataPropertyName = "xlsName";
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
+            this.xlsNameDataGrid3.HeaderText = "xlsName";
+            this.xlsNameDataGrid3.MaxInputLength = 1000;
+            this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
+            this.xlsNameDataGrid3.Width = 5;
+            // 
+            // isPrintDataGrid3
+            // 
+            this.isPrintDataGrid3.DataPropertyName = "isPrint";
+            this.isPrintDataGrid3.HeaderText = "isPrint";
+            this.isPrintDataGrid3.Name = "isPrintDataGrid3";
+            this.isPrintDataGrid3.Width = 41;
+            // 
+            // attrDataGrid3
+            // 
+            this.attrDataGrid3.DataPropertyName = "attr";
+            this.attrDataGrid3.DataSource = this.attrValueBindingSource;
+            this.attrDataGrid3.DisplayMember = "name";
+            this.attrDataGrid3.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.Nothing;
+            this.attrDataGrid3.HeaderText = "attr";
+            this.attrDataGrid3.Name = "attrDataGrid3";
+            this.attrDataGrid3.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.attrDataGrid3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.attrDataGrid3.ValueMember = "id";
+            this.attrDataGrid3.Width = 47;
+            // 
+            // attrValueBindingSource
+            // 
+            this.attrValueBindingSource.DataMember = "attrValue";
+            this.attrValueBindingSource.DataSource = this.collectDataSet;
+            // 
+            // collectDataSet
+            // 
+            this.collectDataSet.DataSetName = "CollectDataSet";
+            this.collectDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // isActiveDataGrid3
+            // 
+            this.isActiveDataGrid3.DataPropertyName = "isActive";
+            this.isActiveDataGrid3.HeaderText = "isActive";
+            this.isActiveDataGrid3.Name = "isActiveDataGrid3";
+            this.isActiveDataGrid3.Width = 50;
+            // 
+            // commDataGrid3
+            // 
+            this.commDataGrid3.DataPropertyName = "comm";
+            this.commDataGrid3.HeaderText = "comm";
+            this.commDataGrid3.Name = "commDataGrid3";
+            this.commDataGrid3.Width = 60;
+            // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = this.collectDataSet;
+            this.bindingSource1.Position = 0;
+            // 
             // i_tmpl_headTableAdapter
             // 
             this.i_tmpl_headTableAdapter.ClearBeforeFill = true;
@@ -1101,6 +1084,35 @@
             // attrValueTableAdapter
             // 
             this.attrValueTableAdapter.ClearBeforeFill = true;
+            // 
+            // olvDataTree
+            // 
+            this.olvDataTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.olvDataTree.CellEditUseWholeCell = false;
+            this.olvDataTree.DataSource = null;
+            this.olvDataTree.Location = new System.Drawing.Point(0, 0);
+            this.olvDataTree.Name = "olvDataTree";
+            this.olvDataTree.RootKeyValueString = "";
+            this.olvDataTree.ShowGroups = false;
+            this.olvDataTree.Size = new System.Drawing.Size(297, 160);
+            this.olvDataTree.TabIndex = 3;
+            this.olvDataTree.UseCompatibleStateImageBehavior = false;
+            this.olvDataTree.UseFiltering = true;
+            this.olvDataTree.View = System.Windows.Forms.View.Details;
+            this.olvDataTree.VirtualMode = true;
+            this.olvDataTree.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.olvDataTree_MouseDoubleClick);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(3, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
@@ -1143,7 +1155,6 @@
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.olvDataTree)).EndInit();
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel1.PerformLayout();
             this.splitContainer4.Panel2.ResumeLayout(false);
@@ -1153,11 +1164,8 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTemlpStr)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fKimpHeadimpStrBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.itmplheadBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bNTmplStr)).EndInit();
             this.bNTmplStr.ResumeLayout(false);
             this.bNTmplStr.PerformLayout();
@@ -1165,8 +1173,12 @@
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.attrValueBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.collectDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_strBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.i_tmpl_headBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.olvDataTree)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1263,6 +1275,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolStripMenuItem setTmpServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cSVToolStripMenuItem;
+        private System.Windows.Forms.Button button1;
     }
 }
 

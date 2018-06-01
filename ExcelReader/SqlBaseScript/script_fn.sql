@@ -2375,12 +2375,12 @@ SELECT t0.Row_Id,c.id,t0.ContractNum,
                                                                                                                                                                                                                                                  
 	dbRecord
                                                                                                                                                                                                                                                     
-FROM Collect.dbo.Contract AS c
-                                                                                                                                                                                                                               
+FROM Contract AS c
+                                                                                                                                                                                                                                           
 	join reestr t5 on c.ReestrId = t5.id and t5.RNumber = @RNumber
                                                                                                                                                                                               
-	join inval t0 on c.ContractNum = t0.ContractNum 
-                                                                                                                                                                                                            
+	join inval t0 on c.ContractNum = t0.ContractNum  collate Cyrillic_General_CI_AS
+                                                                                                                                                                             
 	left join Client t4 on c.ClientId = t4.id
                                                                                                                                                                                                                    
 	join @t_active t6 on t0.Row_Id = t6.Row_Id
@@ -2413,8 +2413,8 @@ FROM multipleContr AS c
                                                                                                                                                                                                                    
 	join @t_active t6 on t0.Row_Id = t6.Row_Id
                                                                                                                                                                                                                   
-where  t0.ip = @ip and t6.active = 1
-                                                                                                                                                                                                                         
+where  t0.ip = @ip and t6.active = 1 and c.ReestrId = @RNumber
+                                                                                                                                                                                               
 
                                                                                                                                                                                                                                                              
 insert into @tRes(Row_Id, ContractId,ContractNum,DebDate,inn,Comment) 
