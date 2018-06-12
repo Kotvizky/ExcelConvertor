@@ -79,7 +79,7 @@ name
                 ", conn);
 
             command.Parameters.Add("@idParent", SqlDbType.Int, 0,"idParent");
-            command.Parameters.Add("@idGroup", SqlDbType.Int, 0, "isGroup");
+            command.Parameters.Add("@isGroup", SqlDbType.Int, 0, "isGroup");
             command.Parameters.Add("@name", SqlDbType.NVarChar, 250,"name");
             command.Parameters.Add("@comm", SqlDbType.NVarChar, 500,"comm");
 

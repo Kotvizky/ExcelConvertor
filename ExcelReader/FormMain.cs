@@ -44,23 +44,8 @@ namespace ExcelReader
         {
             InitializeComponent();
 
-            //string json;
-            //try
-            //{
-            //    json = @"{""join"":{""res"":""fn.Row_id_inn"",""xls"":""$Row_id""},
-            //        ""replace"":[ {""xls"":""№_договора"",""res"":""ContractNumSQL""} ]
-            //        }";
-            //    object jsObj = new object();
-            //    var serializer = new JavaScriptSerializer();
-            //    dynamic data = serializer.DeserializeObject(json);
-            //    MessageBox.Show(data.ToString());
-            //}
-            //catch (Exception eJson)
-            //{
-            //    MessageBox.Show(eJson.Message);
-            //}
+            bindingNavigatorAddNewItem.Enabled = true;
 
-            //MessageBox.Show()
 
             textMenuTmpTable = tableToSQLToolStripMenuItem.Text;
             TempTableServer = Properties.Settings.Default.TmpSqlServer;
@@ -103,6 +88,7 @@ namespace ExcelReader
             static TextBox textTmplName;
 
             public static DataTreeListView olvDataTree;
+
 
             public static DataTable tbHead = new DataTable();
 
@@ -177,9 +163,7 @@ namespace ExcelReader
             public static void update()
             {
                 SQLFunction.updateTbHeadData(tbHead);
-//                getTbStrData(idHead);
             }
-
 
             static void initOlvHeadTable()
             {
@@ -228,6 +212,22 @@ namespace ExcelReader
                             col.Width = colWidthAfterAutoResizeByContent;
                 }
             }
+
+            public static void loadStateFromFile()
+            {
+                byte[] treeState = Convert.FromBase64String(Properties.Settings.Default.objTreeState);
+                olvDataTree.RestoreState(treeState);
+
+            }
+
+            public static void saveStateToFile()
+            {
+                byte[] stateTreeArray = olvDataTree.SaveState();
+                string treeState = Convert.ToBase64String(stateTreeArray);
+                Properties.Settings.Default.objTreeState = treeState;
+                Properties.Settings.Default.Save();
+            }
+
         }
 
         static class tbStrClass {
@@ -532,12 +532,11 @@ namespace ExcelReader
         {
             //  данная строка кода позволяет загрузить данные в таблицу "collectDataSet.attrValue". При необходимости она может быть перемещена или удалена.
             this.attrValueTableAdapter.Fill(this.collectDataSet.attrValue);
-            //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_str". 
-            //При необходимости она может быть перемещена или удалена.
-            //this.i_tmpl_strTableAdapter.Fill(this.collectDataSet.i_tmpl_str);
-            //данная строка кода позволяет загрузить данные в таблицу "collectDataSet.i_tmpl_head". 
-            //При необходимости она может быть перемещена или удалена.
-            //this.i_tmpl_headTableAdapter.Fill(this.collectDataSet.i_tmpl_head);
+
+            string treeState = Properties.Settings.Default.objTreeState;
+
+            tbHeadClass.loadStateFromFile();
+
         }
 
         private void bindingNavigatorSaveItems1_Click(object sender, EventArgs e = null)
@@ -1666,9 +1665,110 @@ namespace ExcelReader
             MessageBox.Show("Test!");
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void olvDataTree_ModelCanDrop(object sender, ModelDropEventArgs e)
         {
-            //olvDataTree.RefreshObjects();
+            if (e.TargetModel is DataRowView)
+            {
+                DataRow tmpl = ((DataRowView)e.TargetModel).Row;
+                if( tmpl["isGroup"].Equals(true) &&  
+                    ( !((DataRowView)e.SourceModels[0]).Row["idParent"].Equals(tmpl["idHead"]) )
+                   )
+                {
+                    e.Effect = DragDropEffects.Move;
+                    return;
+                }
+            }
+            e.Effect = DragDropEffects.None;
+        }
+
+        private void olvDataTree_ModelDropped(object sender, ModelDropEventArgs e)
+        {
+            if (e.TargetModel == null)
+                return;
+            DataRow targetRow = ((DataRowView)e.TargetModel).Row;
+            foreach (DataRowView rowView in e.SourceModels)
+            {
+                string targetName = targetRow["name"].ToString();
+                string sourseName = rowView.Row["name"].ToString();
+                string question = $"Copy '{ sourseName }' template to the '{ targetName }' group?";
+                DialogResult dialogResult = MessageBox.Show(question, "Move template", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    rowView.Row["idParent"] = targetRow["idHead"];
+                }
+            }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            tbHeadClass.saveStateToFile();
+        }
+
+        private void копироватьToolStripButton_Click(object sender, EventArgs e)
+        {
+            tbHeadClass.saveStateToFile();
+        }
+
+        private void вставкаToolStripButton_Click(object sender, EventArgs e)
+        {
+            tbHeadClass.loadStateFromFile();
+        }
+
+        private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
+        {
+            int id = tbHeadClass.Index;
+            MessageBox.Show($"New items {id}");
+        }
+
+        private void создатьToolStripButton_Click(object sender, EventArgs e)
+        {
+            bindingNavigatorAddNewItem.Enabled = true;
+            int id = tbHeadClass.Index;
+
+            //olvDataTree.ExpandAll();
+            olvDataTree.CollapseAll();
+
+            List<int> patch = new List<int>();
+            DataTable table = tbHeadClass.tbHead;
+
+            int tmpl = 134;
+
+            List<int> tmplList = new List<int>();
+            tmplList.Add(tmpl);
+
+            int count = 0;
+            int currentParent = -1;
+            if (table.PrimaryKey.Length == 0)
+            {
+                table.PrimaryKey = new DataColumn[] { table.Columns["idHead"] };
+            }
+
+            do
+            {
+                DataRow currentRow = table.Rows.Find(tmpl);
+                if (currentRow == null)
+                {
+                    break;
+                }
+                else
+                {
+                    tmpl = (int)currentRow["idParent"];
+                    tmplList.Add(tmpl);
+                }
+
+            } while ((count++ < 20) || (tmpl != 0) );
+
+            MessageBox.Show($"Count = {count}");
+
+           olvDataTree.SelectedIndex = 1;
+
+            if (olvDataTree.SelectedItem.GetSubItem(1) == null)
+            {
+
+            }
+
+            MessageBox.Show($"New items {id}");
+
         }
     }
 }

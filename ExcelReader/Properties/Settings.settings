@@ -25,5 +25,8 @@
     <Setting Name="TmpSqlServer" Type="System.String" Scope="User">
       <Value Profile="(Default)">10.1.32.56</Value>
     </Setting>
+    <Setting Name="objTreeState" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

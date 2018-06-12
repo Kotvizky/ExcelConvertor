@@ -119,33 +119,126 @@ namespace ExcelReader
 
         public void ExportToXls(DataTable resultTable, Scan scan, bool showSource = false)
         {
-            Excel.Application oXL;
-            Excel._Workbook oWB;
-            Excel._Worksheet oSheet;
-            //object misvalue = System.Reflection.Missing.Value;
-            oXL = new Excel.Application();
-            //-- new code
-            string fileName = @"c:\Users\IKotvytskyi\Documents\my-template.xltx";
 
-            if (!File.Exists(fileName))
-                fileName = "";
-             
-            oWB = oXL.Workbooks.Add(fileName);
-
-// <-- end code
-
-//            oWB = oXL.Workbooks.Add("");
-            oSheet = oWB.ActiveSheet;
-            drawTable(oSheet, scan, resultTable, Excel.XlRgbColor.rgbLightGreen);
-            if (showSource)
+            var reportTemplate = scan.Find(x => x.ResName == "XLS_REP" && x.Attr == attrName.System);
+            if (reportTemplate != null)
             {
-                drawTable(oSheet, scan, XlsTable, Excel.XlRgbColor.rgbAqua, resultTable.Columns.Count + 2, 1  );
+                //dataToXls(oSheet, scan, resultTable, xlsColor, startCol, startRow);
+                ReportBuilder repot = new ReportBuilder(reportTemplate.XlsName, resultTable);
             }
-            oXL.Visible = true;
+            else
+            {
+
+                Excel.Application oXL;
+                Excel._Workbook oWB;
+                Excel._Worksheet oSheet;
+                //object misvalue = System.Reflection.Missing.Value;
+                oXL = new Excel.Application();
+                //-- new code
+                string fileName = @"c:\Users\IKotvytskyi\Documents\my-template.xltx";
+
+                if (!File.Exists(fileName))
+                    fileName = "";
+                oWB = oXL.Workbooks.Add(fileName);
+
+                // <-- end code
+
+                //            oWB = oXL.Workbooks.Add("");
+                oSheet = oWB.ActiveSheet;
+
+                drawTable(oSheet, scan, resultTable, Excel.XlRgbColor.rgbLightGreen);
+                if (showSource)
+                {
+                    drawTable(oSheet, scan, XlsTable, Excel.XlRgbColor.rgbAqua, resultTable.Columns.Count + 2, 1);
+                }
+                oXL.Visible = true;
+            }
+
         }
+
+
+        //void drawTable(Excel._Worksheet oSheet, Scan scan, DataTable resultTable, Excel.XlRgbColor xlsColor,
+        //    int startCol = 1, int startRow = 1)
+        //{
+        //    var reportTemplate = scan.Find(x => x.ResName == "XLS_REP" && x.Attr == attrName.System);
+        //    if (reportTemplate == null)
+        //    {
+        //        dataToXls(oSheet, scan, resultTable, xlsColor, startCol, startRow);
+        //    }
+        //    else
+        //    {
+
+        //    }
+
+        //}
+
 
         void drawTable(Excel._Worksheet oSheet, Scan scan,DataTable resultTable, Excel.XlRgbColor xlsColor,
             int startCol = 1, int startRow = 1 )
+        {
+            Excel.Range oRng;
+            string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+            for (int i = 0; i < title.Count(); i++)
+            {
+                string colName = title[i];
+                var newName = scan.Find(x => x.IsActive && x.ResName == colName);
+                if (newName != null)
+                {
+                    if (newName.xlsColName != "") title[i] = newName.xlsColName;
+                }
+            }
+
+            oRng = oSheet.get_Range(xlsAdress(startCol, startRow), xlsAdress(startCol - 1 + title.Length, startRow));
+            oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
+            oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            oRng.Font.Bold = true;
+            oRng.Value2 = title;
+            oRng.Interior.Color = xlsColor;
+
+            string[,] data = new string[resultTable.Rows.Count, resultTable.Columns.Count];
+
+            CultureInfo curCI = new CultureInfo(CultureInfo.CurrentCulture.Name);
+            curCI.NumberFormat.NumberDecimalSeparator = Properties.Settings.Default.NumberDecimalSeparator;
+            System.Threading.Thread.CurrentThread.CurrentCulture = curCI;
+
+            for (int r = 0; r < resultTable.Rows.Count; r++)
+            {
+                for (int c = 0; c < resultTable.Columns.Count; c++)
+                {
+                    if (resultTable.Rows[r][c].GetType().Name == "DateTime")
+                        data[r, c] = ((DateTime)resultTable.Rows[r][c]).ToString(Properties.Settings.Default.ShortDatePattern);
+                    else data[r, c] = resultTable.Rows[r][c].ToString();
+                }
+            }
+
+
+            oRng = oSheet.get_Range(xlsAdress(startCol, startRow + 1),
+                                    xlsAdress(startCol - 1 + data.GetLength(1), startRow - 1 + data.GetLength(0) + 1));
+            oRng.Cells.Value = data;
+
+            for (int i = 0; i < title.Count(); i++)
+            {
+                string colName = title[i];
+                var newName = scan.Find(x => x.IsActive && x.ResName == colName);
+                if (newName != null)
+                {
+                    if (newName.xlsFormat != "")
+                    {
+                        oRng = oSheet.get_Range(xlsAdress(startCol + i, startRow + 1),
+                                                xlsAdress(startCol + i, startRow - 1 + data.GetLength(0) + 1));
+                        oRng.EntireColumn.TextToColumns();
+                        oRng.EntireColumn.NumberFormat = newName.xlsFormat;
+                    }
+                    //                        title[i] = newName.xlsColName;
+                }
+            }
+
+            oRng.EntireColumn.AutoFit();
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo(CultureInfo.CurrentCulture.Name);
+        }
+
+        void insertTable(Excel._Worksheet oSheet, Scan scan, DataTable resultTable, Excel.XlRgbColor xlsColor,
+            int startCol = 1, int startRow = 1)
         {
             Excel.Range oRng;
             string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
@@ -199,13 +292,13 @@ namespace ExcelReader
                         oRng.EntireColumn.TextToColumns();
                         oRng.EntireColumn.NumberFormat = newName.xlsFormat;
                     }
-                    //                        title[i] = newName.xlsColName;
                 }
             }
 
             oRng.EntireColumn.AutoFit();
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo(CultureInfo.CurrentCulture.Name);
         }
+
 
         private string xlsAdress(int col, int row)
         {

@@ -81,5 +81,17 @@ namespace ExcelReader.Properties {
                 this["TmpSqlServer"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string objTreeState {
+            get {
+                return ((string)(this["objTreeState"]));
+            }
+            set {
+                this["objTreeState"] = value;
+            }
+        }
     }
 }
