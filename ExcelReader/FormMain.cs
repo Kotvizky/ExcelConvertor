@@ -36,17 +36,13 @@ namespace ExcelReader
         private BindingSource bsResTable = null;
         bool isAdmin = false;
         ProcList procList = null;
-
         string textMenuTmpTable;
         string TempTableServer;
 
         public MainForm()
         {
             InitializeComponent();
-
-            bindingNavigatorAddNewItem.Enabled = true;
-
-
+            bindingNavigatorAddNewItem.Enabled = false;
             textMenuTmpTable = tableToSQLToolStripMenuItem.Text;
             TempTableServer = Properties.Settings.Default.TmpSqlServer;
             changeMenuTmpServer();
@@ -59,8 +55,8 @@ namespace ExcelReader
             bindingNavigatorSaveItems2.Enabled = isAdmin;
 
             tbHeadClass.setProperty(olvDataTree,textTmplName);
-            tbStrClass.setProperty(dgvTemlpStr, bNTmplStr);
 
+            tbStrClass.setProperty(dgvTemlpStr, bNTmplStr);
             this.Text = Scan.GetLocalIPAddress();
             this.CenterToScreen();
             file = new ExcelFile();
@@ -79,16 +75,18 @@ namespace ExcelReader
                 dataTypeDataGrid3.Items.Add(dataType.ToString());
             }
 
+            tsbPasteHead.Enabled = false;
         }
 
         static class tbHeadClass {
 
             public static bool isAdmin = false;
 
+            public static int CopySourceId { get; private set; } = -1;
+
             static TextBox textTmplName;
 
             public static DataTreeListView olvDataTree;
-
 
             public static DataTable tbHead = new DataTable();
 
@@ -96,14 +94,10 @@ namespace ExcelReader
             {
                 get
                 {
-                    DataRow row = ((DataRowView)olvDataTree.SelectedObject).Row;
-                    int index = -1;
-                    if (!((bool)(row["isGroup"]) || ( row["idHead"] == DBNull.Value) ))
-                    {
-                        index = (int)(row["idHead"]);
-                    }
+                    int index = getIndex();
                     if (index > 0)
                     {
+                        DataRow row = ((DataRowView)olvDataTree.SelectedObject).Row;
                         textTmplName.Text = String.Format("{0}\r\n{1}", 
                             row["name"],
                              row["comm"]
@@ -159,6 +153,28 @@ namespace ExcelReader
 
             }
 
+            public static int getIndex()
+            {
+                if (olvDataTree.SelectedObject == null)
+                {
+                    return -1; 
+                }
+
+                DataRow row = ((DataRowView)olvDataTree.SelectedObject).Row;
+                int Index = -1;
+                if (!((bool)(row["isGroup"]) || (row["idHead"] == DBNull.Value)))
+                {
+                    Index = (int)(row["idHead"]);
+                }
+                return Index;
+
+            }
+
+            public static void setCopyId()
+            {
+
+                CopySourceId = getIndex();
+            }
 
             public static void update()
             {
@@ -228,6 +244,49 @@ namespace ExcelReader
                 Properties.Settings.Default.Save();
             }
 
+            public static void Expand()
+            {
+                IEnumerable expandetTree = olvDataTree.ExpandedObjects;
+                foreach (object obj in expandetTree)
+                {
+                    if (obj == olvDataTree.SelectedObject)
+                    {
+                        collapsGroup(olvDataTree.SelectedObject);
+                        return;
+                    }
+                }
+                expandGroup(olvDataTree.SelectedObject);
+            }
+
+            static void collapsGroup(object treeModel)
+            {
+                var children = olvDataTree.GetChildren(treeModel);
+
+                if (children != null)
+                {
+                    foreach (object subTreeModel in children)
+                    {
+                        collapsGroup(subTreeModel);
+                    }
+                }
+                olvDataTree.Collapse(treeModel);
+            }
+
+            static void expandGroup(object treeModel)
+            {
+                olvDataTree.Expand(treeModel);
+                var children = olvDataTree.GetChildren(treeModel);
+
+                if (children != null)
+                {
+                    foreach (object subTreeModel in children)
+                    {
+                        expandGroup(subTreeModel);
+                    }
+                }
+            }
+
+
         }
 
         static class tbStrClass {
@@ -286,6 +345,20 @@ namespace ExcelReader
                 }
             }
 
+            public static string Paste(int sourceId, int distinationId)
+            {
+                string answer =  SQLFunction.ExecuteProc(
+                    "copyTemplate",
+                    "report",
+                    new string[] {
+                    "sourceId",         sourceId.ToString(),
+                    "destinationId",    distinationId.ToString()
+                     }
+                    );
+
+                return $"Copied rows: {answer}";
+            }
+
             static void enableGrid()
             {
                 Bng.Enabled = true;
@@ -308,6 +381,7 @@ namespace ExcelReader
                 SQLFunction.updateTbStrData(tbString);
                 getTbStrData(idHead);
             }
+
         }
 
         private void olvDataTree_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -662,22 +736,7 @@ namespace ExcelReader
                     resDataSet.Relations.Remove("RelationId");
                     if (resDataSet.Tables[xlsTable.TableName].Constraints.Contains("RelationId"))
                         resDataSet.Tables[xlsTable.TableName].Constraints.Remove("RelationId");
-                    //resDataSet.Tables[resTable.TableName].Constraints.Remove("RelationId");
                 }
-                //ConstraintCollection collection = resDataSet.Tables[resTable.TableName].Constraints;
-                //for (int i = collection.Count - 1; i >= 0; --i)
-                //{
-                //    if (collection[i] is System.Data.ForeignKeyConstraint )
-                //    {
-                //        collection.Remove(collection[i]);
-                //    }
-                //}
-
-                //DataSet DS = resDataSet;
-                //for (int i = DS.Relations.Count - 1; i >= 0; i--)
-                //    DS.Relations.Remove(DS.Relations[i]);
-
-                //resDataSet.Tables[resTable.TableName].Constraints.Clear();
                 resDataSet.Tables.Remove(resTable.TableName);
             }
 
@@ -702,7 +761,16 @@ namespace ExcelReader
 
             //scan.initResultFromXls(file.XlsTable);
 
-            scan.Processing();
+            string errorMessage = string.Empty;
+
+            try
+            {
+                scan.Processing();
+            }
+            catch (Exception exc)
+            {
+                errorMessage = exc.Message;
+            }
             dgvRes.AutoGenerateColumns = false;
             dgvRes.Columns.Clear();
             dgvRes.AutoGenerateColumns = true;
@@ -720,7 +788,12 @@ namespace ExcelReader
             this.dgvRes.SelectionChanged += new System.EventHandler(this.dgvRes_SelectionChanged);
             procList = new ProcList(scan.idHead, tsResultTable.Items,scan.ResTable);
             procList.insertButton();
-            MessageBox.Show("ok");
+            string msgShow = "ok";
+            if (errorMessage != string.Empty)
+            {
+                msgShow = $"Query has finished with errors:\r\n{errorMessage}";
+            }
+            MessageBox.Show(msgShow);
         }
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -1704,20 +1777,30 @@ namespace ExcelReader
             tbHeadClass.saveStateToFile();
         }
 
-        private void копироватьToolStripButton_Click(object sender, EventArgs e)
+        private void copyToolStripButton_Click(object sender, EventArgs e)
         {
-            tbHeadClass.saveStateToFile();
+            tbHeadClass.setCopyId();
+            tsbPasteHead.Enabled = (tbHeadClass.CopySourceId > -1);
         }
 
-        private void вставкаToolStripButton_Click(object sender, EventArgs e)
+        private void pasteToolStripButton_Click(object sender, EventArgs e)
         {
-            tbHeadClass.loadStateFromFile();
+            int distination = tbHeadClass.getIndex();
+            if (distination > -1)
+            {
+                int source = tbHeadClass.CopySourceId;
+                DialogResult result = MessageBox.Show($"Do you want to add rows from {source} to {distination}?", "Confirmation", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    MessageBox.Show(tbStrClass.Paste(source,distination));
+                    tsbPasteHead.Enabled = false;
+                }
+            }
         }
 
         private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
         {
-            int id = tbHeadClass.Index;
-            MessageBox.Show($"New items {id}");
+            tbHeadClass.Expand();
         }
 
         private void создатьToolStripButton_Click(object sender, EventArgs e)
@@ -1769,6 +1852,51 @@ namespace ExcelReader
 
             MessageBox.Show($"New items {id}");
 
+        }
+
+        private void olvDataTree_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tbHeadClass.getIndex() < 0 )
+            {
+                bindingNavigatorAddNewItem.Enabled = true;
+            }
+            else
+            {
+                bindingNavigatorAddNewItem.Enabled = false;
+            }
+            return;
+            if (sender is DataTreeListView)
+            {
+                //OLVListItem item = ((DataTreeListView)sender).SelectedItem;
+                DataTreeListView tree = (DataTreeListView)sender;
+
+                //tree.Expand(tree.SelectedObject);
+                //IList list = tree.SelectedItem.SubItems;
+                IEnumerable expandetTree = tree.ExpandedObjects;
+                foreach (object obj in expandetTree)
+                {
+                    if (obj == tree.SelectedObject)
+                    {
+                        MessageBox.Show("Expanded");
+                        return;
+                    }
+                }
+            }
+            
+        }
+
+        private void olvDataTree_Collapsed(object sender, TreeBranchCollapsedEventArgs e)
+        {
+
+        }
+
+        private void справкаToolStripButton_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            tbHeadClass.olvDataTree.CollapseAll();
         }
     }
 }

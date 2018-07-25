@@ -13,6 +13,8 @@ namespace ExcelReader
         static public SqlConnection conn { get; private set; } =
             new SqlConnection(global::ExcelReader.Properties.Settings.Default.CollectConnectionString);
 
+//TODO change timeout
+
         static public bool connOpen()
         {
             bool result = true;
@@ -41,15 +43,17 @@ namespace ExcelReader
             { "ROW_ID",  new DicSQLParam { ParName = "ROW_ID", Type = SqlDbType.Int, Length = 0} }
         };
 
+        #region SQL code for tables
+
         static string sqlCommHead =
             @"select idHead, idParent,
-/*
-              case 
-                when isGroup = 1 then name 
-                else name + ' {'+ cast(idHead as varChar(100))+'}'
-                end name
-*/ 
-name
+            /*
+                          case 
+                            when isGroup = 1 then name 
+                            else name + ' {'+ cast(idHead as varChar(100))+'}'
+                            end name
+            */ 
+            name
                 , comm, isGroup, idHead HeadIdTitle
               from thd
                 order by [order], name";
@@ -60,12 +64,11 @@ name
             from tst
             where idHead = @idHead";
 
-        //  strFormat,author,dateCreate,operator,dateModify
+        #endregion
 
         static SqlDataAdapter tbStrAdapter = new SqlDataAdapter(commStr,  conn );
 
         static SqlDataAdapter tbHeadAdapter = new SqlDataAdapter(sqlCommHead, conn);
-
 
         static SqlCommandBuilder tbStrBuilder;
 
@@ -94,8 +97,6 @@ name
             //tbHeadAdapter.InsertCommand
             tbHeadAdapter.Update(table);
         }
-
-
 
         public static void intTbStrParam()
         {
@@ -452,9 +453,12 @@ name
             string result = String.Empty;
             command = new SqlCommand(sqlCommand, conn);
             command.CommandType = CommandType.StoredProcedure;
-            if (inParam != null)
+            if ( (inParam != null) && (inParam.Length % 2 == 0))
             {
-                command.Parameters.AddWithValue(inParam[0], inParam[1]);
+                for (int i = 0; i < inParam.Length; i += 2)
+                {
+                    command.Parameters.AddWithValue(inParam[i], inParam[ i + 1 ]);
+                }
             }
             SqlParameter returnParameter = null;
             if (outParam != String.Empty)

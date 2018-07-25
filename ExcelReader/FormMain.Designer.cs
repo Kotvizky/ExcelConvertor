@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.ckResult = new System.Windows.Forms.CheckBox();
             this.ckTmplFields = new System.Windows.Forms.CheckBox();
@@ -65,11 +65,9 @@
             this.создатьToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.открытьToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.сохранитьToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.печатьToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.вырезатьToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.копироватьToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.вставкаToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.tsbCopyHead = new System.Windows.Forms.ToolStripButton();
+            this.tsbPasteHead = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.справкаToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.label4 = new System.Windows.Forms.Label();
@@ -539,11 +537,9 @@
             this.создатьToolStripButton,
             this.открытьToolStripButton,
             this.сохранитьToolStripButton,
-            this.печатьToolStripButton,
             this.toolStripSeparator,
-            this.вырезатьToolStripButton,
-            this.копироватьToolStripButton,
-            this.вставкаToolStripButton,
+            this.tsbCopyHead,
+            this.tsbPasteHead,
             this.toolStripSeparator2,
             this.справкаToolStripButton});
             this.bindingNavigator1.Location = new System.Drawing.Point(0, 0);
@@ -604,48 +600,30 @@
             this.сохранитьToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.сохранитьToolStripButton.Text = "&Сохранить";
             // 
-            // печатьToolStripButton
-            // 
-            this.печатьToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.печатьToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("печатьToolStripButton.Image")));
-            this.печатьToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.печатьToolStripButton.Name = "печатьToolStripButton";
-            this.печатьToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.печатьToolStripButton.Text = "&Печать";
-            // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
-            // вырезатьToolStripButton
+            // tsbCopyHead
             // 
-            this.вырезатьToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.вырезатьToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("вырезатьToolStripButton.Image")));
-            this.вырезатьToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.вырезатьToolStripButton.Name = "вырезатьToolStripButton";
-            this.вырезатьToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.вырезатьToolStripButton.Text = "В&ырезать";
+            this.tsbCopyHead.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbCopyHead.Image = ((System.Drawing.Image)(resources.GetObject("tsbCopyHead.Image")));
+            this.tsbCopyHead.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbCopyHead.Name = "tsbCopyHead";
+            this.tsbCopyHead.Size = new System.Drawing.Size(23, 22);
+            this.tsbCopyHead.Text = "&Копировать";
+            this.tsbCopyHead.Click += new System.EventHandler(this.copyToolStripButton_Click);
             // 
-            // копироватьToolStripButton
+            // tsbPasteHead
             // 
-            this.копироватьToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.копироватьToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("копироватьToolStripButton.Image")));
-            this.копироватьToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.копироватьToolStripButton.Name = "копироватьToolStripButton";
-            this.копироватьToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.копироватьToolStripButton.Text = "&Копировать";
-            this.копироватьToolStripButton.Click += new System.EventHandler(this.копироватьToolStripButton_Click);
-            // 
-            // вставкаToolStripButton
-            // 
-            this.вставкаToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.вставкаToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("вставкаToolStripButton.Image")));
-            this.вставкаToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.вставкаToolStripButton.Name = "вставкаToolStripButton";
-            this.вставкаToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.вставкаToolStripButton.Text = "Вст&авка";
-            this.вставкаToolStripButton.Click += new System.EventHandler(this.вставкаToolStripButton_Click);
+            this.tsbPasteHead.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPasteHead.Image = ((System.Drawing.Image)(resources.GetObject("tsbPasteHead.Image")));
+            this.tsbPasteHead.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbPasteHead.Name = "tsbPasteHead";
+            this.tsbPasteHead.Size = new System.Drawing.Size(23, 22);
+            this.tsbPasteHead.Text = "Вст&авка";
+            this.tsbPasteHead.Click += new System.EventHandler(this.pasteToolStripButton_Click);
             // 
             // toolStripSeparator2
             // 
@@ -704,6 +682,7 @@
             this.olvDataTree.VirtualMode = true;
             this.olvDataTree.ModelCanDrop += new System.EventHandler<BrightIdeasSoftware.ModelDropEventArgs>(this.olvDataTree_ModelCanDrop);
             this.olvDataTree.ModelDropped += new System.EventHandler<BrightIdeasSoftware.ModelDropEventArgs>(this.olvDataTree_ModelDropped);
+            this.olvDataTree.SelectedIndexChanged += new System.EventHandler(this.olvDataTree_SelectedIndexChanged);
             this.olvDataTree.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.olvDataTree_MouseDoubleClick);
             // 
             // splitter3
@@ -805,14 +784,14 @@
             this.xlsFormat,
             this.xlsColName});
             this.dgvTemlpStr.DataSource = this.fKimpHeadimpStrBindingSource;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvTemlpStr.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvTemlpStr.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvTemlpStr.Location = new System.Drawing.Point(0, 25);
             this.dgvTemlpStr.Name = "dgvTemlpStr";
             this.dgvTemlpStr.Size = new System.Drawing.Size(291, 272);
@@ -850,8 +829,8 @@
             // 
             this.xlsNameDataGrid3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle3;
             this.xlsNameDataGrid3.HeaderText = "xlsName";
             this.xlsNameDataGrid3.MaxInputLength = 1000;
             this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
@@ -1268,6 +1247,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
@@ -1426,11 +1406,9 @@
         private System.Windows.Forms.ToolStripButton создатьToolStripButton;
         private System.Windows.Forms.ToolStripButton открытьToolStripButton;
         private System.Windows.Forms.ToolStripButton сохранитьToolStripButton;
-        private System.Windows.Forms.ToolStripButton печатьToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-        private System.Windows.Forms.ToolStripButton вырезатьToolStripButton;
-        private System.Windows.Forms.ToolStripButton копироватьToolStripButton;
-        private System.Windows.Forms.ToolStripButton вставкаToolStripButton;
+        private System.Windows.Forms.ToolStripButton tsbCopyHead;
+        private System.Windows.Forms.ToolStripButton tsbPasteHead;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton справкаToolStripButton;
     }

@@ -8,16 +8,18 @@ using System.Data;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 
 
 namespace ExcelReader
 {
     class ReportBuilder
     {
-        public ReportBuilder(string jsonShema,DataTable _resTable)
+
+        public ReportBuilder(string jsonSchema,DataTable _resTable)
         {
             var serializer = new JavaScriptSerializer();
-            schema = serializer.DeserializeObject(jsonShema);
+            schema = serializer.DeserializeObject(jsonSchema);
             string fileName = schema["fileName"];
             string directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             fullFileName = $@"{directory}\tmpl\{fileName}";
@@ -26,13 +28,32 @@ namespace ExcelReader
                 fullFileName = "";
             }
             oXL = new Excel.Application();
+            string formulaFile  = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\{XLS_FUNC_PATCH}";
+
+            if (File.Exists(formulaFile))
+            {
+                oXL.Workbooks.Add(formulaFile);
+            }
             oWB = oXL.Workbooks.Add(fullFileName);
             oSheet = oWB.ActiveSheet;
             resultTable = _resTable;
-            insertTable(oSheet, 1, schema["startRow"]);
-            oXL.Visible  = true;
+            try
+            {
+                var reportRange = schema["reportRange"];
+                CleanReport(reportRange);
+            }
+            catch (KeyNotFoundException e)
+            {
+            }
 
+            RenemeCells();
+            cuirveFormulaModify();
+
+            insertTable(oSheet, 1, schema["startRow"]);
+            oXL.Visible = true;
         }
+
+        #region Variables
 
         Excel.Application oXL;
         Excel._Workbook oWB;
@@ -40,10 +61,26 @@ namespace ExcelReader
         string fullFileName;
         DataTable resultTable;
 
-//        DataTable 
-//object misvalue = System.Reflection.Missing.Value;
-
         dynamic schema;
+
+        const string XLS_FUNC_PATCH = @"Microsoft\Office\sumpropua.xla";
+        const string XLS_LOCAL_FUNC_PATCH = @"C:\Users\IKotvytskyi\AppData\Local\";
+        readonly string[] CUIRSIVE = { "SummTotalCuirsive", "SummComissionCuisive" };
+        const string EMPY_LINK = "#ССЫЛКА";
+
+        #endregion  
+
+        void CleanReport(object[] borders)
+        {
+            if (borders.Length > 0)
+            {
+                DeleteRows(1, (int)borders[0] - 1 );
+            }
+            if (borders.Length > 1)
+            {
+                DeleteRows((int)borders[1] - (int)borders[0] + 2, LastColumn());
+            }
+        }
 
         private string xlsAdress(int col, int row)
         {
@@ -58,26 +95,67 @@ namespace ExcelReader
             return String.Format("{0}{1}", res, row);
         }
 
+        void DeleteRows(int startCol, int finishCol)
+        {
+            if (startCol >= finishCol)
+            {
+                return;
+            }
+
+            Excel.Range range = (Excel.Range)oSheet.get_Range(xlsAdress(startCol, 1),xlsAdress(finishCol,1));
+            range.EntireColumn.Delete(Missing.Value);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(range);
+        }
+
+        int LastColumn()
+        {
+            return oSheet.UsedRange.Columns.Count;
+        }
+
+        void RenemeCells()
+        {
+            //var names = oSheet.Names;
+            const string SEP = "__";
+
+            List<string> names = new List<string>();
+            dynamic workBook = oWB.Names;
+
+            foreach (dynamic name in oWB.Names)
+            {
+                //string n 
+
+                string nameLocal = name.NameLocal;
+                string refersToLocal = name.RefersToLocal;
+                string newName = String.Empty;
+                if (nameLocal.Contains(SEP))
+                {
+                    if (refersToLocal.Contains(EMPY_LINK))
+                    {
+                        name.Delete();
+                        continue;
+                    }
+                    newName = nameLocal.Substring(nameLocal.IndexOf(SEP) + 2);
+                    workBook.Item(newName, Missing.Value, Missing.Value).RefersToLocal = name.RefersToLocal;
+                }
+                names.Add(name.NameLocal);     //  Name of cell 
+            }
+        }
+
+        void cuirveFormulaModify()
+        {
+            foreach (string formulaAddress in CUIRSIVE)
+            {
+                dynamic workBook = oWB.Names;
+                dynamic cell =  workBook.Item(formulaAddress, Missing.Value, Missing.Value).RefersToRange;
+                string formula = cell.FormulaLocal;
+                formula = formula.Replace($"'{XLS_LOCAL_FUNC_PATCH}{XLS_FUNC_PATCH}'!","");
+                cell.FormulaLocal = formula;
+            }
+        }
+
         void insertTable(Excel._Worksheet oSheet,  int startCol = 1, int startRow = 1)
         {
             Excel.Range oRng;
-
-            //string[] title = resultTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
-            //for (int i = 0; i < title.Count(); i++)
-            //{
-            //    string colName = title[i];
-            //    var newName = scan.Find(x => x.IsActive && x.ResName == colName);
-            //    if (newName != null)
-            //    {
-            //        if (newName.xlsColName != "") title[i] = newName.xlsColName;
-            //    }
-            //}
-            //oRng = oSheet.get_Range(xlsAdress(startCol, startRow), xlsAdress(startCol - 1 + title.Length, startRow));
-            //oRng.VerticalAlignment = Excel.XlVAlign.xlVAlignCenter;
-            //oRng.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
-            //oRng.Font.Bold = true;
-            //oRng.Value2 = title;
-            //oRng.Interior.Color = xlsColor;
 
             string[,] data = new string[resultTable.Rows.Count, resultTable.Columns.Count];
 
@@ -85,23 +163,9 @@ namespace ExcelReader
             curCI.NumberFormat.NumberDecimalSeparator = Properties.Settings.Default.NumberDecimalSeparator;
             System.Threading.Thread.CurrentThread.CurrentCulture = curCI;
 
-
-            //Excel.Range rangeToInsert = oSheet.get_Range("a" + Convert.ToString(startRow), "z" + Convert.ToString(startRow));
-            //Excel.Range rangeToInsertRow = rangeToInsert.EntireRow;
-            //rangeToInsertRow.Insert(Excel.XlInsertShiftDirection.xlShiftDown, true);
-            //Excel.Range InsertedRowRange = oSheet.get_Range("a" + Convert.ToString(startRow + 1), "z" + Convert.ToString(startRow +1));
-            //rangeToInsert.Copy(InsertedRowRange);
-
-
-            
-            for (int i = 0; i < resultTable.Rows.Count - 1; i++ )
-            {
-                Excel.Range rngToCopy = oSheet.get_Range($"{Convert.ToString(startRow + i + 1)}:{Convert.ToString(startRow + i + 1)}");
-                rngToCopy.Copy();
-                //                rngToCopy.Offset[1, 0].Insert(Excel.XlInsertShiftDirection.xlShiftDown, Excel.XlInsertFormatOrigin.xlFormatFromLeftOrAbove);
-                //rngToCopy.Insert(Excel.XlInsertShiftDirection.xlShiftDown, Excel.XlInsertFormatOrigin.xlFormatFromLeftOrAbove);
-                rngToCopy.Insert();
-            }
+            Excel.Range rngToCopy = oSheet.get_Range($"{Convert.ToString(startRow + 1 )}:{Convert.ToString(startRow + resultTable.Rows.Count - 1 )}");
+//            rngToCopy.Copy();
+            rngToCopy.Insert();
 
             for (int r = 0; r < resultTable.Rows.Count; r++)
             {
@@ -113,32 +177,26 @@ namespace ExcelReader
                 }
             }
 
+            oRng = oSheet.get_Range(xlsAdress(startCol, startRow ),
+                                    xlsAdress(startCol - 1 + data.GetLength(1), startRow - 1 + data.GetLength(0) ));
+            oRng.Cells.Value2 = data;
 
-            oRng = oSheet.get_Range(xlsAdress(startCol, startRow + 1),
-                                    xlsAdress(startCol - 1 + data.GetLength(1), startRow - 1 + data.GetLength(0) + 1));
-            oRng.Cells.Value = data;
-            //            oRng.TextToColumns();
 
-            int totalRow = data.GetLength(0);
-
-            for (int c = 0; c < resultTable.Columns.Count ; c++)
+            for (int c = 0; c < data.GetLength(1); c++)
             {
-                for (int r = 0; r < totalRow ; r++)
+                dynamic cell = oSheet.get_Range(xlsAdress(startCol + c, startRow),
+                                        xlsAdress(startCol + c, startRow));
+
+                if (cell.DisplayFormat.NumberFormatLocal != "General")
                 {
-                    oRng = oSheet.get_Range(xlsAdress(startCol+ c, startRow + 1 + r), 
-                        xlsAdress(startCol + c, startRow + 1 + r));
-                    if (oRng.Value != null)
-                    {
-                        oRng.TextToColumns();
-                    }
+                    oRng = oSheet.get_Range(xlsAdress(startCol + c, startRow),
+                                            xlsAdress(startCol + c, startRow - 1 + data.GetLength(0)));
+                    oRng.Cells.TextToColumns();
                 }
             }
-
             //            oRng.EntireColumn.AutoFit();
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo(CultureInfo.CurrentCulture.Name);
         }
-
-
 
     }
 }

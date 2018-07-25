@@ -10,6 +10,7 @@ using System.IO;
 using System.Collections;
 using System.Net.NetworkInformation;
 using System.Globalization;
+using System.Windows.Forms;
 
 
 namespace ExcelReader
@@ -295,6 +296,7 @@ namespace ExcelReader
                     }
                     field.InsertToServer();
                     field.FillResult();
+                    throw new Exception("my exception");
                 }
             }
             onHideProgressBar?.Invoke();

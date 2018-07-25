@@ -18,7 +18,7 @@ namespace ExcelReader
                 isRowId = true;
                 Type = Type.GetType("System.Int32");
             }
-            else if (ResName.Substring(0, Scan.SHEMA.Length) == Scan.SHEMA)
+            else if ((ResName.Length >= Scan.SHEMA.Length) && (ResName.Substring(0, Scan.SHEMA.Length) == Scan.SHEMA) )
             {
                 isShema = true;
                 funcName = FieldFunc.getFuncName(xlsName);
