@@ -143,6 +143,7 @@ namespace ExcelReader
 
         void cuirveFormulaModify()
         {
+            return;
             foreach (string formulaAddress in CUIRSIVE)
             {
                 dynamic workBook = oWB.Names;

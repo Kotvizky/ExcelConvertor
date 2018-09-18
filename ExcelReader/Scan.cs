@@ -296,7 +296,6 @@ namespace ExcelReader
                     }
                     field.InsertToServer();
                     field.FillResult();
-                    throw new Exception("my exception");
                 }
             }
             onHideProgressBar?.Invoke();
@@ -454,13 +453,11 @@ namespace ExcelReader
             if (field == null) return "";
             switch (field.Attr) {
                 case attrName.Field:
-                    /// !!!! result = ((FieldXls)field).Value;
                     break;
                 case attrName.Const:
                     result = field.XlsName;
                     break;
                 case attrName.Func:
-                    //!!! result = GetSQLValue((FieldFunc)field);
                     break;
             }
             return result;
@@ -472,26 +469,6 @@ namespace ExcelReader
             return preperedString.Split(new Char[] { ' ', ',', '(' });
         }
 
-        //private string GetSQLValue(FieldFunc field)
-        //{
-
-        //    string[] parameters = XlsNameToArray(field.XlsName);
-        //    string result = "";
-        //    try
-        //    {
-        //        for (int i = 1; i < parameters.Length; i++)
-        //        {
-        //            parameters[i] = this.Find(x => x.ResName == parameters[i]).Value;
-        //        }
-        //        result = SQLFunction.ExecuteFunction(parameters);
-        //    }
-        //    catch
-        //    {
-        //        result = "NoData";
-        //    }
-        //    return result;
-        //}
-
         public string Matching(DataTable table) { 
 
             xlsTable = table;
@@ -500,7 +477,7 @@ namespace ExcelReader
 
             var fieldMultiply = FindAll(x => (x.Attr == attrName.Myltiply) & x.IsActive);
 
-            string message = "Повторы \r\n -----";
+            string tableRows = string.Empty;
 
             foreach (FieldMultiply field in fieldMultiply)
             {
@@ -516,15 +493,23 @@ namespace ExcelReader
                     field.Validator1 = valFunc;
 
                     field.SetTableFields(table.Columns);
-                    message += String.Format("\r\n {0} -- {1} fields", field.FullName, field.ResTableFields.Length);
+                    tableRows += htmlTableRow(field.FullName, field.ResTableFields.Length);
                 }
                 else
                 {
-                    message += String.Format("\r\n(!) {0} -- {1} fields", field.FullName, field.ResTableFields.Length);
+                    tableRows += htmlTableRow(field.FullName, field.ResTableFields.Length);
                 }
             }
 
-            message = "Поля \r\n -----";
+            string message = string.Empty;
+
+            if (tableRows != string.Empty)
+            {
+                message += $"{htmlH2("Повторы")} <table>{tableRows}</table>";
+            }
+
+            tableRows = string.Empty;
+
             foreach (FieldXls field in this.FindAll(x => (x.Attr == attrName.Field) & x.IsActive))
             {
                 if (columns.Contains(field.XlsName))
@@ -532,56 +517,66 @@ namespace ExcelReader
                     string reportValidation = setValidator(field,columns[field.XlsName].DataType.Name);
                     if (reportValidation != String.Empty)
                     {
-                        message += String.Format("\r\n(+):\t{0} -> {1}, --!!!-- convert error {2}", field.XlsName, field.ResName,reportValidation);
+                        tableRows += htmlTableRow(true, "(-)", field.XlsName, field.ResName, $"--!!!-- convert error {reportValidation}");
                         field.Exist = false;
                         AllFound = false;
                     }
                     else
                     {
-                        message += String.Format("\r\n(+):\t{0} ->  {1}, {2}", field.XlsName, field.ResName,field.Validator.Method.Name);
+                        tableRows += htmlTableRow("(+)", field.XlsName, field.ResName,field.Validator.Method.Name);
                         field.Exist = true;
                     }
                 }
                 else
                 {
-                    message += String.Format("\r\n(-):\t{0} -> {1}\tполе не найдено!", field.XlsName, field.ResName);
+                    tableRows += htmlTableRow(true,"(-)", field.XlsName, field.ResName,"поле не найдено!");
                     AllFound = false;
                 }
             }
 
-            message += "\r\n\r\nКонстанты \r\n -----";
+            if (tableRows != string.Empty)
+            {
+                message += $"{htmlH2("Поля")} <table>{tableRows}</table>";
+            }
+
+            tableRows = string.Empty;
 
             foreach (FieldBase field in this.FindAll(x => (x.Attr == attrName.Const) & x.IsActive))
             {
                 string reportValidation = setValidator(field, dataType.String.ToString());
                 if (reportValidation != String.Empty)
                 {
-                    message += String.Format("\r\n{0} -> {1}\r\n", field.ResName, reportValidation);
+                    tableRows += htmlTableRow(field.ResName, reportValidation);
                 }
                 else 
                 {
                     string reportInit = field.InitValue();
                     if (reportInit == String.Empty)
                     {
-                        message += String.Format("\r\n{0} -> {1} ({2})\r\n", field.ResName, field.Validator.Method.Name,field.Value);
+                        tableRows += htmlTableRow(field.ResName, field.Validator.Method.Name,field.Value);
                         field.Exist = true;
                     }
                     else
                     {
-                        message += String.Format("\r\n{0} -> {1} ((!!!)convert error {2})\r\n", field.ResName, field.Validator.Method.Name, reportInit);
+                        tableRows += htmlTableRow(field.ResName, field.Validator.Method.Name, $"((!!!)convert error {reportInit})" );
                         AllFound = false;
                     }
                 }
             }
 
-            message += "\r\n\r\nФункции \r\n -----";
+            if (tableRows != string.Empty)
+            {
+                message += $"{htmlH2("Константы")} <table>{tableRows}</table>";
+            }
+
+            tableRows = string.Empty;
 
             foreach (FieldFunc fieldFunc in this.FindAll(x => (x.Attr == attrName.Func) && x.IsActive))
             {
 
                 fieldFunc.initSQLParameter(this);
 
-                ArrayList paramGpoups = new ArrayList(new ParamGroup[]  {
+                ArrayList paramGroups = new ArrayList(new ParamGroup[]  {
                     fieldFunc.ParamsField,
                     fieldFunc.ParamsIn,
                     fieldFunc.ParamsOut
@@ -590,47 +585,84 @@ namespace ExcelReader
                 string[] groupName = new string[] { "ParamsField", "ParamsIn", "ParamsOut" };
 
                 //foreach (ParamGroup paramGroup in paramGpoups)
-                for (int i = 0; i < paramGpoups.Count; i++)
+                for (int i = 0; i < paramGroups.Count; i++)
                 {
-                    ParamGroup paramGroup = (ParamGroup)paramGpoups[i];
+                    ParamGroup paramGroup = (ParamGroup)paramGroups[i];
 
-                    if (paramGroup == null) {
-                        message += String.Format("\r\n\r\n{0}  Not Ready ",
-                            groupName[i]);
+                    if (paramGroup == null)
+                    {
+                        tableRows += $"<h3 class = \"alert\">- {groupName[i]} </h3>";
                             AllFound = false;
                     }
                     else
-                    { 
-                        message += String.Format("\r\n\r\n{0}  Ready - {1} < ====== {2} \r\n---\r\n", 
-                            paramGroup.GroupName, paramGroup.AllFound,paramGroup.msgError);
+                    {
+                        string alert = (!paramGroup.AllFound) ? "class = \"alert\"" : "";
 
-                        if (!paramGroup.AllFound) AllFound = false;
+                        tableRows += $"<h3 {alert} > {paramGroup.GroupName}  {paramGroup.msgError}</h3>";
 
-                        foreach (ParamBase param in paramGroup)
+                        if (!paramGroup.AllFound)
+                            AllFound = false;
+
+                        string funcRows = string.Empty;
+
+                        if (paramGroup.Count > 0 )
                         {
-                            message += String.Format("\r\n{0}", param.Print());
+                            funcRows = $"<tr><th>{string.Join("</th><th>",paramGroup[0].fieldNames())}</th></tr>";
+                            foreach (ParamBase param in paramGroup)
+                            {
+                                bool error = (param.Error != null);
+                                funcRows += htmlTableRow(error,param.fieldValues());
+                            }
+                            tableRows += $"<table>{funcRows}</table>";
                         }
                     }
 
                 }
             }
 
-            message += "\r\n\r\n Ответ сервера \r\n -----";
+            if (tableRows != string.Empty)
+            {
+                message += $"{htmlH2("Функции")} {tableRows}";
+            }
+
+            tableRows = string.Empty;
 
             foreach (FieldAnswer field in this.FindAll(x => ((x.Attr == attrName.Answer) && x.IsActive))) {
                 if (field.Param == null)
                 {
-                    message += String.Format("\r\nParameter for field {0} not found" , field.ResName);
+                    tableRows += htmlTableRow(true, field.ResName, "-");
                     AllFound = false;
                 }
                 else
                 {
-                    message += String.Format("\r\n {0} ok", field.ResName);
+                    tableRows += htmlTableRow(field.ResName,"+");
                 }
+            }
+
+            if (tableRows != string.Empty)
+            {
+                message += $"{htmlH2("Ответ сервера")} <table>{tableRows}</table>";
             }
 
             return message;
         }
+
+        string htmlH2(string title)
+        {
+            return $"<h2>{title}</h2>";
+        }
+
+        string htmlTableRow(params object[] cells)
+        {
+            return htmlTableRow(false, cells);
+        }
+
+        string htmlTableRow(bool alert, params object[] cells)
+        {
+            string alertClass = (alert) ? " class = \"alert\"" : "" ;
+            return $"<tr {alertClass}><td>{string.Join("</td><td>", cells)}</td></tr>";
+        }
+
 
         public void ChechFields()
         {

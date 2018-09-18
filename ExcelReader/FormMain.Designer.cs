@@ -30,8 +30,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.ckResult = new System.Windows.Forms.CheckBox();
             this.ckTmplFields = new System.Windows.Forms.CheckBox();
@@ -55,7 +55,6 @@
             this.tsbActChange = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -133,6 +132,7 @@
             this.i_tmpl_headBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.attrValueTableAdapter = new ExcelReader.CollectDataSetTableAdapters.attrValueTableAdapter();
             this.highlightTextRenderer1 = new BrightIdeasSoftware.HighlightTextRenderer();
+            this.textBox1 = new System.Windows.Forms.WebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -456,16 +456,6 @@
             this.tabPage2.Text = "Matching";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // textBox1
-            // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(3, 3);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(505, 227);
-            this.textBox1.TabIndex = 0;
-            // 
             // splitter2
             // 
             this.splitter2.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -784,14 +774,14 @@
             this.xlsFormat,
             this.xlsColName});
             this.dgvTemlpStr.DataSource = this.fKimpHeadimpStrBindingSource;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvTemlpStr.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvTemlpStr.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvTemlpStr.Location = new System.Drawing.Point(0, 25);
             this.dgvTemlpStr.Name = "dgvTemlpStr";
             this.dgvTemlpStr.Size = new System.Drawing.Size(291, 272);
@@ -829,8 +819,8 @@
             // 
             this.xlsNameDataGrid3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.xlsNameDataGrid3.DataPropertyName = "xlsName";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.xlsNameDataGrid3.DefaultCellStyle = dataGridViewCellStyle1;
             this.xlsNameDataGrid3.HeaderText = "xlsName";
             this.xlsNameDataGrid3.MaxInputLength = 1000;
             this.xlsNameDataGrid3.Name = "xlsNameDataGrid3";
@@ -1234,6 +1224,15 @@
             // 
             this.attrValueTableAdapter.ClearBeforeFill = true;
             // 
+            // textBox1
+            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Location = new System.Drawing.Point(3, 3);
+            this.textBox1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(505, 227);
+            this.textBox1.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1267,7 +1266,6 @@
             this.tsResultTable.ResumeLayout(false);
             this.tsResultTable.PerformLayout();
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -1343,7 +1341,6 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton ButtonOpen;
         private System.Windows.Forms.ToolStripButton ButtonMatching;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ToolStripButton ButtonStore;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
@@ -1411,6 +1408,7 @@
         private System.Windows.Forms.ToolStripButton tsbPasteHead;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton справкаToolStripButton;
+        private System.Windows.Forms.WebBrowser textBox1;
     }
 }
 

@@ -5,10 +5,10 @@
     <Setting Name="CollectConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Data Source=10.1.32.56;Initial Catalog=ImportProcessing;Integrated Security=True;Connection Timeout=300&lt;/ConnectionString&gt;
+  &lt;ConnectionString&gt;Data Source=10.1.32.56;Initial Catalog=ImportProcessing;Integrated Security=True;Connect Timeout=600&lt;/ConnectionString&gt;
   &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Data Source=10.1.32.56;Initial Catalog=ImportProcessing;Integrated Security=True;Connection Timeout=300</Value>
+      <Value Profile="(Default)">Data Source=10.1.32.56;Initial Catalog=ImportProcessing;Integrated Security=True;Connect Timeout=600</Value>
     </Setting>
     <Setting Name="NumberDecimalSeparator" Type="System.String" Scope="Application">
       <Value Profile="(Default)">,</Value>

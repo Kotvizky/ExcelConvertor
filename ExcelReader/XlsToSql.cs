@@ -11,11 +11,11 @@ namespace ExcelReader
     class XlsToSql
     {
 
-        public XlsToSql(TextBox _textBox) {
-            textBox = _textBox;
-        }
+        //public XlsToSql()
+        //{
+        //}
 
-        private TextBox textBox;
+        //private TextBox textBox;
 
         ExcelFile file = new ExcelFile();
 
@@ -54,9 +54,10 @@ namespace ExcelReader
 
         #endregion
 
-        public void readList()
+        public string readList()
         {
 
+            string report = string.Empty;
             string patch = @"c:\Users\IKotvytskyi\Documents\УкрСибБанк\";
             string[] lines = System.IO.File.ReadAllLines($"{patch}xls-file.txt ");
             int i = 0;
@@ -89,11 +90,12 @@ namespace ExcelReader
 
                     if (missingFields == "")
                         writeToSql(resultTable, xlsPach, table, fields);
-                } 
+                }
 
-                textBox.Text += $"\r\n{i++} {xlsPach} -- {rowCount} -- {missingFields}";
+                report += $"\r\n{i++} {xlsPach} -- {rowCount} -- {missingFields}";
             }
 
+            return report;
         }
 
         private static void writeToSql(DataTable resultTable, string xlsPach, DataTable table, string[] fields)

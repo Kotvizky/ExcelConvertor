@@ -571,7 +571,7 @@ namespace ExcelReader
 
                 activatStripMenu(enabledBtn);
                 tabControl1.TabPages.Remove(tabPage1);
-                textBox1.Text = String.Empty;
+                textBox1.DocumentText = string.Empty;
                 MessageBox.Show(String.Format("Файл \"{0}\" загружен", Path.GetFileName(fileName)));
                 this.dgvRes.SelectionChanged -= new System.EventHandler(this.dgvRes_SelectionChanged);
                 resDataSet.Clear();
@@ -687,7 +687,14 @@ namespace ExcelReader
                 scan.AddField(row);
             }
 
-            textBox1.Text = scan.Matching(file.XlsTable);
+            string css = @"
+            <style>
+                td {background-color: aqua;}
+                .alert,.alert td {background-color: red;}
+            </style>
+            ";
+
+            textBox1.DocumentText = $"<html> <head>{css} </head><body> {scan.Matching(file.XlsTable)} </body></html>";
 
             if (!scan.AllFound)
             {
@@ -1585,8 +1592,8 @@ namespace ExcelReader
 
         private void xlsToSQLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            XlsToSql reader = new XlsToSql(textBox1);
-            reader.readList();
+            XlsToSql reader = new XlsToSql();
+            textBox1.DocumentText = reader.readList();
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)

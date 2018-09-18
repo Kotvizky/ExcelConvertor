@@ -67,7 +67,7 @@ namespace ExcelReader
         #endregion
 
         static SqlDataAdapter tbStrAdapter = new SqlDataAdapter(commStr,  conn );
-
+         
         static SqlDataAdapter tbHeadAdapter = new SqlDataAdapter(sqlCommHead, conn);
 
         static SqlCommandBuilder tbStrBuilder;

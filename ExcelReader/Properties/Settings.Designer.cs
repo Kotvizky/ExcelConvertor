@@ -27,7 +27,7 @@ namespace ExcelReader.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=10.1.32.56;Initial Catalog=ImportProcessing;Integrated Security=True;" +
-            "Connection Timeout=300")]
+            "Connect Timeout=600")]
         public string CollectConnectionString {
             get {
                 return ((string)(this["CollectConnectionString"]));

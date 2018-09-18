@@ -46,5 +46,16 @@ namespace ExcelReader
                 OutName, ParamName, Service.ToString(), XlsExist.ToString());
         }
 
+        public object[] fieldNames()
+        {
+            return new object[] { "SqlName", "ResName", "Service","txlsExist","Error" };
+        }
+
+        public object[] fieldValues()
+        {
+            return new object[] { OutName, ParamName, Service, XlsExist , Error};
+        }
+
+
     }
 }
